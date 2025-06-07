@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#192E45"
+    android:padding="0dp">
+
+    <!-- 1) Ylin “Asetukset”-palkki -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#294D73"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:gravity="center_vertical">
+
+        <!-- Vasemmalla “x” sulku -->
+        <TextView
+            android:id="@+id/tv_close_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/close"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp" />
+
+        <!-- Keskellä teksti “Asetukset” -->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/settings"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:gravity="center" />
+    </LinearLayout>
+
+    <!-- 2) Pieni raita (=taustaväri) palkkien välille -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:background="#192E45" />
+
+    <!-- 3) “Kieli”-palkki -->
+    <TextView
+        android:id="@+id/tv_language"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#294D73"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:gravity="center_vertical"
+        android:text="@string/language"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp" />
+
+    <!-- Palkkien väli (4dp taustaa näkyvissä) -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:background="#192E45" />
+
+    <!-- 4) “Ulkoasu”-palkki -->
+    <TextView
+        android:id="@+id/tv_appearance"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#294D73"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:gravity="center_vertical"
+        android:text="@string/appearance"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp" />
+
+    <!-- Väli -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:background="#192E45" />
+
+    <!-- 5) “Yksityisyys & Turvallisuus”-palkki -->
+    <TextView
+        android:id="@+id/tv_privacy_security"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#294D73"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:gravity="center_vertical"
+        android:text="@string/privacy_security"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp" />
+
+</LinearLayout>

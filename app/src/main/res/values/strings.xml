@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Sovelluksen nimi -->
+    <string name="app_name">Maksut</string>
+
+    <!-- Uusia -->
+    <string name="settings">Asetukset</string>
+    <string name="close">✕</string>
+    <string name="back">←</string>
+    <string name="set_pin">Aseta PIN-koodi:</string>
+    <string name="language">Kieli</string>
+    <string name="appearance">Ulkoasu</string>
+    <string name="privacy_security">Yksityisyys &amp; Turvallisuus</string>
+    <string name="data_reset">Tietojen nollaus / Poista tallennetut</string>
+    <string name="access_code">Pääsykoodi</string>
+    <string name="access_code_lock">Pääsykoodin lukitus / Salaus</string>
+    <string name="import_export">Tietojen vienti / Tuonti</string>
+    <string name="confirm_reset">Vahvista nollaus</string>
+    <string name="cancel_reset">Peruuta</string>
+    <string name="warnings_data_reset">Tämä poistaa kaikki tallennetut tiedot. Haluatko varmasti jatkaa?</string>
+    <string name="pin_hint">••••</string>
+    <string name="save_pin">Tallenna PIN</string>
+    <string name="finnish">Suomi</string>
+    <string name="english">English</string>
+    <string name="light_theme">Light</string>
+    <string name="dark_theme">Dark</string>
+    <string name="import_csv">Tuo CSV</string>
+    <string name="export_csv">Vie CSV</string>
+    <string name="zero_euro">0,00 €</string>
+
+    <string name="add_salary">Lisää palkka</string>
+    <string name="add_expense">Lisää kulu</string>
+    <string name="salary">Palkka</string>
+    <string name="expense">Kulu</string>
+    <string name="cancel">Peruuta</string>
+
+    <!-- Jäljellä-tekstin avain -->
+    <string name="remaining">Jäljellä</string>
+
+    <!-- Valikko-kuvakkeen contentDescription -->
+    <string name="menu">Valikko</string>
+
+    <!-- Kolmen pisteen nappi (More) contentDescription -->
+    <string name="more">Lisää tietoa</string>
+
+    <string name="transaction_icon">Tapahtuma</string>
+    <string name="ok">OK</string>
+
+    <!-- TOISTAISEKSI OLEVAT -->
+    <string name="loans_template">Lainat: %1$s</string>
+    <string name="third_page">Kolmas sivu</string>
+
+    <!-- Päävalikon napit -->
+    <string name="button_add_salary">Lisää palkka</string>
+    <string name="button_add_expense">Lisää kulu</string>
+    <string name="button_add_credit">Lisää luotto</string>
+    <string name="button_add_loan">Lisää laina</string>
+    <string name="button_add_insurance">Lisää vakuutus</string>
+    <string name="button_summary">Näytä yhteenveto</string>
+
+    <!-- Tekstikentät päävalikossa -->
+    <string name="text_total_loans">Lainat yhteensä: 0 €</string>
+    <string name="text_total_credits">Luotot yhteensä: 0 €</string>
+    <string name="text_remaining_money">Rahaa jäljellä: 0 €</string>
+    <string name="text_savings_status">Ei säästötavoitetta</string>
+
+    <!--  AddSalaryActivity-lomake (jos tekstikehotteita)  -->
+    <string name="add_salary_label_month">Vuosi-Kuukausi (YYYY-MM)</string>
+    <string name="add_salary_label_amount">Summa (€)</string>
+    <string name="button_save_salary">Tallenna palkka</string>
+
+    <!--  AddExpenseActivity-lomake  -->
+    <string name="add_expense_label_month">Vuosi-Kuukausi (YYYY-MM)</string>
+    <string name="add_expense_label_category">Kategoria (ruoka / sähkö / muu)</string>
+    <string name="add_expense_label_amount">Summa (€)</string>
+    <string name="button_save_expense">Tallenna kulu</string>
+
+    <!-- AddCreditActivity-lomake -->
+    <string name="add_credit_label_name">Luoton nimi</string>
+    <string name="add_credit_label_amount">Summa (€)</string>
+    <string name="add_credit_label_min_sum">Vähimmäislyhennys (€)</string>
+    <string name="add_credit_label_min_pct">Vähimmäislyhennys (%)</string>
+    <string name="add_credit_label_grace">Maksuvapaa kuukausi</string>
+    <string name="add_credit_label_due">Eräpäivä (pp)</string>
+    <string name="add_credit_label_fee_sum">Palkkio (€)</string>
+    <string name="add_credit_label_fee_pct">Palkkio (%)</string>
+    <string name="add_credit_label_interest_type">Korkotyyppi (kiinteä / 3kk / 12kk)</string>
+    <string name="add_credit_label_interest">Korko (%)</string>
+    <string name="button_save_credit">Tallenna luotto</string>
+
+    <!-- AddLoanActivity-lomake -->
+    <string name="add_loan_label_name">Lainan nimi</string>
+    <string name="add_loan_label_amount">Summa (€)</string>
+    <string name="add_loan_label_interest_type">Korkotyyppi (kiinteä / 3kk / 12kk)</string>
+    <string name="add_loan_label_interest">Korko (%)</string>
+    <string name="add_loan_label_repayment">Lyhennys (€)/kk</string>
+    <string name="add_loan_label_payment">Maksuerä (€)/kk</string>
+    <string name="add_loan_label_due">Eräpäivä (pp)</string>
+    <string name="button_save_loan">Tallenna laina</string>
+
+    <!-- AddInsuranceActivity-lomake -->
+    <string name="add_ins_label_rec">Toistuvuus (kk)</string>
+    <string name="add_ins_label_cost">Kustannus (€)</string>
+    <string name="add_ins_label_due">Eräpäivä (pp)</string>
+    <string name="button_save_insurance">Tallenna vakuutus</string>
+
+</resources>
