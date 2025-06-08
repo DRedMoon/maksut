@@ -34,6 +34,12 @@
     <string name="expense">Kulu</string>
     <string name="cancel">Peruuta</string>
 
+    <string name="add_transaction">Lisää tapahtuma</string>
+    <string name="transaction_label">Kuvaus</string>
+    <string name="transaction_amount">Summan määrä</string>
+    <string name="select_date">Valitse päivämäärä</string>
+    <string name="no_date_selected">Ei päivämäärää</string>
+    <string name="transactions_header">Tapahtumat</string>
     <!-- Jäljellä-tekstin avain -->
     <string name="remaining">Jäljellä</string>
 

@@ -1,5 +1,9 @@
 <resources>
-    <style name="Theme.Maksut" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Theme.Maksut" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Poistetaan oletus-ActionBar -->
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <!-- muu teema, esim. värit -->
         <!-- Pääväri (vaikuttaa toolbar‐väriin, jos toolbar on) -->
         <item name="colorPrimary">@color/brand_primary</item>
         <!-- Tummempi variantti, jota yleensä käytetään status‐barissa -->

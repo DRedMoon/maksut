@@ -1,13 +1,16 @@
 package com.oma.maksut
 
 /**
- * Yksi maksutapahtuma:
- * @param iconRes  ikoni-resurssi (esim. pankin tai kulun symboli)
- * @param title    tapahtuman nimi (esim. "Palkka" tai "Ruoka")
- * @param amount   summa (positiivinen = tulo, negatiivinen = meno)
+ * Yksittäisen tapahtuman malli.
+ *
+ * @param iconRes   Kuvake resurssina (esim. R.drawable.ic_bank)
+ * @param label     Tapahtuman nimi tai kuvaus (esim. \"Palkka\")
+ * @param amount    Summan määrä (positiivinen tulo, negatiivinen meno)
+ * @param time      Aikaleima merkkijonona (esim. \"12:34\")
  */
 data class Transaction(
     val iconRes: Int,
-    val title: String,
-    val amount: Double
+    val label: String,
+    val amount: Double,
+    val time: String
 )

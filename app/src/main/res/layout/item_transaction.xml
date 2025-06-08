@@ -1,33 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="12dp"
-    android:background="#192E45">
+    android:background="#294D73"
+    android:layout_marginBottom="1dp">
 
+    <!-- 1) Ikoni -->
     <ImageView
-        android:id="@+id/iv_tx_icon"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        app:tint="#FFFFFF"
-        android:contentDescription="@string/transaction_icon" />
+        android:id="@+id/iv_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:contentDescription="@null"
+        app:tint="@android:color/white"
+        android:src="@drawable/ic_bank" />
 
+    <!-- 2) Label -->
     <TextView
-        android:id="@+id/tv_tx_title"
+        android:id="@+id/tv_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textColor="@android:color/white"
+        android:textSize="16sp" />
+
+    <!-- 3) Päivämäärä keskellä (vie tilaa joustavasti) -->
+    <TextView
+        android:id="@+id/tv_date"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:padding="12dp"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp" />
+        android:gravity="center"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        android:alpha="0.8"
+        android:contentDescription="@null" />
 
+    <!-- 4) Summa oikeassa reunassa keskellä pystysuunnassa -->
     <TextView
-        android:id="@+id/tv_tx_amount"
+        android:id="@+id/tv_amount"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="12dp"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical|end"
         android:textSize="16sp" />
-
 </LinearLayout>
