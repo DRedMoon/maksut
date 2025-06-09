@@ -1,41 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="24dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-    <!-- Syöttökenttä kuvaukselle -->
+    <!-- 1) Tapahtumatyyppi: Tulo vai Kulu -->
+    <RadioGroup
+        android:id="@+id/rg_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp">
+
+        <RadioButton
+            android:id="@+id/rb_income"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/income"
+            android:checked="true"/>
+
+        <RadioButton
+            android:id="@+id/rb_expense"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/expense" />
+
+    </RadioGroup>
+
+    <!-- 2) Kuvaus -->
     <EditText
         android:id="@+id/et_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/transaction_label"
-        android:inputType="text" />
+        android:hint="@string/description"
+        android:inputType="textCapSentences"
+        android:autofillHints="emailAddress"
+        android:layout_marginBottom="16dp"/>
 
-    <!-- Syöttökenttä summalle -->
+    <!-- 3) Määrä -->
     <EditText
         android:id="@+id/et_amount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/transaction_amount"
+        android:hint="@string/amount"
         android:inputType="numberDecimal"
-        android:layout_marginTop="8dp" />
+        android:autofillHints="creditCardNumber"
+        android:layout_marginBottom="16dp"/>
 
-    <!-- Painike päivämäärän valintaan -->
-    <Button
-        android:id="@+id/btn_date_picker"
-        android:layout_width="wrap_content"
+    <!-- 4) Päivämäärä -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/select_date"
-        android:layout_marginTop="8dp" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
-    <!-- Näytä valittu päivämäärä -->
-    <TextView
-        android:id="@+id/tv_selected_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/no_date_selected"
-        android:layout_marginTop="4dp" />
+        <Button
+            android:id="@+id/btn_date_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/select_date"/>
+
+        <TextView
+            android:id="@+id/tv_selected_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/no_date_selected"/>
+    </LinearLayout>
+
 </LinearLayout>

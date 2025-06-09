@@ -27,12 +27,33 @@
     <string name="import_csv">Tuo CSV</string>
     <string name="export_csv">Vie CSV</string>
     <string name="zero_euro">0,00 €</string>
+    <string name="sample_date">Päivä</string>
 
     <string name="add_salary">Lisää palkka</string>
     <string name="add_expense">Lisää kulu</string>
     <string name="salary">Palkka</string>
     <string name="expense">Kulu</string>
     <string name="cancel">Peruuta</string>
+
+    <string name="loan_payment">Lainan lyhennys</string>
+    <string name="loan">Lainat/Luotot</string>
+    <string name="subscription">Tilaus(kk)</string>
+    <string name="manage_payments">Hallitse maksuja</string>
+    <string name="loans">Lainat</string>
+    <string name="credits">Luotot</string>
+    <string name="subscriptions">Kuukausimaksut</string>
+
+    <string name="filter_all">Kaikki</string>
+    <string name="filter_upcoming">Tulevat</string>
+
+    <string name="loans_label">Lainat/Luotot</string>
+    <string name="subscriptions_label">Kuukausimaksut</string>
+
+
+    <string name="income">Tulo</string>
+    <string name="description">Kuvaus</string>
+    <string name="amount">Summa</string>
+
 
     <string name="add_transaction">Lisää tapahtuma</string>
     <string name="transaction_label">Kuvaus</string>

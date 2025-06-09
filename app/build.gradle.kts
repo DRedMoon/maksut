@@ -48,6 +48,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
+
     // Poistetaan kaikki Compose-riippuvuudet
     // implementation(libs.androidx.activity.compose)
     // implementation(platform(libs.androidx.compose.bom))

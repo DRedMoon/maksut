@@ -1,5 +1,6 @@
 package com.oma.maksut
 
+import com.oma.maksut.Category
 /**
  * Yksittäisen tapahtuman malli.
  *
@@ -9,8 +10,10 @@ package com.oma.maksut
  * @param time      Aikaleima merkkijonona (esim. \"12:34\")
  */
 data class Transaction(
+    val id: Long = System.currentTimeMillis(),
     val iconRes: Int,
     val label: String,
     val amount: Double,
-    val time: String
+    val time: String,       // esim. "2025-06-09"
+    val category: Category  // uusi kenttä
 )

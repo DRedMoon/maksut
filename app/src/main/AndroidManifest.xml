@@ -24,6 +24,8 @@
         <activity android:name=".DataResetActivity" />
         <activity android:name=".AccessCodeActivity" />
         <activity android:name=".DataImportExportActivity" />
+        <!-- Valikko / Hallitse lainoja-aktiviteetti -->
+        <activity android:name=".ManagePaymentsActivity" />
 
         <!-- Ei label-attribuuttia, koska sovelluksen @string/app_name on käytössä jo ylempänä -->
         <activity android:name=".AddSalaryActivity" />
