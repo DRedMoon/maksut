@@ -15,5 +15,6 @@ data class Transaction(
     val label: String,
     val amount: Double,
     val time: String,       // esim. "2025-06-09"
+    val rate: Double = 0.0,
     val category: Category  // uusi kenttä
 )

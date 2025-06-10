@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Rivi 1: Nimi + valikko -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_loan_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Asuntolaina"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"/>
+
+            <ImageButton
+                android:id="@+id/btn_loan_menu"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_more_vert"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/manage"/>
+        </LinearLayout>
+
+        <!-- Rivi 2: Jäljellä oleva velka -->
+        <TextView
+            android:id="@+id/tv_loan_remaining"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="93 000,00 €"
+            android:textSize="14sp"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="4dp"/>
+
+        <!-- Rivi 3: Kuukausieri -->
+        <TextView
+            android:id="@+id/tv_loan_monthly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="700,00 €/kk"
+            android:textSize="14sp"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="2dp"/>
+
+        <!-- Rivi 4: Korko ja kulut pienellä -->
+        <TextView
+            android:id="@+id/tv_loan_rate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Korko 1,5 % (Euribor), tilinhoitopalkkio 2 €/kk"
+            android:textSize="12sp"
+            android:textColor="@android:color/darker_gray"
+            android:layout_marginTop="2dp"/>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

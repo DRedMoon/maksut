@@ -15,8 +15,10 @@
         app:title="@string/app_name"
         app:titleTextColor="@android:color/white"
         app:navigationIcon="@drawable/ic_settings_white_24dp"
+        app:navigationIconTint="@android:color/white"
         android:contentDescription="@string/settings"
-        app:menu="@menu/menu_main"/>
+        app:menu="@menu/menu_main"
+        app:titleCentered="true"/>
 
     <!-- 2) Jäljellä-palkki -->
     <LinearLayout

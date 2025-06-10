@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#192E45">
+
+    <!-- 1) Ylin “Luotot” -palkki -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar_credits"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/brand_primary"
+        app:navigationIcon="@string/close"
+        android:contentDescription="@string/close"
+        app:title="@string/credits"
+        app:titleTextColor="@android:color/white"/>
+
+    <!-- 2) Pieni erotusviiva -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#444444"/>
+
+    <!-- 3) ScrollView ja container luotto‐kortteja varten -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="8dp">
+
+        <LinearLayout
+            android:id="@+id/ll_container_credits"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </ScrollView>
+</LinearLayout>

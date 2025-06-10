@@ -27,6 +27,10 @@
         <!-- Valikko / Hallitse lainoja-aktiviteetti -->
         <activity android:name=".ManagePaymentsActivity" />
 
+        <activity android:name=".LoansActivity" />
+        <activity android:name=".CreditsActivity" />
+        <activity android:name=".SubscriptionsActivity" />
+
         <!-- Ei label-attribuuttia, koska sovelluksen @string/app_name on käytössä jo ylempänä -->
         <activity android:name=".AddSalaryActivity" />
         <activity android:name=".AddExpenseActivity" />

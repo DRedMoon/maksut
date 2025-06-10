@@ -75,6 +75,7 @@ class MainActivity : AppCompatActivity() {
                 label    = getString(R.string.loan_payment),
                 amount   = -640.0,
                 time     = sampleDate,
+                rate     = 1.5,
                 category = Category.LOAN
             ),
             Transaction(

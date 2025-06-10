@@ -53,6 +53,7 @@
     <string name="income">Tulo</string>
     <string name="description">Kuvaus</string>
     <string name="amount">Summa</string>
+    <string name="manage">Hallitse</string>
 
 
     <string name="add_transaction">Lisää tapahtuma</string>

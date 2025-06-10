@@ -40,7 +40,7 @@
     <!-- 2) Pieni raita (=taustaväri) palkkien välille -->
     <View
         android:layout_width="match_parent"
-        android:layout_height="4dp"
+        android:layout_height="1dp"
         android:background="#192E45" />
 
     <!-- 3) “Kieli”-palkki -->
@@ -59,7 +59,7 @@
     <!-- Palkkien väli (4dp taustaa näkyvissä) -->
     <View
         android:layout_width="match_parent"
-        android:layout_height="4dp"
+        android:layout_height="1dp"
         android:background="#192E45" />
 
     <!-- 4) “Ulkoasu”-palkki -->
@@ -78,7 +78,7 @@
     <!-- Väli -->
     <View
         android:layout_width="match_parent"
-        android:layout_height="4dp"
+        android:layout_height="1dp"
         android:background="#192E45" />
 
     <!-- 5) “Yksityisyys & Turvallisuus”-palkki -->
