@@ -6,16 +6,17 @@
     android:layout_height="match_parent"
     android:background="#192E45">
 
-    <!-- Ylin palkki -->
+    <!-- 1) Ylin “Hallitse maksuja” -palkki -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="?attr/actionBarSize"
         android:background="#192E45"
         android:orientation="horizontal"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:gravity="center_vertical">
 
+        <!-- Vasemmalla “X” sulku -->
         <TextView
             android:id="@+id/tv_close_settings"
             android:layout_width="wrap_content"
@@ -23,10 +24,10 @@
             android:text="@string/close"
             android:textColor="@android:color/white"
             android:textSize="20sp"
-            android:padding="8dp"
             android:clickable="true"
             android:focusable="true"/>
 
+        <!-- Keskellä otsikko -->
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -37,19 +38,21 @@
             android:gravity="center" />
     </LinearLayout>
 
-    <!-- Erotus 1dp -->
+    <!-- 2) Erotusviiva tummalla taustavärillä -->
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#192E45"/>
 
-    <!-- Alavalikot -->
+    <!-- Alavalikot allekkain -->
     <TextView
         android:id="@+id/tv_loans"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="#294D73"
+        android:focusable="true"
         android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:gravity="center_vertical"
         android:text="@string/loans"
         android:textColor="@android:color/white"
@@ -66,7 +69,9 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="#294D73"
+        android:focusable="true"
         android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:gravity="center_vertical"
         android:text="@string/credits"
         android:textColor="@android:color/white"
@@ -83,7 +88,9 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="#294D73"
+        android:focusable="true"
         android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:gravity="center_vertical"
         android:text="@string/subscriptions"
         android:textColor="@android:color/white"
@@ -95,6 +102,7 @@
         android:layout_height="1dp"
         android:background="#192E45"/>
 
+    <!-- Säiliö alasivuille (ei käytetä fragmentteja tässä mallissa) -->
     <FrameLayout
         android:id="@+id/fl_container"
         android:layout_width="match_parent"

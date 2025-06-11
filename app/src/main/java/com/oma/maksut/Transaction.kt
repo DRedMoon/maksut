@@ -16,5 +16,8 @@ data class Transaction(
     val amount: Double,
     val time: String,       // esim. "2025-06-09"
     val rate: Double = 0.0,
-    val category: Category  // uusi kenttä
+    val category: Category,  // uusi kenttä
+    val fee: Double = 0.0,
+    val monthlyPayment: Double = 0.0,
+    val dueDate: String = ""
 )

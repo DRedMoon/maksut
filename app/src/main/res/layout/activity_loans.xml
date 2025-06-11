@@ -1,26 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:background="#192E45">
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#192E45">
 
-    <!-- Toolbar: back-nuoli + otsikko “Lainat” -->
+    <!-- 1) Ylin “Lainat” -toolbar icon‐backilla -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar_loans"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/brand_primary"
-        app:navigationIcon="@string/back"
+        android:background="192E45"
+        app:navigationIcon="@drawable/ic_arrow_back_white"
         android:contentDescription="@string/back"
         app:title="@string/loans"
+        app:titleCentered="true"
         app:titleTextColor="@android:color/white"/>
 
-    <!-- Erotus -->
-    <View android:layout_width="match_parent" android:layout_height="1dp"
+    <!-- 2) Erotusviiva -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
         android:background="#444444"/>
 
-    <!-- Korttien säiliö scroll-listalle -->
-    <ScrollView android:layout_width="match_parent"
+    <!-- 3) Toiminnot: Lisää / Muokkaa -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:gravity="center_vertical">
+
+        <Button
+            android:id="@+id/btn_add_loan"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/add_loan"/>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#444444"/>
+
+        <Button
+            android:id="@+id/btn_edit_loan"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/edit_loan"/>
+    </LinearLayout>
+
+    <!-- 4) Korttien säiliö ScrollView'ssa -->
+    <ScrollView
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:padding="8dp">

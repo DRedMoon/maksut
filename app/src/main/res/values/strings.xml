@@ -55,6 +55,9 @@
     <string name="amount">Summa</string>
     <string name="manage">Hallitse</string>
 
+    <string name="add_loan">Lisää laina</string>
+    <string name="edit_loan">Muokkaa lainoja</string>
+
 
     <string name="add_transaction">Lisää tapahtuma</string>
     <string name="transaction_label">Kuvaus</string>
