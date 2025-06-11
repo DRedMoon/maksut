@@ -102,6 +102,25 @@
         android:layout_height="1dp"
         android:background="#192E45"/>
 
+    <TextView
+        android:id="@+id/tv_others"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#294D73"
+        android:focusable="true"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:gravity="center_vertical"
+        android:text="@string/others"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:clickable="true"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#192E45"/>
+
     <!-- Säiliö alasivuille (ei käytetä fragmentteja tässä mallissa) -->
     <FrameLayout
         android:id="@+id/fl_container"

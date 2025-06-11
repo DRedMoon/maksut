@@ -55,12 +55,24 @@
     <string name="amount">Summa</string>
     <string name="manage">Hallitse</string>
 
-    <string name="add_loan">Lisää laina</string>
+    <string name="add_loan">Lisää lainoja</string>
     <string name="edit_loan">Muokkaa lainoja</string>
 
+    <string name="add_credits">Lisää luottoja</string>
+    <string name="edit_credits">Muokkaa luottoja</string>
+
+    <string name="add_subscriptions">Lisää KK-maksuja</string>
+    <string name="edit_subscriptions">Muokkaa</string>
+
+    <string name="others">Muut</string>
+    <string name="add_others">Lisää muita</string>
+    <string name="edit_others">Muokkaa muita</string>
 
     <string name="add_transaction">Lisää tapahtuma</string>
     <string name="transaction_label">Kuvaus</string>
+
+    <string name="due">Eräpäivä:</string>
+
     <string name="transaction_amount">Summan määrä</string>
     <string name="select_date">Valitse päivämäärä</string>
     <string name="no_date_selected">Ei päivämäärää</string>

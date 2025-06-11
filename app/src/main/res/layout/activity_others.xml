@@ -9,13 +9,13 @@
 
     <!-- Toolbar back-ikonilla -->
     <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar_subs"
+        android:id="@+id/toolbar_others"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="#192E45"
         app:navigationIcon="@drawable/ic_arrow_back_white"
         android:contentDescription="@string/back"
-        app:title="@string/subscriptions"
+        app:title="@string/others"
         app:titleCentered="true"
         app:titleTextColor="@android:color/white"/>
 
@@ -30,20 +30,20 @@
         android:gravity="center_vertical">
 
         <Button
-            android:id="@+id/btn_add_sub"
+            android:id="@+id/btn_add_other"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/add_subscriptions"/>
+            android:text="@string/add_others"/>
 
         <View android:layout_width="1dp" android:layout_height="match_parent" android:background="#444444"/>
 
         <Button
-            android:id="@+id/btn_edit_sub"
+            android:id="@+id/btn_edit_other"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/edit_subscriptions"/>
+            android:text="@string/edit_others"/>
     </LinearLayout>
 
     <!-- Kortit -->
@@ -53,7 +53,7 @@
         android:layout_weight="1"
         android:padding="8dp">
         <LinearLayout
-            android:id="@+id/ll_container_subs"
+            android:id="@+id/ll_container_others"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

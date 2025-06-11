@@ -7,30 +7,51 @@
     android:layout_height="match_parent"
     android:background="#192E45">
 
-    <!-- 1) Ylin “Luotot” -palkki -->
+    <!-- Toolbar back-ikonilla -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar_credits"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/brand_primary"
-        app:navigationIcon="@string/close"
-        android:contentDescription="@string/close"
+        android:background="#192E45"
+        app:navigationIcon="@drawable/ic_arrow_back_white"
+        android:contentDescription="@string/back"
         app:title="@string/credits"
+        app:titleCentered="true"
         app:titleTextColor="@android:color/white"/>
 
-    <!-- 2) Pieni erotusviiva -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#444444"/>
+    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#444444"/>
 
-    <!-- 3) ScrollView ja container luotto‐kortteja varten -->
+    <!-- Lisää/Muokkaa-painikkeet -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:gravity="center_vertical">
+
+        <Button
+            android:id="@+id/btn_add_credits"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/add_credits"/>
+
+        <View android:layout_width="1dp" android:layout_height="match_parent" android:background="#444444"/>
+
+        <Button
+            android:id="@+id/btn_edit_credits"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/edit_credits"/>
+    </LinearLayout>
+
+    <!-- Korttien säiliö -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:padding="8dp">
-
         <LinearLayout
             android:id="@+id/ll_container_credits"
             android:orientation="vertical"

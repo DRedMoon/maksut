@@ -15,7 +15,7 @@ class ManagePaymentsActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tv_close_settings)
             .setOnClickListener { finish() }
 
-        // Alavalikot, vie omille sivuille
+        // Alavalikot, vie omille sivuille, Lainat, Luoto, Kuukausimaksut, Muut
         findViewById<TextView>(R.id.tv_loans).setOnClickListener {
             startActivity(Intent(this, LoansActivity::class.java))
         }
@@ -25,5 +25,9 @@ class ManagePaymentsActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tv_subscriptions).setOnClickListener {
             startActivity(Intent(this, SubscriptionsActivity::class.java))
         }
+        findViewById<TextView>(R.id.tv_others).setOnClickListener {
+            startActivity(Intent(this, OthersActivity::class.java))
+        }
+
     }
 }

@@ -2,42 +2,40 @@ package com.oma.maksut
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.appbar.MaterialToolbar
 import java.util.Locale
-
 
 class SubscriptionsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_subscriptions)
 
-        // 1) “Close”-teksti sulkemaan tämän näkymän
-        findViewById<TextView>(R.id.tv_close_subs)
-            .setOnClickListener { finish() }
+        // Takaisin‐nuoli
+        findViewById<MaterialToolbar>(R.id.toolbar_subs)
+            .setNavigationOnClickListener { finish() }
 
-        // 2) Hae kaikki subscription-kategoriaan merkityt tapahtumat
-        val subs = TransactionRepository.transactions
-            .filter { it.category == Category.SUBSCRIPTION }
+        // Lisää/Muokkaa (TODO)
+        findViewById<Button>(R.id.btn_add_sub)
+            .setOnClickListener { /* TODO */ }
+        findViewById<Button>(R.id.btn_edit_sub)
+            .setOnClickListener { /* TODO */ }
 
-        // 3) Lisää kukin kortti scroll-kontaineriin
+        val list      = TransactionRepository.transactions.filter { it.category == Category.SUBSCRIPTION }
         val container = findViewById<LinearLayout>(R.id.ll_container_subs)
         val inflater  = LayoutInflater.from(this)
 
-        subs.forEach { tx ->
-            // Käytä samaa item_payment_card.xml-pohjaa
-            val card = inflater.inflate(R.layout.item_payment_card, container, false)
-
-            // Täytä kortin kentät
-            card.findViewById<TextView>(R.id.tv_loan_name).text      = tx.label
-            card.findViewById<TextView>(R.id.tv_loan_remaining).text =
-                String.format(Locale.getDefault(), "%.2f €", -tx.amount)
-            // Jos ei ole kuukausieriä/subscription-erittelyä, jätä tyhjäksi
-            card.findViewById<TextView>(R.id.tv_loan_monthly).text   = ""
-            card.findViewById<TextView>(R.id.tv_loan_rate).text      = ""
-
-            // Lisää kortti kontaineriin
+        list.forEach { tx ->
+            val card = inflater.inflate(R.layout.item_subscription_card, container, false)
+            card.findViewById<TextView>(R.id.tv_subs_name).text   = tx.label
+            card.findViewById<TextView>(R.id.tv_subs_amount).text =
+                String.format(Locale.getDefault(), "%.2f €/kk", -tx.amount)
+            card.findViewById<TextView>(R.id.tv_subs_date).text   = tx.time
+            card.findViewById<TextView>(R.id.tv_subs_due).text  =
+                String.format(Locale.getDefault(), "Eräpäivä: ${tx.dueDate}")
             container.addView(card)
         }
     }

@@ -41,6 +41,7 @@ class LoansActivity : AppCompatActivity() {
             .filter { it.category == Category.LOAN }
 
         // 4) Löydä korttien kontaineri
+
         val container = findViewById<LinearLayout>(R.id.ll_container_loans)
         val inflater  = LayoutInflater.from(this)
 
@@ -53,9 +54,13 @@ class LoansActivity : AppCompatActivity() {
             card.findViewById<TextView>(R.id.tv_loan_remaining).text =
                 String.format(Locale.getDefault(), "%.2f €", -loan.amount)
             card.findViewById<TextView>(R.id.tv_loan_monthly).text   =
-                String.format(Locale.getDefault(), "%.2f €/kk", loan.amount)
+                String.format(Locale.getDefault(), "%.2f €/kk", loan.monthlyPayment)
             card.findViewById<TextView>(R.id.tv_loan_rate).text      =
-                "Korko ${loan.rate}%"
+                String.format(Locale.getDefault(), "Korko %.2f%%", loan.rate)
+            card.findViewById<TextView>(R.id.tv_loan_fee).text       =
+                String.format(Locale.getDefault(), "Palkkio %.2f€", loan.fee)
+            card.findViewById<TextView>(R.id.tv_loan_due).text       =
+                String.format(Locale.getDefault(), "Eräpäivä ${loan.dueDate}")
 
             // Lisää kortti näkyviin
             container.addView(card)
