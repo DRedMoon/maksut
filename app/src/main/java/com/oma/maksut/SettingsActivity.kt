@@ -81,14 +81,22 @@ class SettingsActivity : AppCompatActivity() {
         // Export button
         findViewById<Button>(R.id.btn_export_json).setOnClickListener {
             lifecycleScope.launch {
-                exportToJson()
+                val jsonData = JsonExportImportUtils.exportToJson(this@SettingsActivity)
+                val file = File(getExternalFilesDir(null), "maksut_backup_${System.currentTimeMillis()}.json")
+                file.writeText(jsonData)
+                
+                Toast.makeText(this@SettingsActivity, 
+                    "Backup exported to: ${file.absolutePath}", Toast.LENGTH_LONG).show()
             }
         }
         
         // Import button
         findViewById<Button>(R.id.btn_import_json).setOnClickListener {
             lifecycleScope.launch {
-                importFromJson()
+                val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+                    type = "application/json"
+                }
+                startActivityForResult(intent, REQUEST_IMPORT_JSON)
             }
         }
         
