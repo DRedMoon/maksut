@@ -198,4 +198,5 @@
     <string name="paid">Maksettu</string>
     <string name="delete">Poista</string>
     <string name="total_interest_amount">Kokonaiskorko: %.2f €</string>
+    <string name="category">Kategoria</string>
 </resources>
