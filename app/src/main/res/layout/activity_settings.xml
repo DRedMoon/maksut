@@ -75,6 +75,18 @@
         android:textColor="#FFFFFF"
         android:textSize="18sp" />
 
+    <!-- Switch for theme toggling -->
+    <Switch
+        android:id="@+id/switch_theme"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/theme_settings"
+        android:textColor="#FFFFFF"
+        android:background="#294D73"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:gravity="center_vertical" />
+
     <!-- Väli -->
     <View
         android:layout_width="match_parent"
