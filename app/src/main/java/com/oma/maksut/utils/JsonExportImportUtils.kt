@@ -4,18 +4,20 @@ import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.oma.maksut.database.AppDatabase
-import com.oma.maksut.database.entities.*
+import com.oma.maksut.database.entities.Transaction
+import com.oma.maksut.database.entities.Category
+import com.oma.maksut.database.entities.Loan
+import com.oma.maksut.database.entities.Credit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
 
+// Data class for export/import
 data class ExportData(
     val transactions: List<Transaction>,
     val categories: List<Category>,
     val loans: List<Loan>,
-    val credits: List<Credit>,
-    val exportDate: Date,
-    val version: String = "1.0"
+    val credits: List<Credit>
 )
 
 class JsonExportImportUtils {
