@@ -221,7 +221,7 @@
     <string name="total_repayment">Kokonaislyhennys: %.2f €</string>
     <string name="calculation_error">Laskentavirhe</string>
     <string name="fill_all_fields">Täytä kaikki kentät</string>
-    <string="invalid_values">Virheelliset arvot</string>
+    <string name="invalid_values">Virheelliset arvot</string>
     <string name="credit_name">Luoton nimi</string>
     <string name="credit_limit">Luottoraja</string>
     <string name="current_balance">Nykyinen saldo</string>
