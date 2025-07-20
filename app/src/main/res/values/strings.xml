@@ -155,7 +155,6 @@
     <string name="total_repayment_amount">Kokonaislyhennys: %.2f €</string>
     <string name="click_to_show_balance">Klikkaa nähdäksesi velan</string>
     <string name="click_to_show_repayment">Klikkaa nähdäksesi lyhennyksen</string>
-    <string name="edit_loan">Muokkaa lainaa</string>
     <string name="delete_loan">Poista laina</string>
     <string name="delete_loan_confirmation">Haluatko varmasti poistaa lainan "%s"?</string>
     <string name="add_credit">Lisää luotto</string>
