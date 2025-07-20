@@ -11,6 +11,7 @@ import com.oma.maksut.database.entities.Credit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
+import kotlinx.coroutines.flow.first
 
 // Data class for export/import
 data class ExportData(
@@ -30,10 +31,10 @@ class JsonExportImportUtils {
         suspend fun exportToJson(context: Context): String = withContext(Dispatchers.IO) {
             val database = AppDatabase.getDatabase(context)
             
-            val transactions = database.transactionDao().getAllTransactions()
-            val categories = database.categoryDao().getAllCategories()
-            val loans = database.loanDao().getAllLoans()
-            val credits = database.creditDao().getAllCredits()
+            val transactions = database.transactionDao().getAllTransactions().first()
+            val categories = database.categoryDao().getAllCategories().first()
+            val loans = database.loanDao().getAllLoans().first()
+            val credits = database.creditDao().getAllCredits().first()
             
             val exportData = ExportData(
                 transactions = transactions,
