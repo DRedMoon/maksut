@@ -38,6 +38,9 @@
         <activity android:name=".AddLoanActivity" />
         <activity android:name=".AddInsuranceActivity" />
         <activity android:name=".AnalysisActivity" />
+        <activity android:name=".QuickAddTransactionActivity" />
+        <activity android:name=".CategoryManagementActivity" />
+        <activity android:name=".LoanCreditManagementActivity" />
 
         <activity
             android:name=".MainActivity"

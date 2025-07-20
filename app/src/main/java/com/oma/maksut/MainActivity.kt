@@ -92,10 +92,10 @@ class MainActivity : AppCompatActivity() {
         updateRemainingText()
         updatePageIndicator()
 
-        // Klikkaa summaa → näytä luotot / tilaukset eriteltynä
+        // Klikkaa summaa → näytä luotot / tilaukset eriteltynä tai avaa hallinta
         findViewById<TextView>(R.id.tv_remaining_amount).setOnClickListener {
             when (currentPage) {
-                1 -> showDetailDialog("Lainat ja luotot", TransactionRepository.transactions.filter { it.category == Category.LOAN })
+                1 -> startActivity(Intent(this, LoanCreditManagementActivity::class.java))
                 2 -> showDetailDialog("Kuukausimaksut", TransactionRepository.transactions.filter { it.category == Category.SUBSCRIPTION })
                 // saldolla ei avata
             }
@@ -346,9 +346,9 @@ class MainActivity : AppCompatActivity() {
             updateBottomNavSelection(R.id.btn_upcoming)
         }
         
-        // Add button - show transaction dialog
+        // Add button - show quick add transaction activity
         findViewById<LinearLayout>(R.id.btn_add).setOnClickListener {
-            showTransactionDialog()
+            startActivity(Intent(this, QuickAddTransactionActivity::class.java))
             updateBottomNavSelection(R.id.btn_add)
         }
         

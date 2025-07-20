@@ -165,4 +165,80 @@
     <string name="yearly_income">Vuositulot</string>
     <string name="yearly_expenses">Vuosikulut</string>
 
+    <!-- Quick Add Transaction -->
+    <string name="quick_add_transaction">Pikalisäys</string>
+    <string name="transaction_type">Tapahtuman tyyppi</string>
+    <string name="transaction_name">Tapahtuman nimi</string>
+    <string name="enter_transaction_name">Syötä tapahtuman nimi</string>
+    <string name="enter_amount">Syötä summa</string>
+    <string name="payment_date">Maksupäivä</string>
+    <string name="options">Asetukset</string>
+    <string name="has_due_date">On eräpäivä</string>
+    <string name="is_monthly_payment">On kuukausimaksu</string>
+    <string name="save_transaction">Tallenna tapahtuma</string>
+    <string name="select_category">Valitse kategoria</string>
+    <string name="select_due_date">Valitse eräpäivä</string>
+    <string name="name_required">Nimi vaaditaan</string>
+    <string name="amount_required">Summa vaaditaan</string>
+    <string name="invalid_amount">Virheellinen summa</string>
+    <string name="category_required">Kategoria vaaditaan</string>
+    <string name="transaction_saved">Tapahtuma tallennettu</string>
+    <string name="error_saving_transaction">Virhe tallennettaessa tapahtumaa</string>
+
+    <!-- Category Management -->
+    <string name="manage_categories">Hallitse kategorioita</string>
+    <string name="add_category">Lisää kategoria</string>
+    <string name="edit_category">Muokkaa kategoriaa</string>
+    <string name="delete_category">Poista kategoria</string>
+    <string name="delete_category_confirmation">Haluatko varmasti poistaa kategorian "%s"?</string>
+    <string name="category_name">Kategorian nimi</string>
+    <string name="category_icon">Kategorian kuvake</string>
+
+    <!-- Loan/Credit Management -->
+    <string name="loan_credit_management">Lainat ja luotot</string>
+    <string name="total_debt_amount">Kokonaisvelka: %.2f €</string>
+    <string name="total_repayment_amount">Kokonaislyhennys: %.2f €</string>
+    <string name="click_to_show_balance">Klikkaa nähdäksesi velan</string>
+    <string name="click_to_show_repayment">Klikkaa nähdäksesi lyhennyksen</string>
+    <string name="add_loan">Lisää laina</string>
+    <string name="edit_loan">Muokkaa lainaa</string>
+    <string name="delete_loan">Poista laina</string>
+    <string name="delete_loan_confirmation">Haluatko varmasti poistaa lainan "%s"?</string>
+    <string name="add_credit">Lisää luotto</string>
+    <string name="edit_credit">Muokkaa luottoa</string>
+    <string name="delete_credit">Poista luotto</string>
+    <string name="delete_credit_confirmation">Haluatko varmasti poistaa luoton "%s"?</string>
+    <string name="loan_name">Lainan nimi</string>
+    <string name="loan_amount">Lainan määrä</string>
+    <string name="interest_rate">Korko (%)</string>
+    <string name="personal_margin">Henkilökohtainen marginaali (%)</string>
+    <string name="loan_term">Laina-aika (vuotta)</string>
+    <string name="monthly_payment">Kuukausierä</string>
+    <string name="payment_fee">Maksupalkkio</string>
+    <string name="due_day">Eräpäivä (päivä)</string>
+    <string name="start_date">Aloituspäivä</string>
+    <string name="end_date">Loppupäivä</string>
+    <string name="total_repayment">Kokonaislyhennys: %.2f €</string>
+    <string name="calculation_error">Laskentavirhe</string>
+    <string name="fill_all_fields">Täytä kaikki kentät</string>
+    <string="invalid_values">Virheelliset arvot</string>
+    <string name="credit_name">Luoton nimi</string>
+    <string name="credit_limit">Luottoraja</string>
+    <string name="current_balance">Nykyinen saldo</string>
+    <string name="min_payment_percentage">Vähimmäislyhennys (%)</string>
+    <string name="min_payment_amount">Vähimmäislyhennys (€)</string>
+    <string name="grace_period">Maksuvapaa aika (päivää)</string>
+
+    <!-- Sync and Settings -->
+    <string name="sync_settings">Synkronointiasetukset</string>
+    <string name="enable_sync">Ota synkronointi käyttöön</string>
+    <string name="sync_frequency">Synkronointitiheys</string>
+    <string name="encryption_settings">Salausasetukset</string>
+    <string name="enable_encryption">Ota salaus käyttöön</string>
+    <string name="encryption_algorithm">Salausalgoritmi</string>
+    <string name="theme_settings">Teema-asetukset</string>
+    <string name="light_theme">Vaalea teema</string>
+    <string name="dark_theme">Tumma teema</string>
+    <string name="auto_theme">Automaattinen teema</string>
+
 </resources>
