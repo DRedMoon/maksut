@@ -10,10 +10,14 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.oma.maksut.repository.FinanceRepository
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import androidx.core.content.ContextCompat
@@ -22,6 +26,7 @@ import androidx.core.content.ContextCompat
 class MainActivity : AppCompatActivity() {
     private val transaction get() = TransactionRepository.transactions
     private lateinit var adapter: TransactionAdapter
+    private lateinit var repository: FinanceRepository
 
     // 0a) Sivut 0=saldo,1=lainat,2=muu
     private var currentPage = 0
@@ -37,6 +42,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        
+        repository = FinanceRepository(this)
 
         // 1) Toolbar (Maksut + rattaan/valikon ikonit)
         findViewById<MaterialToolbar>(R.id.topAppBar).apply {
@@ -92,13 +99,31 @@ class MainActivity : AppCompatActivity() {
         updateRemainingText()
         updatePageIndicator()
 
-        // Klikkaa summaa → näytä luotot / tilaukset eriteltynä tai avaa hallinta
-        findViewById<TextView>(R.id.tv_remaining_amount).setOnClickListener {
-            when (currentPage) {
-                1 -> startActivity(Intent(this, LoanCreditManagementActivity::class.java))
-                2 -> showDetailDialog("Kuukausimaksut", TransactionRepository.transactions.filter { it.category == Category.SUBSCRIPTION })
-                // saldolla ei avata
+        // Single click and double click handling for loan/credit amounts
+        val tvRemainingAmount = findViewById<TextView>(R.id.tv_remaining_amount)
+        var clickCount = 0
+        var lastClickTime = 0L
+        
+        tvRemainingAmount.setOnClickListener {
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - lastClickTime < 300) {
+                // Double click detected
+                clickCount = 0
+                when (currentPage) {
+                    1 -> showLoanCreditDetailsDialog()
+                    2 -> showDetailDialog("Kuukausimaksut", TransactionRepository.transactions.filter { it.category == Category.SUBSCRIPTION })
+                    // saldolla ei avata
+                }
+            } else {
+                // Single click
+                clickCount++
+                when (currentPage) {
+                    1 -> startActivity(Intent(this, LoanCreditManagementActivity::class.java))
+                    2 -> showDetailDialog("Kuukausimaksut", TransactionRepository.transactions.filter { it.category == Category.SUBSCRIPTION })
+                    // saldolla ei avata
+                }
             }
+            lastClickTime = currentTime
         }
 
         // 5) Swipe vain “Jäljellä”-headeriin ja saldoon
@@ -386,4 +411,87 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+    
+    private fun showLoanCreditDetailsDialog() {
+        lifecycleScope.launch {
+            val loans = repository.getAllActiveLoans().first()
+            val credits = repository.getAllActiveCredits().first()
+            
+            val allItems = mutableListOf<LoanCreditItem>()
+            
+            // Add loans
+            loans.forEach { loan ->
+                allItems.add(LoanCreditItem(
+                    name = loan.name,
+                    amount = loan.originalAmount,
+                    interestRate = loan.totalInterestRate,
+                    totalInterest = loan.totalRepaymentAmount - loan.originalAmount,
+                    totalAmount = loan.totalRepaymentAmount,
+                    dueDate = loan.endDate,
+                    isLoan = true
+                ))
+            }
+            
+            // Add credits
+            credits.forEach { credit ->
+                allItems.add(LoanCreditItem(
+                    name = credit.name,
+                    amount = credit.creditLimit,
+                    interestRate = credit.totalInterestRate,
+                    totalInterest = credit.creditLimit * (credit.totalInterestRate / 100),
+                    totalAmount = credit.creditLimit + (credit.creditLimit * (credit.totalInterestRate / 100)),
+                    dueDate = null, // Credits don't have end dates
+                    isLoan = false
+                ))
+            }
+            
+            // Sort by total amount (highest first)
+            allItems.sortByDescending { it.totalAmount }
+            
+            // Show dialog with first item and "Show More" option
+            showLoanCreditListDialog(allItems, 0)
+        }
+    }
+    
+    private fun showLoanCreditListDialog(items: List<LoanCreditItem>, startIndex: Int) {
+        val endIndex = minOf(startIndex + 1, items.size)
+        val currentItems = items.subList(startIndex, endIndex)
+        
+        val message = currentItems.joinToString("\n\n") { item ->
+            buildString {
+                append("${if (item.isLoan) "Laina" else "Luotto"}: ${item.name}\n")
+                append("Määrä: ${String.format(Locale.getDefault(), "%.2f €", item.amount)}\n")
+                append("Korko: ${String.format(Locale.getDefault(), "%.2f", item.interestRate)}%\n")
+                append("Kokonaiskorko: ${String.format(Locale.getDefault(), "%.2f €", item.totalInterest)}\n")
+                append("Kokonaissumma: ${String.format(Locale.getDefault(), "%.2f €", item.totalAmount)}")
+                if (item.dueDate != null) {
+                    append("\nEräpäivä: ${SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(item.dueDate)}")
+                }
+            }
+        }
+        
+        val dialog = MaterialAlertDialogBuilder(this)
+            .setTitle("Lainat ja luotot")
+            .setMessage(message)
+            .setPositiveButton("OK", null)
+        
+        // Add "Show More" button if there are more items
+        if (endIndex < items.size) {
+            dialog.setNeutralButton("Näytä lisää") { _, _ ->
+                showLoanCreditListDialog(items, endIndex)
+            }
+        }
+        
+        dialog.show()
+    }
+    
+    data class LoanCreditItem(
+        val name: String,
+        val amount: Double,
+        val interestRate: Double,
+        val totalInterest: Double,
+        val totalAmount: Double,
+        val dueDate: Date?,
+        val isLoan: Boolean
+    )
 }

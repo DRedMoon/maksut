@@ -33,6 +33,7 @@ class LoanCreditManagementActivity : AppCompatActivity() {
     private lateinit var fabAdd: FloatingActionButton
     private lateinit var tvTotalAmount: TextView
     private lateinit var tvTotalRepayment: TextView
+    private lateinit var tvTotalInterest: TextView
     
     private var showingRepaymentAmount = false
     
@@ -56,6 +57,7 @@ class LoanCreditManagementActivity : AppCompatActivity() {
         fabAdd = findViewById(R.id.fab_add)
         tvTotalAmount = findViewById(R.id.tv_total_amount)
         tvTotalRepayment = findViewById(R.id.tv_total_repayment)
+        tvTotalInterest = findViewById(R.id.tv_total_interest)
     }
     
     private fun setupToolbar() {
@@ -151,6 +153,12 @@ class LoanCreditManagementActivity : AppCompatActivity() {
                 tvTotalAmount.text = getString(R.string.total_debt_amount, totalDebt)
                 tvTotalRepayment.text = getString(R.string.click_to_show_repayment)
             }
+            
+            // Always show total interest
+            val totalLoanInterest = repository.getTotalLoanInterestAmount()
+            val totalCreditInterest = repository.getTotalCreditInterestAmount()
+            val totalInterest = totalLoanInterest + totalCreditInterest
+            tvTotalInterest.text = getString(R.string.total_interest_amount, totalInterest)
         }
     }
     
