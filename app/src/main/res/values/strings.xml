@@ -210,5 +210,8 @@
     <string name="tv_sync_frequency">Synkronointitiheys</string>
     <string name="loan_balance_reduced">Lainasaldoa vähennetty</string>
     <string name="credit_balance_reduced">Luottosaldoa vähennetty</string>
+    <string name="save">Tallenna</string>
+    <string name="select_loan">Valitse laina</string>
+    <string name="select_credit">Valitse luotto</string>
 
 </resources>

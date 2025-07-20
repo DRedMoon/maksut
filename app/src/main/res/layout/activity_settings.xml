@@ -137,7 +137,7 @@
 
     <!-- Encryption Algorithm Selection -->
     <LinearLayout
-        android:id="@+id/il_encryption_algorithm"
+        android:id="@+id/ll_encryption_algorithm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -153,7 +153,7 @@
 
     <!-- Sync Frequency Selection -->
     <LinearLayout
-        android:id="@+id/il_sync_frequency"
+        android:id="@+id/ll_sync_frequency"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"

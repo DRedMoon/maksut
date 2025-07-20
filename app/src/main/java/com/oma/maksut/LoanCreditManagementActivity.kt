@@ -22,6 +22,8 @@ import com.oma.maksut.adapters.CreditAdapter
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+import android.text.TextWatcher
+import android.text.Editable
 
 class LoanCreditManagementActivity : AppCompatActivity() {
     
