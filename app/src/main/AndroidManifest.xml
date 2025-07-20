@@ -37,6 +37,7 @@
         <activity android:name=".AddCreditActivity" />
         <activity android:name=".AddLoanActivity" />
         <activity android:name=".AddInsuranceActivity" />
+        <activity android:name=".AnalysisActivity" />
 
         <activity
             android:name=".MainActivity"

@@ -125,6 +125,9 @@ class MainActivity : AppCompatActivity() {
         rebuildList()
         // 9) Päivitä filter-nappien ulkoasu
         updateFilterUI()
+        
+        // 10) Bottom Navigation Setup
+        setupBottomNavigation()
     }
 
     // 1) Valikon asetukset (☰ oikeassa yläkulmassa)
@@ -185,6 +188,9 @@ class MainActivity : AppCompatActivity() {
             .setImageResource(if (currentPage == 1) R.drawable.ic_dot_filled else R.drawable.ic_dot_outline)
         findViewById<ImageView>(R.id.iv_dot3)
             .setImageResource(if (currentPage == 2) R.drawable.ic_dot_filled else R.drawable.ic_dot_outline)
+        
+        // Update page title and content
+        updateRemainingText()
         rebuildList()
     }
 
@@ -239,21 +245,20 @@ class MainActivity : AppCompatActivity() {
     // setupSwipe: pyyhkäisy vain headerissa
     @SuppressLint("ClickableViewAccessibility")
     private fun setupSwipe(view: View) {
-        var startX = 0f; val threshold = 100
+        var startX = 0f; val threshold = 80 // Reduced threshold for better responsiveness
         view.setOnTouchListener { v, ev ->
             when (ev.action) {
                 MotionEvent.ACTION_DOWN -> startX = ev.x
                 MotionEvent.ACTION_UP -> {
                     v.performClick()
                     val dx = ev.x - startX
-                    currentPage = when {
-                        dx >  threshold -> (currentPage + 2) % 3
-                        dx < -threshold -> (currentPage + 1) % 3
-                        else            -> currentPage
+                    if (Math.abs(dx) > threshold) {
+                        currentPage = when {
+                            dx > 0 -> (currentPage + 2) % 3  // Swipe right -> previous page
+                            else   -> (currentPage + 1) % 3  // Swipe left -> next page
+                        }
+                        updatePageIndicator()
                     }
-                    updatePageIndicator()
-                    updateRemainingText()
-                    rebuildList()
                 }
             }
             true
@@ -320,5 +325,65 @@ class MainActivity : AppCompatActivity() {
             }
             .setNegativeButton(android.R.string.cancel, null)
             .show()
+    }
+    
+    // Bottom Navigation Setup
+    private fun setupBottomNavigation() {
+        // Home button - already on home
+        findViewById<LinearLayout>(R.id.btn_home).setOnClickListener {
+            // Already on home page, just refresh
+            currentPage = 0
+            updatePageIndicator()
+            updateRemainingText()
+            updateBottomNavSelection(R.id.btn_home)
+        }
+        
+        // Upcoming button - switch to upcoming filter
+        findViewById<LinearLayout>(R.id.btn_upcoming).setOnClickListener {
+            currentFilter = Filter.UPCOMING
+            rebuildList()
+            updateFilterUI()
+            updateBottomNavSelection(R.id.btn_upcoming)
+        }
+        
+        // Add button - show transaction dialog
+        findViewById<LinearLayout>(R.id.btn_add).setOnClickListener {
+            showTransactionDialog()
+            updateBottomNavSelection(R.id.btn_add)
+        }
+        
+        // Analysis button - open analysis activity
+        findViewById<LinearLayout>(R.id.btn_analysis).setOnClickListener {
+            startActivity(Intent(this, AnalysisActivity::class.java))
+            updateBottomNavSelection(R.id.btn_analysis)
+        }
+        
+        // Settings button - open settings
+        findViewById<LinearLayout>(R.id.btn_settings).setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
+            updateBottomNavSelection(R.id.btn_settings)
+        }
+        
+        // Set initial selection
+        updateBottomNavSelection(R.id.btn_home)
+    }
+    
+    private fun updateBottomNavSelection(selectedId: Int) {
+        val buttons = listOf(
+            R.id.btn_home,
+            R.id.btn_upcoming,
+            R.id.btn_add,
+            R.id.btn_analysis,
+            R.id.btn_settings
+        )
+        
+        buttons.forEach { buttonId ->
+            val button = findViewById<LinearLayout>(buttonId)
+            if (buttonId == selectedId) {
+                button.setBackgroundResource(R.drawable.bottom_nav_selected)
+            } else {
+                button.setBackgroundResource(android.R.color.transparent)
+            }
+        }
     }
 }
