@@ -87,6 +87,86 @@
         android:paddingEnd="16dp"
         android:gravity="center_vertical" />
 
+    <!-- Switch for sync -->
+    <Switch
+        android:id="@+id/switch_sync"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/enable_sync"
+        android:textColor="#FFFFFF"
+        android:background="#294D73"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:gravity="center_vertical" />
+
+    <!-- Switch for encryption -->
+    <Switch
+        android:id="@+id/switch_encryption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/enable_encryption"
+        android:textColor="#FFFFFF"
+        android:background="#294D73"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:gravity="center_vertical" />
+
+    <!-- Switch for PIN code -->
+    <Switch
+        android:id="@+id/switch_pin_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="PIN-koodi"
+        android:textColor="#FFFFFF"
+        android:background="#294D73"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:gravity="center_vertical" />
+
+    <!-- Export/Import JSON Buttons -->
+    <Button
+        android:id="@+id/btn_export_json"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Vie JSON" />
+    <Button
+        android:id="@+id/btn_import_json"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tuo JSON" />
+
+    <!-- Encryption Algorithm Selection -->
+    <LinearLayout
+        android:id="@+id/il_encryption_algorithm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp">
+        <TextView
+            android:id="@+id/tv_encryption_algorithm"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/tv_encryption_algorithm"
+            android:textColor="#FFFFFF" />
+    </LinearLayout>
+
+    <!-- Sync Frequency Selection -->
+    <LinearLayout
+        android:id="@+id/il_sync_frequency"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp">
+        <TextView
+            android:id="@+id/tv_sync_frequency"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/tv_sync_frequency"
+            android:textColor="#FFFFFF" />
+    </LinearLayout>
+
     <!-- Väli -->
     <View
         android:layout_width="match_parent"
