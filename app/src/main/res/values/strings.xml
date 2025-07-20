@@ -46,8 +46,10 @@
     <string name="description">Kuvaus</string>
     <string name="amount">Summa</string>
     <string name="manage">Hallitse</string>
-    <string name="add_loan">Lisää lainoja</string>
-    <string name="edit_loan">Muokkaa lainoja</string>
+    <string name="add_loan">Lisää laina</string>
+    <string name="add_loans">Lisää lainoja</string>
+    <string name="edit_loan">Muokkaa lainaa</string>
+    <string name="edit_loans">Muokkaa lainoja</string>
     <string name="add_credits">Lisää luottoja</string>
     <string name="edit_credits">Muokkaa luottoja</string>
     <string name="add_subscriptions">Lisää KK-maksuja</string>
