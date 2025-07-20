@@ -24,6 +24,12 @@ data class Category(
     @ColumnInfo(name = "is_monthly_payment")
     val isMonthlyPayment: Boolean = false,
     
+    @ColumnInfo(name = "is_loan_repayment")
+    val isLoanRepayment: Boolean = false,
+    
+    @ColumnInfo(name = "is_credit_repayment")
+    val isCreditRepayment: Boolean = false,
+    
     @ColumnInfo(name = "created_at")
     val createdAt: Long = System.currentTimeMillis(),
     

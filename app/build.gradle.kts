@@ -58,6 +58,10 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
+    
+    // JSON and Preferences
+    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("androidx.preference:preference-ktx:1.2.1")
 
 
     // Poistetaan kaikki Compose-riippuvuudet

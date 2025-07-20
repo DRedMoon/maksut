@@ -34,6 +34,16 @@ class QuickAddTransactionActivity : AppCompatActivity() {
     private lateinit var rgTransactionType: RadioGroup
     private lateinit var btnSave: Button
     
+    // Loan/Credit repayment fields
+    private lateinit var llLoanSelection: LinearLayout
+    private lateinit var llCreditSelection: LinearLayout
+    private lateinit var tvSelectedLoan: TextView
+    private lateinit var tvSelectedCredit: TextView
+    private lateinit var etRepaymentAmount: EditText
+    private lateinit var etInterestAmount: EditText
+    private var selectedLoan: Loan? = null
+    private var selectedCredit: Credit? = null
+    
     private val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
     
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,6 +69,14 @@ class QuickAddTransactionActivity : AppCompatActivity() {
         rgTransactionType = findViewById(R.id.rg_transaction_type)
         btnSave = findViewById(R.id.btn_save_transaction)
         
+        // Loan/Credit repayment fields
+        llLoanSelection = findViewById(R.id.ll_loan_selection)
+        llCreditSelection = findViewById(R.id.ll_credit_selection)
+        tvSelectedLoan = findViewById(R.id.tv_selected_loan)
+        tvSelectedCredit = findViewById(R.id.tv_selected_credit)
+        etRepaymentAmount = findViewById(R.id.et_repayment_amount)
+        etInterestAmount = findViewById(R.id.et_interest_amount)
+        
         // Set current date as default
         tvPaymentDate.text = dateFormat.format(selectedPaymentDate)
     }
@@ -74,6 +92,16 @@ class QuickAddTransactionActivity : AppCompatActivity() {
         // Category selection
         findViewById<LinearLayout>(R.id.ll_category_selector).setOnClickListener {
             showCategorySelectionDialog()
+        }
+        
+        // Loan selection
+        llLoanSelection.setOnClickListener {
+            showLoanSelectionDialog()
+        }
+        
+        // Credit selection
+        llCreditSelection.setOnClickListener {
+            showCreditSelectionDialog()
         }
         
         // Payment date selection
@@ -157,8 +185,64 @@ class QuickAddTransactionActivity : AppCompatActivity() {
     private fun updateCategoryDisplay() {
         selectedCategory?.let { category ->
             tvCategory.text = category.name
+            
+            // Show/hide loan/credit selection based on category type
+            if (category.isLoanRepayment) {
+                llLoanSelection.visibility = android.view.View.VISIBLE
+                llCreditSelection.visibility = android.view.View.GONE
+            } else if (category.isCreditRepayment) {
+                llLoanSelection.visibility = android.view.View.GONE
+                llCreditSelection.visibility = android.view.View.VISIBLE
+            } else {
+                llLoanSelection.visibility = android.view.View.GONE
+                llCreditSelection.visibility = android.view.View.GONE
+            }
         } ?: run {
             tvCategory.text = getString(R.string.select_category)
+            llLoanSelection.visibility = android.view.View.GONE
+            llCreditSelection.visibility = android.view.View.GONE
+        }
+    }
+    
+    private fun showLoanSelectionDialog() {
+        lifecycleScope.launch {
+            repository.getAllActiveLoans().collect { loans ->
+                if (loans.isNotEmpty()) {
+                    val loanNames = loans.map { it.name }.toTypedArray()
+                    
+                    MaterialAlertDialogBuilder(this@QuickAddTransactionActivity)
+                        .setTitle(getString(R.string.select_loan))
+                        .setItems(loanNames) { _, which ->
+                            selectedLoan = loans[which]
+                            tvSelectedLoan.text = selectedLoan!!.name
+                        }
+                        .show()
+                } else {
+                    Toast.makeText(this@QuickAddTransactionActivity, 
+                        "No loans available", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+    
+    private fun showCreditSelectionDialog() {
+        lifecycleScope.launch {
+            repository.getAllActiveCredits().collect { credits ->
+                if (credits.isNotEmpty()) {
+                    val creditNames = credits.map { it.name }.toTypedArray()
+                    
+                    MaterialAlertDialogBuilder(this@QuickAddTransactionActivity)
+                        .setTitle(getString(R.string.select_credit))
+                        .setItems(creditNames) { _, which ->
+                            selectedCredit = credits[which]
+                            tvSelectedCredit.text = selectedCredit!!.name
+                        }
+                        .show()
+                } else {
+                    Toast.makeText(this@QuickAddTransactionActivity, 
+                        "No credits available", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
     
@@ -214,14 +298,33 @@ class QuickAddTransactionActivity : AppCompatActivity() {
             paymentDate = selectedPaymentDate,
             dueDate = selectedDueDate,
             isMonthlyPayment = cbIsMonthlyPayment.isChecked,
+            isLoanRepayment = selectedCategory!!.isLoanRepayment,
+            isCreditRepayment = selectedCategory!!.isCreditRepayment,
+            loanId = selectedLoan?.id,
+            creditId = selectedCredit?.id,
+            repaymentAmount = etRepaymentAmount.text.toString().toDoubleOrNull(),
+            interestAmount = etInterestAmount.text.toString().toDoubleOrNull(),
             description = null
         )
         
         lifecycleScope.launch {
             try {
-                repository.insertTransaction(transaction)
-                Toast.makeText(this@QuickAddTransactionActivity, 
-                    getString(R.string.transaction_saved), Toast.LENGTH_SHORT).show()
+                val transactionId = repository.insertTransaction(transaction)
+                
+                // Handle loan/credit balance reduction
+                if (transaction.isLoanRepayment && selectedLoan != null && transaction.repaymentAmount != null) {
+                    repository.reduceLoanBalance(selectedLoan!!.id, transaction.repaymentAmount)
+                    Toast.makeText(this@QuickAddTransactionActivity, 
+                        getString(R.string.loan_balance_reduced), Toast.LENGTH_SHORT).show()
+                } else if (transaction.isCreditRepayment && selectedCredit != null && transaction.repaymentAmount != null) {
+                    repository.reduceCreditBalance(selectedCredit!!.id, transaction.repaymentAmount)
+                    Toast.makeText(this@QuickAddTransactionActivity, 
+                        getString(R.string.credit_balance_reduced), Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this@QuickAddTransactionActivity, 
+                        getString(R.string.transaction_saved), Toast.LENGTH_SHORT).show()
+                }
+                
                 finish()
             } catch (e: Exception) {
                 Toast.makeText(this@QuickAddTransactionActivity, 
@@ -239,6 +342,10 @@ class QuickAddTransactionActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_manage_categories -> {
                 startActivity(Intent(this, CategoryManagementActivity::class.java))
+                true
+            }
+            R.id.action_all_payments -> {
+                startActivity(Intent(this, AllPaymentsActivity::class.java))
                 true
             }
             else -> super.onOptionsItemSelected(item)

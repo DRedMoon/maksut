@@ -22,6 +22,12 @@ interface LoanDao {
     @Query("SELECT SUM(monthly_payment) FROM loans WHERE is_active = 1")
     suspend fun getTotalMonthlyPayments(): Double?
     
+    @Query("SELECT SUM(total_repayment_amount - original_amount) FROM loans WHERE is_active = 1")
+    suspend fun getTotalInterestAmount(): Double?
+    
+    @Query("UPDATE loans SET current_balance = current_balance - :repaymentAmount WHERE id = :loanId")
+    suspend fun reduceLoanBalance(loanId: Long, repaymentAmount: Double)
+    
     @Query("SELECT * FROM loans WHERE id = :loanId")
     suspend fun getLoanById(loanId: Long): Loan?
     

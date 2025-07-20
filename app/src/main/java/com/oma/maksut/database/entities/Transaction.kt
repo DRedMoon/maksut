@@ -28,6 +28,27 @@ data class Transaction(
     @ColumnInfo(name = "is_monthly_payment")
     val isMonthlyPayment: Boolean = false,
     
+    @ColumnInfo(name = "is_loan_repayment")
+    val isLoanRepayment: Boolean = false,
+    
+    @ColumnInfo(name = "is_credit_repayment")
+    val isCreditRepayment: Boolean = false,
+    
+    @ColumnInfo(name = "loan_id")
+    val loanId: Long? = null,
+    
+    @ColumnInfo(name = "credit_id")
+    val creditId: Long? = null,
+    
+    @ColumnInfo(name = "repayment_amount")
+    val repaymentAmount: Double? = null,
+    
+    @ColumnInfo(name = "interest_amount")
+    val interestAmount: Double? = null,
+    
+    @ColumnInfo(name = "is_paid")
+    val isPaid: Boolean = true,
+    
     @ColumnInfo(name = "description")
     val description: String? = null,
     

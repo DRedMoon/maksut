@@ -41,6 +41,7 @@
         <activity android:name=".QuickAddTransactionActivity" />
         <activity android:name=".CategoryManagementActivity" />
         <activity android:name=".LoanCreditManagementActivity" />
+        <activity android:name=".AllPaymentsActivity" />
 
         <activity
             android:name=".MainActivity"

@@ -22,6 +22,12 @@ interface CreditDao {
     @Query("SELECT SUM(minimum_payment_amount) FROM credits WHERE is_active = 1")
     suspend fun getTotalMinimumPayments(): Double?
     
+    @Query("SELECT SUM(credit_limit - current_balance) FROM credits WHERE is_active = 1")
+    suspend fun getTotalInterestAmount(): Double?
+    
+    @Query("UPDATE credits SET current_balance = current_balance - :repaymentAmount WHERE id = :creditId")
+    suspend fun reduceCreditBalance(creditId: Long, repaymentAmount: Double)
+    
     @Query("SELECT * FROM credits WHERE id = :creditId")
     suspend fun getCreditById(creditId: Long): Credit?
     
