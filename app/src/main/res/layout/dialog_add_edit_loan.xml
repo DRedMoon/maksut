@@ -19,6 +19,11 @@
         <TextView android:id="@+id/tv_calculated_repayment" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Laskettu lyhennys"/>
         <LinearLayout android:id="@+id/il_start_date" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"/>
         <LinearLayout android:id="@+id/il_end_date" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"/>
+        <LinearLayout
+            android:id="@+id/ll_start_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"/>
         <Button android:id="@+id/save" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Tallenna"/>
     </LinearLayout>
 </ScrollView>

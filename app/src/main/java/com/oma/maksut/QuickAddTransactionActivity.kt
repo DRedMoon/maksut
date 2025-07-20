@@ -12,6 +12,8 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.oma.maksut.database.entities.Category
 import com.oma.maksut.database.entities.Transaction
+import com.oma.maksut.database.entities.Loan
+import com.oma.maksut.database.entities.Credit
 import com.oma.maksut.repository.FinanceRepository
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
