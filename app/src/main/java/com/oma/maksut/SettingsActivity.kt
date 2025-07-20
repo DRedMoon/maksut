@@ -94,12 +94,16 @@ class SettingsActivity : AppCompatActivity() {
         
         // Encryption algorithm selection
         findViewById<LinearLayout>(R.id.ll_encryption_algorithm).setOnClickListener {
-            showEncryptionAlgorithmDialog()
+            lifecycleScope.launch {
+                showEncryptionAlgorithmDialog()
+            }
         }
         
         // Sync frequency selection
         findViewById<LinearLayout>(R.id.ll_sync_frequency).setOnClickListener {
-            showSyncFrequencyDialog()
+            lifecycleScope.launch {
+                showSyncFrequencyDialog()
+            }
         }
     }
     

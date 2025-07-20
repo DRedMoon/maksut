@@ -28,10 +28,10 @@ class JsonExportImportUtils {
         suspend fun exportToJson(context: Context): String = withContext(Dispatchers.IO) {
             val database = AppDatabase.getDatabase(context)
             
-            val transactions = database.transactionDao().getAllTransactions().first()
-            val categories = database.categoryDao().getAllCategories().first()
-            val loans = database.loanDao().getAllLoans().first()
-            val credits = database.creditDao().getAllCredits().first()
+            val transactions = database.transactionDao().getAllTransactions()
+            val categories = database.categoryDao().getAllCategories()
+            val loans = database.loanDao().getAllLoans()
+            val credits = database.creditDao().getAllCredits()
             
             val exportData = ExportData(
                 transactions = transactions,
