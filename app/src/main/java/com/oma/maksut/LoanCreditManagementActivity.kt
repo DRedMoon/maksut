@@ -226,10 +226,26 @@ class LoanCreditManagementActivity : AppCompatActivity() {
             calculateLoanRepayment(etAmount, etInterestRate, etPersonalMargin, etLoanTerm, tvTotalRepayment)
         }
         
-        etAmount.addTextChangedListener(android.text.TextWatcher { _, _, _, _ -> calculateRepayment() })
-        etInterestRate.addTextChangedListener(android.text.TextWatcher { _, _, _, _ -> calculateRepayment() })
-        etPersonalMargin.addTextChangedListener(android.text.TextWatcher { _, _, _, _ -> calculateRepayment() })
-        etLoanTerm.addTextChangedListener(android.text.TextWatcher { _, _, _, _ -> calculateRepayment() })
+        etAmount.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) { calculateRepayment() }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+        etInterestRate.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) { calculateRepayment() }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+        etPersonalMargin.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) { calculateRepayment() }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+        etLoanTerm.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) { calculateRepayment() }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
         
         MaterialAlertDialogBuilder(this)
             .setTitle(if (existingLoan != null) getString(R.string.edit_loan) else getString(R.string.add_loan))

@@ -209,5 +209,7 @@
     <string name="select_sync_frequency">Valitse synkronointitiheys</string>
     <string name="tv_encryption_algorithm">Salausalgoritmi</string>
     <string name="tv_sync_frequency">Synkronointitiheys</string>
+    <string name="loan_balance_reduced">Lainasaldoa vähennetty</string>
+    <string name="credit_balance_reduced">Luottosaldoa vähennetty</string>
 
 </resources>

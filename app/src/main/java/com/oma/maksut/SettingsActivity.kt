@@ -17,6 +17,7 @@ import com.oma.maksut.utils.EncryptionUtils
 import com.oma.maksut.utils.JsonExportImportUtils
 import java.io.File
 import java.util.*
+import androidx.lifecycle.lifecycleScope
 
 class SettingsActivity : AppCompatActivity() {
     
@@ -79,12 +80,16 @@ class SettingsActivity : AppCompatActivity() {
         
         // Export button
         findViewById<Button>(R.id.btn_export_json).setOnClickListener {
-            exportToJson()
+            lifecycleScope.launch {
+                exportToJson()
+            }
         }
         
         // Import button
         findViewById<Button>(R.id.btn_import_json).setOnClickListener {
-            importFromJson()
+            lifecycleScope.launch {
+                importFromJson()
+            }
         }
         
         // Encryption algorithm selection
@@ -211,18 +216,16 @@ class SettingsActivity : AppCompatActivity() {
     }
     
     private fun exportToJson() {
-        lifecycleScope.launch {
-            try {
-                val jsonData = JsonExportImportUtils.exportToJson(this@SettingsActivity)
-                val file = File(getExternalFilesDir(null), "maksut_backup_${System.currentTimeMillis()}.json")
-                file.writeText(jsonData)
-                
-                Toast.makeText(this@SettingsActivity, 
-                    "Backup exported to: ${file.absolutePath}", Toast.LENGTH_LONG).show()
-            } catch (e: Exception) {
-                Toast.makeText(this@SettingsActivity, 
-                    "Export failed: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
+        try {
+            val jsonData = JsonExportImportUtils.exportToJson(this)
+            val file = File(getExternalFilesDir(null), "maksut_backup_${System.currentTimeMillis()}.json")
+            file.writeText(jsonData)
+            
+            Toast.makeText(this, 
+                "Backup exported to: ${file.absolutePath}", Toast.LENGTH_LONG).show()
+        } catch (e: Exception) {
+            Toast.makeText(this, 
+                "Export failed: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
     

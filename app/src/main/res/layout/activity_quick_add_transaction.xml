@@ -248,6 +248,55 @@
                 android:textColor="@android:color/white"
                 android:background="@drawable/button_background"
                 android:padding="16dp"/>
+
+            <!-- Loan selection -->
+            <LinearLayout
+                android:id="@+id/il_loan_selection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp">
+                <TextView
+                    android:id="@+id/tv_selected_loan"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Valitse laina"/>
+                <Button
+                    android:id="@+id/select_loan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Valitse"/>
+            </LinearLayout>
+            <EditText
+                android:id="@+id/et_repayment_amount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Lyhennyssumma (€)"/>
+            <EditText
+                android:id="@+id/et_interest_amount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Korkosumma (€)"/>
+            <!-- Credit selection -->
+            <LinearLayout
+                android:id="@+id/il_credit_selection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp">
+                <TextView
+                    android:id="@+id/tv_selected_credit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Valitse luotto"/>
+                <Button
+                    android:id="@+id/select_credit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Valitse"/>
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

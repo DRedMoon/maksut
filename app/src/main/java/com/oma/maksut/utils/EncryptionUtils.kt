@@ -11,6 +11,7 @@ import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
 import java.util.*
+import android.util.Base64
 
 class EncryptionUtils {
     companion object {
@@ -34,7 +35,7 @@ class EncryptionUtils {
                 val encryptedData = cipher.doFinal(data.toByteArray())
                 val combined = iv + encryptedData
 
-                return Base64.getEncoder().encodeToString(combined)
+                return Base64.encodeToString(combined, Base64.DEFAULT)
             } catch (e: Exception) {
                 throw RuntimeException("Encryption failed", e)
             }
@@ -49,7 +50,7 @@ class EncryptionUtils {
                 val key = getOrCreateKey()
                 val cipher = Cipher.getInstance(TRANSFORMATION)
 
-                val decoded = Base64.getDecoder().decode(encryptedData)
+                val decoded = Base64.decode(encryptedData, Base64.DEFAULT)
                 val iv = decoded.sliceArray(0 until GCM_IV_LENGTH)
                 val encrypted = decoded.sliceArray(GCM_IV_LENGTH until decoded.size)
 
