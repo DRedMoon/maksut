@@ -198,4 +198,15 @@
     <string name="delete">Poista</string>
     <string name="total_interest_amount">Kokonaiskorko: %.2f €</string>
     <string name="category">Kategoria</string>
+    <string name="reset_settings">Nollaa asetukset</string>
+    <string name="reset_settings_confirmation">Haluatko varmasti nollata kaikki asetukset?</string>
+    <string name="reset">Nollaa</string>
+    <string name="settings_reset">Asetukset nollattu</string>
+    <string name="encryption_setup">Salauksen asetukset</string>
+    <string name="encryption_setup_message">Salaus on otettu käyttöön. Kaikki data salataan XChaCha20-Poly1305 algoritmilla.</string>
+    <string name="select_encryption_algorithm">Valitse salausalgoritmi</string>
+    <string name="select_sync_frequency">Valitse synkronointitiheys</string>
+    <string name="tv_encryption_algorithm">Salausalgoritmi</string>
+    <string name="tv_sync_frequency">Synkronointitiheys</string>
+
 </resources>

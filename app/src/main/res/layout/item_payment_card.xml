@@ -13,6 +13,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:padding="8dp">
+        <TextView android:id="@+id/tv_loan_name" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Lainan nimi"/>
+        <TextView android:id="@+id/tv_loan_remaining" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Jäljellä"/>
+        <TextView android:id="@+id/tv_loan_monthly" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Kuukausierä"/>
+        <TextView android:id="@+id/tv_loan_rate" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Korko"/>
+        <TextView android:id="@+id/tv_loan_fee" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Palkkio"/>
+        <TextView android:id="@+id/tv_loan_due" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Eräpäivä"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:padding="16dp">
 
         <!-- Header Row -->

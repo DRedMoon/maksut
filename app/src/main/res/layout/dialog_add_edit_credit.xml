@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <EditText android:id="@+id/et_credit_limit" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Luottoraja (€)"/>
+        <EditText android:id="@+id/et_current_balance" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Nykyinen saldo (€)"/>
+        <EditText android:id="@+id/et_interest_rate" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Korko (%)"/>
+        <EditText android:id="@+id/et_personal_margin" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Marginaali (%)"/>
+        <EditText android:id="@+id/et_min_payment_percentage" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Vähimmäislyhennys (%)"/>
+        <EditText android:id="@+id/et_min_payment_amount" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Vähimmäislyhennys (€)"/>
+        <EditText android:id="@+id/et_payment_fee" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Maksupalkkio (€)"/>
+        <EditText android:id="@+id/et_due_day" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Eräpäivä (päivä)"/>
+        <EditText android:id="@+id/et_grace_period" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Maksuvapaa aika (päivää)"/>
+        <Button android:id="@+id/save" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Tallenna"/>
+    </LinearLayout>
+</ScrollView>
