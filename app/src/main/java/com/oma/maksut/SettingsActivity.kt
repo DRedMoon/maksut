@@ -18,6 +18,7 @@ import com.oma.maksut.utils.JsonExportImportUtils
 import java.io.File
 import java.util.*
 import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 
 class SettingsActivity : AppCompatActivity() {
     
@@ -81,37 +82,36 @@ class SettingsActivity : AppCompatActivity() {
         // Export button
         findViewById<Button>(R.id.btn_export_json).setOnClickListener {
             lifecycleScope.launch {
-                val jsonData = JsonExportImportUtils.exportToJson(this@SettingsActivity)
-                val file = File(getExternalFilesDir(null), "maksut_backup_${System.currentTimeMillis()}.json")
-                file.writeText(jsonData)
-                
-                Toast.makeText(this@SettingsActivity, 
-                    "Backup exported to: ${file.absolutePath}", Toast.LENGTH_LONG).show()
+                try {
+                    val jsonData = JsonExportImportUtils.exportToJson(this@SettingsActivity)
+                    val file = File(getExternalFilesDir(null), "maksut_backup_${System.currentTimeMillis()}.json")
+                    file.writeText(jsonData)
+                    
+                    Toast.makeText(this@SettingsActivity, 
+                        "Backup exported to: ${file.absolutePath}", Toast.LENGTH_LONG).show()
+                } catch (e: Exception) {
+                    Toast.makeText(this@SettingsActivity, 
+                        "Export failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
             }
         }
         
         // Import button
         findViewById<Button>(R.id.btn_import_json).setOnClickListener {
-            lifecycleScope.launch {
-                val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
-                    type = "application/json"
-                }
-                startActivityForResult(intent, REQUEST_IMPORT_JSON)
+            val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+                type = "application/json"
             }
+            startActivityForResult(intent, REQUEST_IMPORT_JSON)
         }
         
         // Encryption algorithm selection
         findViewById<LinearLayout>(R.id.ll_encryption_algorithm).setOnClickListener {
-            lifecycleScope.launch {
-                showEncryptionAlgorithmDialog()
-            }
+            showEncryptionAlgorithmDialog()
         }
         
         // Sync frequency selection
         findViewById<LinearLayout>(R.id.ll_sync_frequency).setOnClickListener {
-            lifecycleScope.launch {
-                showSyncFrequencyDialog()
-            }
+            showSyncFrequencyDialog()
         }
     }
     
