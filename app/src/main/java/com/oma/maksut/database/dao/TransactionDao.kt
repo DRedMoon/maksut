@@ -35,6 +35,9 @@ interface TransactionDao {
     @Query("SELECT * FROM transactions WHERE due_date >= :startDate AND due_date <= :endDate ORDER BY due_date ASC")
     fun getUpcomingTransactions(startDate: Date, endDate: Date): Flow<List<Transaction>>
     
+    @Query("SELECT * FROM transactions WHERE is_loan_repayment = 1 OR is_credit_repayment = 1 OR amount > 0 OR category_id IN (SELECT id FROM categories WHERE is_monthly_payment = 1 OR name = 'Subscription' OR name = 'Expense' OR name = 'Income') ORDER BY payment_date DESC")
+    fun getRealTransactions(): Flow<List<Transaction>>
+    
     @Query("UPDATE transactions SET is_paid = :isPaid WHERE id = :transactionId")
     suspend fun updatePaymentStatus(transactionId: Long, isPaid: Boolean)
     

@@ -55,6 +55,8 @@ class FinanceRepository(context: Context) {
     suspend fun deleteTransaction(transaction: Transaction) = 
         transactionDao.deleteTransaction(transaction)
     
+    fun getRealTransactions(): Flow<List<Transaction>> = transactionDao.getRealTransactions()
+    
     // Category operations
     fun getAllCategories(): Flow<List<Category>> = categoryDao.getAllCategories()
     
