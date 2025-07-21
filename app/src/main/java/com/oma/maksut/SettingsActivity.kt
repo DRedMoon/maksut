@@ -204,19 +204,16 @@ class SettingsActivity : AppCompatActivity() {
     private fun saveThemeSetting(isDark: Boolean) {
         PreferenceManager.getDefaultSharedPreferences(this)
             .edit { putBoolean("theme_dark", isDark) }
-            .apply()
     }
     
     private fun saveSyncSetting(isEnabled: Boolean) {
         PreferenceManager.getDefaultSharedPreferences(this)
             .edit { putBoolean("sync_enabled", isEnabled) }
-            .apply()
     }
     
     private fun saveEncryptionSetting(isEnabled: Boolean) {
         PreferenceManager.getDefaultSharedPreferences(this)
             .edit { putBoolean("encryption_enabled", isEnabled) }
-            .apply()
     }
     
     private fun savePinCodeSetting(isEnabled: Boolean) {
@@ -225,7 +222,6 @@ class SettingsActivity : AppCompatActivity() {
                 putBoolean("pin_code_enabled", isEnabled)
                 putString("pin_code", if (isEnabled) etPinCode.text.toString() else "")
             }
-            .apply()
     }
     
     private fun applyTheme(isDark: Boolean) {
@@ -255,8 +251,6 @@ class SettingsActivity : AppCompatActivity() {
             .setSingleChoiceItems(algorithms, currentIndex) { _, which ->
                 PreferenceManager.getDefaultSharedPreferences(this)
                     .edit { putString("encryption_algorithm", algorithms[which]) }
-                    .apply()
-                updateEncryptionAlgorithmDisplay()
             }
             .setPositiveButton(getString(R.string.ok), null)
             .show()
@@ -274,8 +268,6 @@ class SettingsActivity : AppCompatActivity() {
             .setSingleChoiceItems(frequencies, currentIndex) { _, which ->
                 PreferenceManager.getDefaultSharedPreferences(this)
                     .edit { putString("sync_frequency", frequencies[which]) }
-                    .apply()
-                updateSyncFrequencyDisplay()
             }
             .setPositiveButton(getString(R.string.ok), null)
             .show()
