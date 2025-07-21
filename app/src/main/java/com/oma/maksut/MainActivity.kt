@@ -227,6 +227,10 @@ class MainActivity : AppCompatActivity() {
         // Update page title and content
         updateRemainingText()
         rebuildList()
+        // Open MonthlyPaymentsActivity if on tab 2
+        if (currentPage == 2) {
+            startActivity(Intent(this, MonthlyPaymentsActivity::class.java))
+        }
     }
 
     private fun updateFilterUI() {
