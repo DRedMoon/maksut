@@ -51,7 +51,7 @@ class JsonExportImportUtils {
             val encryptionEnabled = prefs.getBoolean("encryption_enabled", false)
             
             return@withContext if (encryptionEnabled) {
-                EncryptionUtils.encrypt(jsonString, context)
+                EncryptionUtils.encrypt(jsonString)
             } else {
                 jsonString
             }
@@ -66,7 +66,7 @@ class JsonExportImportUtils {
             
             val decryptedData = if (encryptionEnabled) {
                 try {
-                    EncryptionUtils.decrypt(jsonData, context)
+                    EncryptionUtils.decrypt(jsonData)
                 } catch (e: Exception) {
                     // Try as plain JSON if decryption fails
                     jsonData

@@ -52,15 +52,15 @@ class LoansActivity : AppCompatActivity() {
             // Täytä kortin kentät
             card.findViewById<TextView>(R.id.tv_loan_name).text = loan.label
             card.findViewById<TextView>(R.id.tv_loan_remaining).text =
-                context.getString(R.string.loan_remaining_amount, kotlin.math.abs(loan.amount))
+                getString(R.string.loan_remaining_amount, kotlin.math.abs(loan.amount))
             card.findViewById<TextView>(R.id.tv_loan_monthly).text =
-                context.getString(R.string.loan_monthly_payment, loan.monthlyPayment)
+                getString(R.string.loan_monthly_payment, loan.monthlyPayment)
             card.findViewById<TextView>(R.id.tv_loan_rate).text =
-                context.getString(R.string.loan_interest_rate, loan.rate)
+                getString(R.string.loan_interest_rate, loan.rate)
             card.findViewById<TextView>(R.id.tv_loan_fee).text =
-                context.getString(R.string.loan_fee, loan.fee)
+                getString(R.string.loan_fee, loan.fee)
             card.findViewById<TextView>(R.id.tv_loan_due).text =
-                context.getString(R.string.loan_due_date, loan.dueDate?.toString() ?: "-")
+                getString(R.string.loan_due_date, loan.dueDate?.toString() ?: "-")
 
             // Lisää kortti näkyviin
             container.addView(card)
