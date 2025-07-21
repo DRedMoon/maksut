@@ -30,9 +30,9 @@ class MonthlyPaymentsAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val tx = items[position]
-        holder.name.text = tx.name // Use the correct property for transaction name
+        holder.name.text = tx.name
         holder.amount.text = String.format(Locale.getDefault(), "%.2f €", tx.amount)
-        holder.due.text = tx.dueDate?.toString() ?: "" // Use the correct property for due date, convert to string if needed
+        holder.due.text = tx.dueDate?.toString() ?: ""
         val paid = tx.isPaid
         holder.status.setImageResource(
             if (paid) R.drawable.ic_check_circle else R.drawable.ic_radio_button_unchecked
@@ -43,12 +43,18 @@ class MonthlyPaymentsAdapter(
     override fun getItemCount(): Int = minOf(items.size, visibleCount)
 
     fun showMore() {
-        visibleCount += 10
-        notifyDataSetChanged()
+        val oldCount = visibleCount
+        visibleCount = minOf(visibleCount + 10, items.size)
+        notifyItemRangeInserted(oldCount, visibleCount - oldCount)
     }
 
     fun updateItems(newItems: List<com.oma.maksut.database.entities.Transaction>) {
+        val oldSize = items.size
         items = newItems
-        notifyDataSetChanged()
+        if (newItems.size > oldSize) {
+            notifyItemRangeInserted(oldSize, newItems.size - oldSize)
+        } else {
+            notifyDataSetChanged()
+        }
     }
 }
