@@ -24,6 +24,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.text.TextWatcher
 import android.text.Editable
+import android.view.View
+import android.view.ViewGroup
 
 class LoanCreditManagementActivity : AppCompatActivity() {
     
@@ -38,6 +40,8 @@ class LoanCreditManagementActivity : AppCompatActivity() {
     private lateinit var tvTotalInterest: TextView
     
     private var showingRepaymentAmount = false
+    private var lastClickTime = 0L
+    private var clickCount = 0
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -108,11 +112,19 @@ class LoanCreditManagementActivity : AppCompatActivity() {
                 1 -> showAddCreditDialog()
             }
         }
-        
-        // Click on total amount to toggle between balance and repayment
+
+        // Click and double-click on total amount to toggle or show details
         findViewById<LinearLayout>(R.id.ll_total_amount).setOnClickListener {
-            showingRepaymentAmount = !showingRepaymentAmount
-            updateTotalDisplay()
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - lastClickTime < 300) {
+                clickCount = 0
+                showLoanCreditDetailsDialog()
+            } else {
+                clickCount++
+                showingRepaymentAmount = !showingRepaymentAmount
+                updateTotalDisplay()
+            }
+            lastClickTime = currentTime
         }
     }
     
@@ -545,6 +557,75 @@ class LoanCreditManagementActivity : AppCompatActivity() {
             calendar.get(Calendar.DAY_OF_MONTH)
         ).show()
     }
+
+    private fun showLoanCreditDetailsDialog() {
+        lifecycleScope.launch {
+            val loans = repository.getAllActiveLoans().first()
+            val credits = repository.getAllActiveCredits().first()
+            val allItems = mutableListOf<LoanCreditItem>()
+            loans.forEach { loan ->
+                allItems.add(LoanCreditItem(
+                    name = loan.name,
+                    amount = loan.currentBalance,
+                    interestRate = loan.totalInterestRate,
+                    totalInterest = loan.totalRepaymentAmount - loan.originalAmount,
+                    totalAmount = loan.totalRepaymentAmount,
+                    dueDate = loan.endDate,
+                    isLoan = true
+                ))
+            }
+            credits.forEach { credit ->
+                allItems.add(LoanCreditItem(
+                    name = credit.name,
+                    amount = credit.currentBalance,
+                    interestRate = credit.totalInterestRate,
+                    totalInterest = credit.creditLimit * (credit.totalInterestRate / 100),
+                    totalAmount = credit.creditLimit + (credit.creditLimit * (credit.totalInterestRate / 100)),
+                    dueDate = null,
+                    isLoan = false
+                ))
+            }
+            allItems.sortByDescending { it.totalAmount }
+            showLoanCreditListDialog(allItems, 0)
+        }
+    }
+
+    private fun showLoanCreditListDialog(items: List<LoanCreditItem>, start: Int) {
+        val context = this
+        val max = minOf(start + 10, items.size)
+        val sublist = items.subList(start, max)
+        val builder = MaterialAlertDialogBuilder(context)
+        val listView = ListView(context)
+        val adapter = object : ArrayAdapter<LoanCreditItem>(context, android.R.layout.simple_list_item_2, android.R.id.text1, sublist) {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val v = super.getView(position, convertView, parent)
+                val item = sublist[position]
+                val text1 = v.findViewById<TextView>(android.R.id.text1)
+                val text2 = v.findViewById<TextView>(android.R.id.text2)
+                text1.text = item.name
+                text2.text = "${String.format(Locale.getDefault(), "%.2f €", item.amount)} | ${String.format(Locale.getDefault(), "%.2f%%", item.interestRate)} | ${String.format(Locale.getDefault(), "%.2f €", item.totalInterest)} | ${String.format(Locale.getDefault(), "%.2f €", item.totalAmount)} | ${item.dueDate?.let { SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(it) } ?: "-"}"
+                text1.setTextColor(if (item.amount > 0) 0xFFFF4444.toInt() else 0xFF4CAF50.toInt())
+                return v
+            }
+        }
+        listView.adapter = adapter
+        builder.setView(listView)
+        if (max < items.size) {
+            builder.setPositiveButton("Show more") { _, _ -> showLoanCreditListDialog(items, max) }
+        }
+        builder.setNegativeButton(android.R.string.ok, null)
+        builder.show()
+    }
+
+    data class LoanCreditItem(
+        val name: String,
+        val amount: Double,
+        val interestRate: Double,
+        val totalInterest: Double,
+        val totalAmount: Double,
+        val dueDate: Date?,
+        val isLoan: Boolean
+    )
     
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_loan_credit_management, menu)
