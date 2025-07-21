@@ -131,8 +131,6 @@ class MainActivity : AppCompatActivity() {
         setupSwipe(findViewById(R.id.tv_remaining_amount))
 
         // 6) Pieni “+” tapahtumat-otsikossa
-        findViewById<ImageButton>(R.id.btn_add_transaction_small)
-            .setOnClickListener { showTransactionDialog() }
 
         // 7) SUODATUS-NAPIT (“Kaikki” ja “Tulevat”)
         findViewById<TextView>(R.id.tv_filter_all).setOnClickListener {
