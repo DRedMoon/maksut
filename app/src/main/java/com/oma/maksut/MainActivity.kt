@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // 2) RecyclerView (Tapahtumat)
-        adapter = TransactionAdapter(TransactionRepository.transactions)
+        adapter = TransactionAdapter(emptyList())
         findViewById<RecyclerView>(R.id.rv_transactions).apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = this@MainActivity.adapter
@@ -153,6 +153,16 @@ class MainActivity : AppCompatActivity() {
         
         // 10) Bottom Navigation Setup
         setupBottomNavigation()
+
+        // Load data from repository
+        lifecycleScope.launch {
+            repository.getRealTransactions().collect { transactions ->
+                adapter.updateItems(transactions)
+                // Update balance
+                val value = transactions.sumOf { it.amount }
+                findViewById<TextView>(R.id.tv_remaining_amount).text = String.format(Locale.getDefault(), "%.2f €", value)
+            }
+        }
     }
 
     // 1) Valikon asetukset (☰ oikeassa yläkulmassa)
