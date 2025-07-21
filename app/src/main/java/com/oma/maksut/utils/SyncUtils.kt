@@ -3,8 +3,9 @@ package com.oma.maksut.utils
 import android.content.Context
 import android.net.Uri
 import android.os.Environment
+import androidx.core.content.edit
+import androidx.core.net.toUri
 import androidx.documentfile.provider.DocumentFile
-import com.oma.maksut.repository.FinanceRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -21,13 +22,12 @@ object SyncUtils {
         return dir
     }
 
-    fun getSyncFile(context: Context): File {
+    private fun getSyncFile(context: Context): File {
         return File(getDefaultSyncFolder(context), SYNC_FILE_NAME)
     }
 
     suspend fun exportToSyncFile(context: Context): File = withContext(Dispatchers.IO) {
-        val repo = FinanceRepository(context)
-        val json = com.oma.maksut.utils.JsonExportImportUtils.exportToJson(context)
+        val json = JsonExportImportUtils.exportToJson(context)
         val file = getSyncFile(context)
         file.writeText(json)
         file
@@ -37,24 +37,24 @@ object SyncUtils {
         val file = getSyncFile(context)
         if (!file.exists()) return@withContext false
         val json = file.readText()
-        com.oma.maksut.utils.JsonExportImportUtils.importFromJson(context, json)
+        JsonExportImportUtils.importFromJson(context, json)
         true
     }
 
-    // For user-chosen folder (e.g., Nextcloud/Syncthing)
     fun setSyncFolderUri(context: Context, uri: Uri) {
         val prefs = context.getSharedPreferences("sync_prefs", Context.MODE_PRIVATE)
-        prefs.edit().putString(PREF_SYNC_FOLDER, uri.toString()).apply()
+        prefs.edit {
+            putString(PREF_SYNC_FOLDER, uri.toString())
+        }
     }
     fun getSyncFolderUri(context: Context): Uri? {
         val prefs = context.getSharedPreferences("sync_prefs", Context.MODE_PRIVATE)
         val uriStr = prefs.getString(PREF_SYNC_FOLDER, null)
-        return uriStr?.let { Uri.parse(it) }
+        return uriStr?.toUri()
     }
     suspend fun exportToUserSyncFolder(context: Context): Boolean = withContext(Dispatchers.IO) {
         val uri = getSyncFolderUri(context) ?: return@withContext false
-        val repo = FinanceRepository(context)
-        val json = com.oma.maksut.utils.JsonExportImportUtils.exportToJson(context)
+        val json = JsonExportImportUtils.exportToJson(context)
         val docFile = DocumentFile.fromTreeUri(context, uri) ?: return@withContext false
         val syncFile = docFile.findFile(SYNC_FILE_NAME) ?: docFile.createFile("application/json", SYNC_FILE_NAME)
         val outStream = context.contentResolver.openOutputStream(syncFile!!.uri) ?: return@withContext false
@@ -67,7 +67,7 @@ object SyncUtils {
         val syncFile = docFile.findFile(SYNC_FILE_NAME) ?: return@withContext false
         val inStream = context.contentResolver.openInputStream(syncFile.uri) ?: return@withContext false
         val json = inStream.bufferedReader().readText()
-        com.oma.maksut.utils.JsonExportImportUtils.importFromJson(context, json)
+        JsonExportImportUtils.importFromJson(context, json)
         true
     }
 }

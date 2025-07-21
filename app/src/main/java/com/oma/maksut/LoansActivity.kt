@@ -7,7 +7,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.appbar.MaterialToolbar
-import java.util.Locale
+import kotlin.math.abs
 
 /**
  * Näyttää listan lainoista korttimuodossa.
@@ -50,17 +50,17 @@ class LoansActivity : AppCompatActivity() {
             val card = inflater.inflate(R.layout.item_payment_card, container, false)
 
             // Täytä kortin kentät
-            card.findViewById<TextView>(R.id.tv_loan_name).text      = loan.label
+            card.findViewById<TextView>(R.id.tv_loan_name).text = loan.label
             card.findViewById<TextView>(R.id.tv_loan_remaining).text =
-                String.format(Locale.getDefault(), "%.2f €", -loan.amount)
-            card.findViewById<TextView>(R.id.tv_loan_monthly).text   =
-                String.format(Locale.getDefault(), "%.2f €/kk", loan.monthlyPayment)
-            card.findViewById<TextView>(R.id.tv_loan_rate).text      =
-                String.format(Locale.getDefault(), "Korko %.2f%%", loan.rate)
-            card.findViewById<TextView>(R.id.tv_loan_fee).text       =
-                String.format(Locale.getDefault(), "Palkkio %.2f€", loan.fee)
-            card.findViewById<TextView>(R.id.tv_loan_due).text       =
-                String.format(Locale.getDefault(), "Eräpäivä ${loan.dueDate}")
+                getString(R.string.loan_remaining_amount, abs(loan.amount))
+            card.findViewById<TextView>(R.id.tv_loan_monthly).text =
+                getString(R.string.loan_monthly_payment, loan.monthlyPayment)
+            card.findViewById<TextView>(R.id.tv_loan_rate).text =
+                getString(R.string.loan_interest_rate, loan.rate)
+            card.findViewById<TextView>(R.id.tv_loan_fee).text =
+                getString(R.string.loan_fee, loan.fee)
+            card.findViewById<TextView>(R.id.tv_loan_due).text =
+                getString(R.string.loan_due_date, loan.dueDate)
 
             // Lisää kortti näkyviin
             container.addView(card)

@@ -91,11 +91,6 @@ class QuickAddTransactionActivity : AppCompatActivity() {
     }
     
     private fun setupListeners() {
-        // Category selection
-        findViewById<LinearLayout>(R.id.ll_category_selector).setOnClickListener {
-            showCategorySelectionDialog()
-        }
-        
         // Loan selection
         llLoanSelection.setOnClickListener {
             showLoanSelectionDialog()

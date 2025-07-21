@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import androidx.core.content.ContextCompat
+import com.oma.maksut.database.entities.Transaction
 
 // 0) Luokan kentät: suodatus-enum, formaatit, nykyinen suodatin
 class MainActivity : AppCompatActivity() {

@@ -24,6 +24,7 @@ import java.io.File
 import java.util.*
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
+import androidx.core.content.edit
 
 class SettingsActivity : AppCompatActivity() {
     
@@ -202,30 +203,28 @@ class SettingsActivity : AppCompatActivity() {
     
     private fun saveThemeSetting(isDark: Boolean) {
         PreferenceManager.getDefaultSharedPreferences(this)
-            .edit()
-            .putBoolean("theme_dark", isDark)
+            .edit { putBoolean("theme_dark", isDark) }
             .apply()
     }
     
     private fun saveSyncSetting(isEnabled: Boolean) {
         PreferenceManager.getDefaultSharedPreferences(this)
-            .edit()
-            .putBoolean("sync_enabled", isEnabled)
+            .edit { putBoolean("sync_enabled", isEnabled) }
             .apply()
     }
     
     private fun saveEncryptionSetting(isEnabled: Boolean) {
         PreferenceManager.getDefaultSharedPreferences(this)
-            .edit()
-            .putBoolean("encryption_enabled", isEnabled)
+            .edit { putBoolean("encryption_enabled", isEnabled) }
             .apply()
     }
     
     private fun savePinCodeSetting(isEnabled: Boolean) {
         PreferenceManager.getDefaultSharedPreferences(this)
-            .edit()
-            .putBoolean("pin_code_enabled", isEnabled)
-            .putString("pin_code", if (isEnabled) etPinCode.text.toString() else "")
+            .edit {
+                putBoolean("pin_code_enabled", isEnabled)
+                putString("pin_code", if (isEnabled) etPinCode.text.toString() else "")
+            }
             .apply()
     }
     
@@ -255,8 +254,7 @@ class SettingsActivity : AppCompatActivity() {
             .setTitle(getString(R.string.select_encryption_algorithm))
             .setSingleChoiceItems(algorithms, currentIndex) { _, which ->
                 PreferenceManager.getDefaultSharedPreferences(this)
-                    .edit()
-                    .putString("encryption_algorithm", algorithms[which])
+                    .edit { putString("encryption_algorithm", algorithms[which]) }
                     .apply()
                 updateEncryptionAlgorithmDisplay()
             }
@@ -275,8 +273,7 @@ class SettingsActivity : AppCompatActivity() {
             .setTitle(getString(R.string.select_sync_frequency))
             .setSingleChoiceItems(frequencies, currentIndex) { _, which ->
                 PreferenceManager.getDefaultSharedPreferences(this)
-                    .edit()
-                    .putString("sync_frequency", frequencies[which])
+                    .edit { putString("sync_frequency", frequencies[which]) }
                     .apply()
                 updateSyncFrequencyDisplay()
             }
@@ -367,8 +364,7 @@ class SettingsActivity : AppCompatActivity() {
     
     private fun resetAllSettings() {
         PreferenceManager.getDefaultSharedPreferences(this)
-            .edit()
-            .clear()
+            .edit { clear() }
             .apply()
         
         loadSettings()

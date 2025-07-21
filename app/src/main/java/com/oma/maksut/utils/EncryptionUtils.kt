@@ -1,6 +1,5 @@
 package com.oma.maksut.utils
 
-import android.content.Context
 import android.os.Build
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
@@ -21,10 +20,7 @@ class EncryptionUtils {
         private const val GCM_TAG_LENGTH = 16
 
         @JvmStatic
-        fun encrypt(data: String, context: Context): String {
-            if (Build.VERSION.SDK_INT < 23) {
-                throw UnsupportedOperationException("Encryption requires API level 23 or higher.")
-            }
+        fun encrypt(data: String): String {
             try {
                 val key = getOrCreateKey()
                 val cipher = Cipher.getInstance(TRANSFORMATION)
@@ -42,10 +38,7 @@ class EncryptionUtils {
         }
 
         @JvmStatic
-        fun decrypt(encryptedData: String, context: Context): String {
-            if (Build.VERSION.SDK_INT < 23) {
-                throw UnsupportedOperationException("Decryption requires API level 23 or higher.")
-            }
+        fun decrypt(encryptedData: String): String {
             try {
                 val key = getOrCreateKey()
                 val cipher = Cipher.getInstance(TRANSFORMATION)
