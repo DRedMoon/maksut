@@ -7,10 +7,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+import java.util.Locale
 
 class MonthlyPaymentsActivity : AppCompatActivity() {
     private lateinit var tvTotal: TextView
     private lateinit var rvPayments: RecyclerView
+    private lateinit var adapter: MonthlyPaymentsAdapter
+    private var allPayments: List<Transaction> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,11 +29,46 @@ class MonthlyPaymentsActivity : AppCompatActivity() {
         rvPayments = findViewById(R.id.rv_monthly_payments)
         rvPayments.layoutManager = LinearLayoutManager(this)
 
+        adapter = MonthlyPaymentsAdapter(emptyList()) { tx ->
+            togglePaidStatus(tx)
+        }
+        rvPayments.adapter = adapter
+
         // Toggle list visibility on total click
         tvTotal.setOnClickListener {
             rvPayments.visibility = if (rvPayments.visibility == View.VISIBLE) View.GONE else View.VISIBLE
         }
 
-        // TODO: Set up adapter and load monthly payments data
+        // Load monthly payments
+        lifecycleScope.launch {
+            val repo = FinanceRepository(this@MonthlyPaymentsActivity)
+            repo.getMonthlyPayments().collect { payments ->
+                allPayments = payments
+                adapter.updateItems(payments)
+                val total = payments.sumOf { it.amount }
+                tvTotal.text = String.format(Locale.getDefault(), "%.2f €", total)
+            }
+        }
+
+        // Progressive loading: show more on scroll to bottom
+        rvPayments.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val lm = recyclerView.layoutManager as LinearLayoutManager
+                if (lm.findLastVisibleItemPosition() >= adapter.itemCount - 1 && adapter.itemCount < allPayments.size) {
+                    adapter.showMore()
+                }
+            }
+        })
+    }
+
+    private fun togglePaidStatus(tx: Transaction) {
+        // TODO: Update paid status in database and refresh list
+        // For now, just toggle in memory
+        val updated = allPayments.map {
+            if (it.id == tx.id) it.copy(isPaid = !(it.isPaid ?: false)) else it
+        }
+        allPayments = updated
+        adapter.updateItems(updated)
     }
 }
