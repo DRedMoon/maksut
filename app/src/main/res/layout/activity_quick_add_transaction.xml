@@ -119,33 +119,14 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp"/>
 
-            <LinearLayout
-                android:id="@+id/ll_category_selector"
+            <Spinner
+                android:id="@+id/spinner_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:background="@drawable/selector_background"
-                android:padding="12dp"
-                android:gravity="center_vertical"
-                android:clickable="true"
-                android:focusable="true"
-                android:layout_marginBottom="16dp">
-
-                <TextView
-                    android:id="@+id/tv_selected_category"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/select_category"
-                    android:textColor="@android:color/white"
-                    android:textSize="14sp"/>
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_more_vert"
-                    app:tint="@android:color/white"/>
-            </LinearLayout>
+                android:popupBackground="#294D73"
+                android:layout_marginBottom="16dp"
+                android:spinnerMode="dropdown"/>
 
             <!-- Payment Date -->
             <TextView

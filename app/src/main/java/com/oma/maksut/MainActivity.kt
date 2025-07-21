@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // 2) RecyclerView (Tapahtumat)
-        adapter = TransactionAdapter(TransactionRepository.transactions)
+        adapter = TransactionAdapter(emptyList())
         findViewById<RecyclerView>(R.id.rv_transactions).apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = this@MainActivity.adapter
@@ -153,6 +153,16 @@ class MainActivity : AppCompatActivity() {
         
         // 10) Bottom Navigation Setup
         setupBottomNavigation()
+
+        // Load data from repository
+        lifecycleScope.launch {
+            repository.getRealTransactions().collect { transactions ->
+                adapter.updateItems(transactions)
+                // Update balance
+                val value = transactions.sumOf { it.amount }
+                findViewById<TextView>(R.id.tv_remaining_amount).text = String.format(Locale.getDefault(), "%.2f €", value)
+            }
+        }
     }
 
     // 1) Valikon asetukset (☰ oikeassa yläkulmassa)
@@ -217,6 +227,10 @@ class MainActivity : AppCompatActivity() {
         // Update page title and content
         updateRemainingText()
         rebuildList()
+        // Open MonthlyPaymentsActivity if on tab 2
+        if (currentPage == 2) {
+            startActivity(Intent(this, MonthlyPaymentsActivity::class.java))
+        }
     }
 
     private fun updateFilterUI() {
@@ -363,11 +377,9 @@ class MainActivity : AppCompatActivity() {
             updateBottomNavSelection(R.id.btn_home)
         }
         
-        // Upcoming button - switch to upcoming filter
+        // Upcoming button - open upcoming activity
         findViewById<LinearLayout>(R.id.btn_upcoming).setOnClickListener {
-            currentFilter = Filter.UPCOMING
-            rebuildList()
-            updateFilterUI()
+            startActivity(Intent(this, UpcomingActivity::class.java))
             updateBottomNavSelection(R.id.btn_upcoming)
         }
         

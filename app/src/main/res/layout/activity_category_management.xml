@@ -17,7 +17,8 @@
         app:titleTextColor="@android:color/white"
         app:navigationIcon="@drawable/ic_arrow_back_white"
         app:navigationIconTint="@android:color/white"
-        app:titleCentered="true"/>
+        app:titleCentered="true"
+        app:menu="@menu/menu_category_management"/>
 
     <!-- RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
@@ -27,16 +28,5 @@
         android:layout_weight="1"
         android:padding="8dp"
         android:clipToPadding="false"/>
-
-    <!-- Floating Action Button -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_add_category"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_add"
-        app:backgroundTint="#4CAF50"
-        app:tint="@android:color/white"/>
 
 </LinearLayout>
