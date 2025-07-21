@@ -14,10 +14,6 @@
         android:background="#294D73"
         app:title="@string/app_name"
         app:titleTextColor="@android:color/white"
-        app:navigationIcon="@drawable/ic_settings_white_24dp"
-        app:navigationIconTint="@android:color/white"
-        android:contentDescription="@string/settings"
-        app:menu="@menu/menu_main"
         app:titleCentered="true"/>
 
     <!-- 2) Jäljellä-palkki -->
@@ -98,21 +94,11 @@
 
         <TextView
             android:id="@+id/tv_transactions_header"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="@string/transactions_header"
             android:textColor="@android:color/white"
             android:textSize="14sp"/>
-
-        <ImageButton
-            android:id="@+id/btn_add_transaction_small"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            app:srcCompat="@drawable/ic_add"
-            android:contentDescription="@string/add_transaction"
-            app:tint="@android:color/white"/>
     </LinearLayout>
 
     <!-- 5a) Kaikki / Tulevat -suodatin -->
