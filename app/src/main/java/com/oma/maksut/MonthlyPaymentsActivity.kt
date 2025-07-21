@@ -63,12 +63,9 @@ class MonthlyPaymentsActivity : AppCompatActivity() {
     }
 
     private fun togglePaidStatus(tx: Transaction) {
-        // TODO: Update paid status in database and refresh list
-        // For now, just toggle in memory
-        val updated = allPayments.map {
-            if (it.id == tx.id) it.copy(isPaid = !(it.isPaid ?: false)) else it
+        lifecycleScope.launch {
+            val repo = FinanceRepository(this@MonthlyPaymentsActivity)
+            repo.updatePaymentStatus(tx.id, !(tx.isPaid ?: false))
         }
-        allPayments = updated
-        adapter.updateItems(updated)
     }
 }
