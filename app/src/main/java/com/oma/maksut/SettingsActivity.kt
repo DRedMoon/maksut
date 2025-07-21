@@ -227,7 +227,7 @@ class SettingsActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tv_sync_frequency).text = frequency
     }
     
-    private fun exportToJson() {
+    private suspend fun exportToJson() {
         try {
             val jsonData = JsonExportImportUtils.exportToJson(this)
             val file = File(getExternalFilesDir(null), "maksut_backup_${System.currentTimeMillis()}.json")
