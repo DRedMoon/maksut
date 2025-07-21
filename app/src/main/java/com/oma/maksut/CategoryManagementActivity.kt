@@ -23,7 +23,6 @@ class CategoryManagementActivity : AppCompatActivity() {
     private lateinit var repository: FinanceRepository
     private lateinit var adapter: CategoryAdapter
     private lateinit var recyclerView: RecyclerView
-    private lateinit var fabAddCategory: FloatingActionButton
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +39,6 @@ class CategoryManagementActivity : AppCompatActivity() {
     
     private fun setupViews() {
         recyclerView = findViewById(R.id.rv_categories)
-        fabAddCategory = findViewById(R.id.fab_add_category)
     }
     
     private fun setupToolbar() {
@@ -63,9 +61,7 @@ class CategoryManagementActivity : AppCompatActivity() {
     }
     
     private fun setupListeners() {
-        fabAddCategory.setOnClickListener {
-            showAddCategoryDialog()
-        }
+        // Remove or comment out any reference to fab_add_category
     }
     
     private fun loadCategories() {

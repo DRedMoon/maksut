@@ -17,10 +17,9 @@ class TransactionAdapter(
 
     // Holder-luokka item_transaction.xml:n näkymille
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val icon: ImageView       = view.findViewById(R.id.iv_icon)
-        val label: TextView       = view.findViewById(R.id.tv_label)
-        val amount: TextView      = view.findViewById(R.id.tv_amount)
-        val time: TextView        = view.findViewById(R.id.tv_date)
+        val label: TextView       = view.findViewById(R.id.tv_transaction_label)
+        val amount: TextView      = view.findViewById(R.id.tv_transaction_amount)
+        val time: TextView        = view.findViewById(R.id.tv_transaction_date)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -32,7 +31,6 @@ class TransactionAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val tx = items[position]
-        holder.icon.setImageResource(tx.iconRes)
         holder.label.text = tx.label
 
         // Värjää summa riippuen sen merkistä

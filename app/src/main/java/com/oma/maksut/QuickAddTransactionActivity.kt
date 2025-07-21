@@ -28,7 +28,7 @@ class QuickAddTransactionActivity : AppCompatActivity() {
     
     private lateinit var etName: EditText
     private lateinit var etAmount: EditText
-    private lateinit var tvCategory: TextView
+    private lateinit var spinnerCategory: Spinner
     private lateinit var tvPaymentDate: TextView
     private lateinit var tvDueDate: TextView
     private lateinit var cbIsMonthlyPayment: CheckBox
@@ -63,7 +63,7 @@ class QuickAddTransactionActivity : AppCompatActivity() {
     private fun setupViews() {
         etName = findViewById(R.id.et_transaction_name)
         etAmount = findViewById(R.id.et_transaction_amount)
-        tvCategory = findViewById(R.id.tv_selected_category)
+        spinnerCategory = findViewById(R.id.spinner_category)
         tvPaymentDate = findViewById(R.id.tv_payment_date)
         tvDueDate = findViewById(R.id.tv_due_date)
         cbIsMonthlyPayment = findViewById(R.id.cb_is_monthly_payment)
@@ -186,7 +186,7 @@ class QuickAddTransactionActivity : AppCompatActivity() {
     
     private fun updateCategoryDisplay() {
         selectedCategory?.let { category ->
-            tvCategory.text = category.name
+            spinnerCategory.setSelection(category.name)
             
             // Show/hide loan/credit selection based on category type
             if (category.isLoanRepayment) {
@@ -200,7 +200,7 @@ class QuickAddTransactionActivity : AppCompatActivity() {
                 llCreditSelection.visibility = android.view.View.GONE
             }
         } ?: run {
-            tvCategory.text = getString(R.string.select_category)
+            spinnerCategory.setSelection(R.string.select_category)
             llLoanSelection.visibility = android.view.View.GONE
             llCreditSelection.visibility = android.view.View.GONE
         }
