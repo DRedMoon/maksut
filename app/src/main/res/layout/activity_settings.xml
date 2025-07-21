@@ -186,4 +186,68 @@
         android:textColor="#FFFFFF"
         android:textSize="18sp" />
 
+    <!-- Diagnostics/Analytics Section -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/diagnostics_analytics"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:background="#294D73"
+        android:padding="16dp"/>
+    <Button
+        android:id="@+id/btn_export_diagnostics"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/export_diagnostics"/>
+    <Button
+        android:id="@+id/btn_view_events"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/view_events"/>
+    <Button
+        android:id="@+id/btn_view_errors"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/view_errors"/>
+
+    <!-- Sync Section -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/sync_settings"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:background="#294D73"
+        android:padding="16dp"/>
+    <Button
+        android:id="@+id/btn_pick_sync_folder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/pick_sync_folder"/>
+    <TextView
+        android:id="@+id/tv_sync_folder_path"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#80FFFFFF"
+        android:textSize="14sp"
+        android:padding="8dp"/>
+    <Button
+        android:id="@+id/btn_export_sync"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/export_sync"/>
+    <Button
+        android:id="@+id/btn_import_sync"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/import_sync"/>
+    <TextView
+        android:id="@+id/tv_sync_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#80FFFFFF"
+        android:textSize="14sp"
+        android:padding="8dp"/>
+
 </LinearLayout>

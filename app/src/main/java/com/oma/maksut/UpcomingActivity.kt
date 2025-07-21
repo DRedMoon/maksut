@@ -3,26 +3,24 @@ package com.oma.maksut
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
-import com.oma.maksut.databinding.ActivityUpcomingBinding
 
 class UpcomingActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityUpcomingBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityUpcomingBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_upcoming)
 
-        // Toolbar setup
-        val toolbar = binding.topAppBar
+        val toolbar = findViewById<MaterialToolbar>(R.id.topAppBar)
         setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener { finish() }
 
-        // RecyclerViews setup
-        binding.rvThisWeek.layoutManager = LinearLayoutManager(this)
-        binding.rvThisMonth.layoutManager = LinearLayoutManager(this)
-        binding.rvThisYear.layoutManager = LinearLayoutManager(this)
-        // Adapters will be set up after data is loaded
+        val rvThisWeek = findViewById<RecyclerView>(R.id.rv_this_week)
+        val rvThisMonth = findViewById<RecyclerView>(R.id.rv_this_month)
+        val rvThisYear = findViewById<RecyclerView>(R.id.rv_this_year)
+        rvThisWeek.layoutManager = LinearLayoutManager(this)
+        rvThisMonth.layoutManager = LinearLayoutManager(this)
+        rvThisYear.layoutManager = LinearLayoutManager(this)
+        // TODO: Set adapters and load data
     }
 }

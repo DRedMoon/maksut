@@ -65,7 +65,7 @@ class MonthlyPaymentsActivity : AppCompatActivity() {
     private fun togglePaidStatus(tx: Transaction) {
         lifecycleScope.launch {
             val repo = FinanceRepository(this@MonthlyPaymentsActivity)
-            repo.updatePaymentStatus(tx.id, !(tx.isPaid ?: false))
+            repo.updatePaymentStatus(tx.id, !tx.isPaid)
         }
     }
 }

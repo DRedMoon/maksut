@@ -3,10 +3,13 @@ package com.oma.maksut
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.DocumentsContract
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.*
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
@@ -15,6 +18,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.oma.maksut.utils.EncryptionUtils
 import com.oma.maksut.utils.JsonExportImportUtils
+import com.oma.maksut.utils.DiagnosticsUtils
+import com.oma.maksut.utils.SyncUtils
 import java.io.File
 import java.util.*
 import androidx.lifecycle.lifecycleScope
@@ -27,6 +32,15 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var switchEncryption: SwitchMaterial
     private lateinit var switchPinCode: SwitchMaterial
     private lateinit var etPinCode: EditText
+    private lateinit var tvSyncFolderPath: TextView
+    private lateinit var tvSyncStatus: TextView
+    private val pickFolderLauncher = registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri: Uri? ->
+        if (uri != null) {
+            SyncUtils.setSyncFolderUri(this, uri)
+            tvSyncFolderPath.text = uri.toString()
+            Toast.makeText(this, "Synkronointikansio valittu", Toast.LENGTH_SHORT).show()
+        }
+    }
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +50,61 @@ class SettingsActivity : AppCompatActivity() {
         setupToolbar()
         setupListeners()
         loadSettings()
+        tvSyncFolderPath = findViewById(R.id.tv_sync_folder_path)
+        tvSyncStatus = findViewById(R.id.tv_sync_status)
+        findViewById<Button>(R.id.btn_export_diagnostics).setOnClickListener {
+            lifecycleScope.launch {
+                val file = DiagnosticsUtils.exportDiagnostics(this@SettingsActivity)
+                Toast.makeText(this@SettingsActivity, "Raportti viety: ${file.absolutePath}", Toast.LENGTH_LONG).show()
+            }
+        }
+        findViewById<Button>(R.id.btn_view_events).setOnClickListener {
+            val file = File(getExternalFilesDir(null), "diagnostics/events.json")
+            if (file.exists()) {
+                val text = file.readText()
+                showTextDialog("Tapahtumat", text)
+            } else {
+                Toast.makeText(this, "Ei tapahtumalokia", Toast.LENGTH_SHORT).show()
+            }
+        }
+        findViewById<Button>(R.id.btn_view_errors).setOnClickListener {
+            val file = File(getExternalFilesDir(null), "diagnostics/errors.json")
+            if (file.exists()) {
+                val text = file.readText()
+                showTextDialog("Virheet", text)
+            } else {
+                Toast.makeText(this, "Ei virhelokia", Toast.LENGTH_SHORT).show()
+            }
+        }
+        findViewById<Button>(R.id.btn_pick_sync_folder).setOnClickListener {
+            pickFolderLauncher.launch(null)
+        }
+        findViewById<Button>(R.id.btn_export_sync).setOnClickListener {
+            lifecycleScope.launch {
+                val uri = SyncUtils.getSyncFolderUri(this@SettingsActivity)
+                val ok = if (uri != null) {
+                    SyncUtils.exportToUserSyncFolder(this@SettingsActivity)
+                } else {
+                    SyncUtils.exportToSyncFile(this@SettingsActivity)
+                    true
+                }
+                tvSyncStatus.text = if (ok) "Synkronointitiedosto viety" else "Virhe viennissä"
+            }
+        }
+        findViewById<Button>(R.id.btn_import_sync).setOnClickListener {
+            lifecycleScope.launch {
+                val uri = SyncUtils.getSyncFolderUri(this@SettingsActivity)
+                val ok = if (uri != null) {
+                    SyncUtils.importFromUserSyncFolder(this@SettingsActivity)
+                } else {
+                    SyncUtils.importFromSyncFile(this@SettingsActivity)
+                }
+                tvSyncStatus.text = if (ok) "Synkronointitiedosto tuotu" else "Virhe tuonnissa"
+            }
+        }
+        // Show current sync folder path
+        val uri = SyncUtils.getSyncFolderUri(this)
+        tvSyncFolderPath.text = uri?.toString() ?: SyncUtils.getDefaultSyncFolder(this).absolutePath
     }
     
     private fun setupViews() {
@@ -304,6 +373,15 @@ class SettingsActivity : AppCompatActivity() {
         
         loadSettings()
         Toast.makeText(this, getString(R.string.settings_reset), Toast.LENGTH_SHORT).show()
+    }
+    
+    private fun showTextDialog(title: String, text: String) {
+        val dialog = android.app.AlertDialog.Builder(this)
+            .setTitle(title)
+            .setMessage(text)
+            .setPositiveButton(android.R.string.ok, null)
+            .create()
+        dialog.show()
     }
     
     companion object {

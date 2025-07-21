@@ -33,7 +33,7 @@ class MonthlyPaymentsAdapter(
         holder.name.text = tx.label
         holder.amount.text = String.format(Locale.getDefault(), "%.2f €", tx.amount)
         holder.due.text = tx.dueDate ?: ""
-        val paid = tx.isPaid ?: false
+        val paid = tx.isPaid
         holder.status.setImageResource(
             if (paid) R.drawable.ic_check_circle else R.drawable.ic_radio_button_unchecked
         )
