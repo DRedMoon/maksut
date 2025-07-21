@@ -229,5 +229,14 @@
     <string name="export_sync">Vie synkronointitiedosto</string>
     <string name="import_sync">Tuo synkronointitiedosto</string>
     <string name="sync_status">Synkronoinnin tila</string>
+    <string name="analysis_message">%1$.2f € tuloa
+%2$.2f € menoja
+Nettosaldo: %3$.2f €
+Tapahtumia: %4$d</string>
+    <string name="loan_remaining_amount">Jäljellä: %.2f €</string>
+    <string name="loan_monthly_payment">Kuukausierä: %.2f €/kk</string>
+    <string name="loan_interest_rate">Korko: %.2f%%</string>
+    <string name="loan_fee">Palkkio: %.2f €</string>
+    <string name="loan_due_date">Eräpäivä: %s</string>
 
 </resources>

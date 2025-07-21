@@ -5,6 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
+import com.oma.maksut.database.entities.Transaction
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+import java.util.Date
 
 class UpcomingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,6 +25,22 @@ class UpcomingActivity : AppCompatActivity() {
         rvThisWeek.layoutManager = LinearLayoutManager(this)
         rvThisMonth.layoutManager = LinearLayoutManager(this)
         rvThisYear.layoutManager = LinearLayoutManager(this)
-        // TODO: Set adapters and load data
+
+        val weekAdapter = TransactionAdapter(emptyList())
+        val monthAdapter = TransactionAdapter(emptyList())
+        val yearAdapter = TransactionAdapter(emptyList())
+        rvThisWeek.adapter = weekAdapter
+        rvThisMonth.adapter = monthAdapter
+        rvThisYear.adapter = yearAdapter
+
+        lifecycleScope.launch {
+            val repo = com.oma.maksut.repository.FinanceRepository(this@UpcomingActivity)
+            repo.getUpcomingTransactions(/*start*/Date(), /*end*/Date()).collect { transactions ->
+                // TODO: Filter transactions for week/month/year
+                weekAdapter.updateItems(transactions)
+                monthAdapter.updateItems(transactions)
+                yearAdapter.updateItems(transactions)
+            }
+        }
     }
 }
