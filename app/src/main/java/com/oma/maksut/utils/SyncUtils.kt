@@ -10,6 +10,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
+import androidx.core.content.edit
 
 object SyncUtils {
     private const val PREF_SYNC_FOLDER = "sync_folder_uri"
@@ -44,7 +45,9 @@ object SyncUtils {
     // For user-chosen folder (e.g., Nextcloud/Syncthing)
     fun setSyncFolderUri(context: Context, uri: Uri) {
         val prefs = context.getSharedPreferences("sync_prefs", Context.MODE_PRIVATE)
-        prefs.edit().putString(PREF_SYNC_FOLDER, uri.toString()).apply()
+        prefs.edit {
+            putString(PREF_SYNC_FOLDER, uri.toString())
+        }
     }
     fun getSyncFolderUri(context: Context): Uri? {
         val prefs = context.getSharedPreferences("sync_prefs", Context.MODE_PRIVATE)

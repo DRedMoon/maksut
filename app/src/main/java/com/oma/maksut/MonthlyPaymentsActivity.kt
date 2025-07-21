@@ -13,6 +13,7 @@ import java.util.Locale
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import com.oma.maksut.repository.FinanceRepository
+import com.oma.maksut.database.entities.Transaction
 
 class MonthlyPaymentsActivity : AppCompatActivity() {
     private lateinit var tvTotal: TextView

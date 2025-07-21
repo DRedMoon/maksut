@@ -7,11 +7,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import java.util.*
-import com.oma.maksut.database.entities.Transaction
 
 class MonthlyPaymentsAdapter(
-    private var items: List<Transaction>,
-    private val onStatusToggle: (Transaction) -> Unit
+    private var items: List<com.oma.maksut.database.entities.Transaction>,
+    private val onStatusToggle: (com.oma.maksut.database.entities.Transaction) -> Unit
 ) : RecyclerView.Adapter<MonthlyPaymentsAdapter.ViewHolder>() {
 
     private var visibleCount = 10
@@ -31,9 +30,9 @@ class MonthlyPaymentsAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val tx = items[position]
-        holder.name.text = tx.label
+        holder.name.text = tx.name // Use the correct property for transaction name
         holder.amount.text = String.format(Locale.getDefault(), "%.2f €", tx.amount)
-        holder.due.text = tx.dueDate ?: ""
+        holder.due.text = tx.dueDate?.toString() ?: "" // Use the correct property for due date, convert to string if needed
         val paid = tx.isPaid
         holder.status.setImageResource(
             if (paid) R.drawable.ic_check_circle else R.drawable.ic_radio_button_unchecked
@@ -48,7 +47,7 @@ class MonthlyPaymentsAdapter(
         notifyDataSetChanged()
     }
 
-    fun updateItems(newItems: List<Transaction>) {
+    fun updateItems(newItems: List<com.oma.maksut.database.entities.Transaction>) {
         items = newItems
         notifyDataSetChanged()
     }
