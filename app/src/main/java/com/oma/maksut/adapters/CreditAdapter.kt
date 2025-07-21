@@ -49,6 +49,7 @@ class CreditAdapter(
         fun bind(credit: Credit) {
             tvName.text = credit.name
             tvLimit.text = String.format(Locale.getDefault(), "Raja: %.2f €", credit.creditLimit)
+            tvLimit.setTextColor(if (credit.currentBalance > 0) 0xFFFF4444.toInt() else 0xFF4CAF50.toInt())
             tvBalance.text = String.format(Locale.getDefault(), "Saldo: %.2f €", credit.currentBalance)
             tvInterest.text = String.format(Locale.getDefault(), "%.2f%%", credit.totalInterestRate)
             tvMinPayment.text = String.format(Locale.getDefault(), "Min: %.2f €", credit.minimumPaymentAmount)

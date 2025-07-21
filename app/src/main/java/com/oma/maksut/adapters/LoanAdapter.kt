@@ -48,6 +48,7 @@ class LoanAdapter(
         fun bind(loan: Loan) {
             tvName.text = loan.name
             tvAmount.text = String.format(Locale.getDefault(), "%.2f €", loan.currentBalance)
+            tvAmount.setTextColor(if (loan.currentBalance > 0) 0xFFFF4444.toInt() else 0xFF4CAF50.toInt())
             tvInterest.text = String.format(Locale.getDefault(), "%.2f%%", loan.totalInterestRate)
             tvMonthlyPayment.text = String.format(Locale.getDefault(), "%.2f €/kk", loan.monthlyPayment)
             tvDueDate.text = "Eräpäivä: ${loan.dueDay}. päivä"
