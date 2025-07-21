@@ -52,18 +52,19 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     
     // Room Database
-    implementation("androidx.room:room-runtime:2.6.1")
-    implementation("androidx.room:room-ktx:2.6.1")
-    kapt("androidx.room:room-compiler:2.6.1")
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    kapt(libs.room.compiler)
     
     // Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
+    implementation(libs.coroutines.android)
+    implementation(libs.coroutines.core)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
     
     // JSON and Preferences
-    implementation("com.google.code.gson:gson:2.10.1")
-    implementation("androidx.preference:preference-ktx:1.2.1")
+    implementation(libs.gson)
+    implementation(libs.preference.ktx)
 
 
     // Poistetaan kaikki Compose-riippuvuudet
