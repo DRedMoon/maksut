@@ -7,6 +7,7 @@ import com.google.gson.Gson
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlinx.coroutines.flow.first
 
 object DiagnosticsUtils {
     private val gson = Gson()

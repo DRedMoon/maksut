@@ -186,7 +186,10 @@ class QuickAddTransactionActivity : AppCompatActivity() {
     
     private fun updateCategoryDisplay() {
         selectedCategory?.let { category ->
-            spinnerCategory.setSelection(category.name)
+            // Replace spinnerCategory.setSelection(category.name) with logic to find the index of the category in the spinner adapter and setSelection(index)
+            val adapter = spinnerCategory.adapter as? ArrayAdapter<String>
+            val index = adapter?.getPosition(category.name) ?: -1
+            spinnerCategory.setSelection(index)
             
             // Show/hide loan/credit selection based on category type
             if (category.isLoanRepayment) {

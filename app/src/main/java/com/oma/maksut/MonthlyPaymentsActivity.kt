@@ -10,6 +10,9 @@ import com.google.android.material.appbar.MaterialToolbar
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import java.util.Locale
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
+import com.oma.maksut.repository.FinanceRepository
 
 class MonthlyPaymentsActivity : AppCompatActivity() {
     private lateinit var tvTotal: TextView

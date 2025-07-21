@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import java.util.*
+import com.oma.maksut.database.entities.Transaction
 
 class MonthlyPaymentsAdapter(
     private var items: List<Transaction>,

@@ -26,6 +26,7 @@ import android.text.TextWatcher
 import android.text.Editable
 import android.view.View
 import android.view.ViewGroup
+import kotlinx.coroutines.flow.first
 
 class LoanCreditManagementActivity : AppCompatActivity() {
     
