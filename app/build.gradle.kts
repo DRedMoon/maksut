@@ -37,7 +37,9 @@ android {
         jvmTarget = "1.8"
     }
 
-    // Poistettu buildFeatures { compose = true }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {

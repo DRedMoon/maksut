@@ -117,10 +117,10 @@
     <string name="analysis">Analyysi</string>
     <string name="monthly_analysis">Kuukausianalyysi</string>
     <string name="yearly_analysis">Vuosianalyysi</string>
-    <string name="full_analysis">Kokonaisanalyysi</string>
-    <string name="total_income">Kokonaistulot</string>
-    <string name="total_expenses">Kokonaiskulut</string>
-    <string name="net_balance">Netto saldo</string>
+    <string name="full_analysis">Koko analyysi</string>
+    <string name="total_income">Tulot yhteensä</string>
+    <string name="total_expenses">Menot yhteensä</string>
+    <string name="net_balance">Nettosaldo</string>
     <string name="monthly_income">Kuukausitulot</string>
     <string name="monthly_expenses">Kuukausikulut</string>
     <string name="yearly_income">Vuositulot</string>
@@ -214,5 +214,10 @@
     <string name="save">Tallenna</string>
     <string name="select_loan">Valitse laina</string>
     <string name="select_credit">Valitse luotto</string>
+    <string name="upcoming_payments">Tulevat maksut</string>
+    <string name="this_week">Tällä viikolla</string>
+    <string name="this_month">Tässä kuussa</string>
+    <string name="this_year">Tänä vuonna</string>
+    <string name="calendar_view">Kalenterinäkymä</string>
 
 </resources>

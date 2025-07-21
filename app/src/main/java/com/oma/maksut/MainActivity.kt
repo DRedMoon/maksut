@@ -373,11 +373,9 @@ class MainActivity : AppCompatActivity() {
             updateBottomNavSelection(R.id.btn_home)
         }
         
-        // Upcoming button - switch to upcoming filter
+        // Upcoming button - open upcoming activity
         findViewById<LinearLayout>(R.id.btn_upcoming).setOnClickListener {
-            currentFilter = Filter.UPCOMING
-            rebuildList()
-            updateFilterUI()
+            startActivity(Intent(this, UpcomingActivity::class.java))
             updateBottomNavSelection(R.id.btn_upcoming)
         }
         
