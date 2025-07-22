@@ -489,7 +489,7 @@ class MainActivity : AppCompatActivity() {
                     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
                         val item = currentItems[position]
                         holder.itemView.findViewById<TextView>(android.R.id.text1).apply {
-                            text = "${item.name}: ${String.format(Locale.getDefault(), "%.2f €", item.currentBalance)}"
+                            text = "${item.name}: ${String.format(Locale.getDefault(), "%.2f €", item.amount)}"
                             setTextColor(android.graphics.Color.WHITE)
                         }
                     }

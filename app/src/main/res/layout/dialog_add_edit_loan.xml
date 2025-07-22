@@ -8,6 +8,8 @@
         android:orientation="vertical"
         android:padding="24dp">
 
+        <EditText android:id="@+id/et_loan_name" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Lainan nimi"/>
+        <EditText android:id="@+id/et_loan_amount" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Lainan summa (€)"/>
         <EditText android:id="@+id/et_interest_rate" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Korko (%)"/>
         <EditText android:id="@+id/et_personal_margin" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Marginaali (%)"/>
         <EditText android:id="@+id/et_loan_term" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Laina-aika (vuotta)"/>

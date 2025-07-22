@@ -8,6 +8,7 @@
         android:orientation="vertical"
         android:padding="24dp">
 
+        <EditText android:id="@+id/et_credit_name" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Luoton nimi"/>
         <EditText android:id="@+id/et_credit_limit" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Luottoraja (€)"/>
         <EditText android:id="@+id/et_current_balance" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Nykyinen saldo (€)"/>
         <EditText android:id="@+id/et_interest_rate" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Korko (%)"/>
