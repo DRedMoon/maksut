@@ -186,27 +186,27 @@ class AddLoanCreditActivity : AppCompatActivity() {
         
         // Validation
         if (name.isEmpty()) {
-            etName.error = "Nimi vaaditaan"
+            etName.error = getString(R.string.name_required)
             return
         }
         
         if (originalAmount == null || originalAmount <= 0) {
-            etOriginalAmount.error = "Virheellinen alkuperäinen summa"
+            etOriginalAmount.error = getString(R.string.invalid_original_amount)
             return
         }
         
         if (currentBalance == null || currentBalance <= 0) {
-            etCurrentBalance.error = "Virheellinen nykyinen saldo"
+            etCurrentBalance.error = getString(R.string.invalid_current_balance)
             return
         }
         
         if (monthlyPayment == null || monthlyPayment <= 0) {
-            etMonthlyPayment.error = "Virheellinen kuukausimaksu"
+            etMonthlyPayment.error = getString(R.string.invalid_monthly_payment)
             return
         }
         
         if (monthsLeft == null || monthsLeft <= 0) {
-            etMonthsLeft.error = "Kuukausia jäljellä vaaditaan"
+            etMonthsLeft.error = getString(R.string.months_required)
             return
         }
         
@@ -231,7 +231,7 @@ class AddLoanCreditActivity : AppCompatActivity() {
                         isActive = true
                     )
                     repository.insertLoan(loan)
-                    Toast.makeText(this@AddLoanCreditActivity, "Laina tallennettu", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@AddLoanCreditActivity, getString(R.string.loan_saved), Toast.LENGTH_SHORT).show()
                 } else {
                     // Save credit
                     val credit = Credit(
@@ -246,12 +246,12 @@ class AddLoanCreditActivity : AppCompatActivity() {
                         isActive = true
                     )
                     repository.insertCredit(credit)
-                    Toast.makeText(this@AddLoanCreditActivity, "Luotto tallennettu", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@AddLoanCreditActivity, getString(R.string.credit_saved), Toast.LENGTH_SHORT).show()
                 }
                 
                 finish()
             } catch (e: Exception) {
-                Toast.makeText(this@AddLoanCreditActivity, "Virhe tallennuksessa: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@AddLoanCreditActivity, getString(R.string.error_saving, e.message), Toast.LENGTH_SHORT).show()
             }
         }
     }
