@@ -81,7 +81,8 @@ class FinanceRepository(context: Context) {
     suspend fun initializeDefaultCategories() {
         val count = categoryDao.getCategoryCount()
         android.util.Log.d("FinanceRepository", "Category count: $count")
-        if (count == 0) {
+        // Force initialization if we have less than 5 categories (default categories)
+        if (count < 5) {
             android.util.Log.d("FinanceRepository", "Creating default categories")
             // Insert default categories
             val defaultCategories = listOf(

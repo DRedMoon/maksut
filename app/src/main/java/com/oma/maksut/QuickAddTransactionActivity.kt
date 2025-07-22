@@ -81,7 +81,6 @@ class QuickAddTransactionActivity : AppCompatActivity() {
     
     private fun setupToolbar() {
         findViewById<MaterialToolbar>(R.id.topAppBar).apply {
-            setSupportActionBar(this)
             setNavigationOnClickListener { finish() }
         }
     }
