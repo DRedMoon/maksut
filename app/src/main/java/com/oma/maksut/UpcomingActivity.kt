@@ -1,16 +1,22 @@
 package com.oma.maksut
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.oma.maksut.database.entities.Transaction
+import com.oma.maksut.adapter.TransactionAdapter
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import java.util.Date
 
 class UpcomingActivity : AppCompatActivity() {
+    private lateinit var weekAdapter: TransactionAdapter
+    private lateinit var monthAdapter: TransactionAdapter
+    private lateinit var yearAdapter: TransactionAdapter
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_upcoming)
@@ -33,9 +39,9 @@ class UpcomingActivity : AppCompatActivity() {
             rvThisMonth.layoutManager = LinearLayoutManager(this)
             rvThisYear.layoutManager = LinearLayoutManager(this)
 
-            val weekAdapter = TransactionAdapter(emptyList())
-            val monthAdapter = TransactionAdapter(emptyList())
-            val yearAdapter = TransactionAdapter(emptyList())
+            weekAdapter = TransactionAdapter(emptyList())
+            monthAdapter = TransactionAdapter(emptyList())
+            yearAdapter = TransactionAdapter(emptyList())
             rvThisWeek.adapter = weekAdapter
             rvThisMonth.adapter = monthAdapter
             rvThisYear.adapter = yearAdapter
