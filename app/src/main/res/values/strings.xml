@@ -64,7 +64,7 @@
     <string name="select_date">Valitse päivämäärä</string>
     <string name="no_date_selected">Ei päivämäärää</string>
     <string name="transactions_header">Tapahtumat</string>
-    <string name="remaining">Jäljellä</string>
+    <string name="remaining">Saldo</string>
     <string name="menu">Valikko</string>
     <string name="more">Lisää tietoa</string>
     <string name="transaction_icon">Tapahtuma</string>
@@ -132,8 +132,8 @@
     <string name="enter_amount">Syötä summa</string>
     <string name="payment_date">Maksupäivä</string>
     <string name="options">Asetukset</string>
-    <string name="has_due_date">On eräpäivä</string>
-    <string name="is_monthly_payment">On kuukausimaksu</string>
+    <string name="has_due_date">Eräpäivä</string>
+    <string name="is_monthly_payment">Kuukausimaksu</string>
     <string name="save_transaction">Tallenna tapahtuma</string>
     <string name="select_category">Valitse kategoria</string>
     <string name="select_due_date">Valitse eräpäivä</string>

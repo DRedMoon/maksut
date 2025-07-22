@@ -118,6 +118,11 @@ class MainActivity : AppCompatActivity() {
             updateFilterUI()
         }
 
+        // 7a) Transactions header 3-dot menu
+        findViewById<ImageView>(R.id.iv_transactions_menu).setOnClickListener {
+            startActivity(Intent(this, AllPaymentsActivity::class.java))
+        }
+
         // 8) Näytetään aluksi koko lista
         rebuildList()
         // 9) Päivitä filter-nappien ulkoasu

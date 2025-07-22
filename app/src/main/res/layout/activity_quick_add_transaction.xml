@@ -230,53 +230,84 @@
                 android:background="@drawable/button_background"
                 android:padding="16dp"/>
 
-            <!-- Loan selection -->
+            <!-- Loan selection (only visible for loan repayment) -->
             <LinearLayout
                 android:id="@+id/ll_loan_selection"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="8dp">
+                android:orientation="vertical"
+                android:padding="8dp"
+                android:visibility="gone">
+                
                 <TextView
-                    android:id="@+id/tv_selected_loan"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/select_loan"/>
-                <Button
-                    android:id="@+id/select_loan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/select_loan"/>
+                    android:text="@string/select_loan"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp"/>
+                
+                <Button
+                    android:id="@+id/select_loan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/select_loan"
+                    android:background="@drawable/button_background"
+                    android:textColor="@android:color/white"
+                    android:layout_marginBottom="16dp"/>
+                
+                <EditText
+                    android:id="@+id/et_repayment_amount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Lyhennyssumma (€)"
+                    android:textColor="@android:color/white"
+                    android:textColorHint="#80FFFFFF"
+                    android:background="@drawable/edit_text_background"
+                    android:padding="12dp"
+                    android:inputType="numberDecimal"
+                    android:layout_marginBottom="8dp"/>
+                
+                <EditText
+                    android:id="@+id/et_interest_amount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Korkosumma (€)"
+                    android:textColor="@android:color/white"
+                    android:textColorHint="#80FFFFFF"
+                    android:background="@drawable/edit_text_background"
+                    android:padding="12dp"
+                    android:inputType="numberDecimal"
+                    android:layout_marginBottom="16dp"/>
             </LinearLayout>
-            <EditText
-                android:id="@+id/et_repayment_amount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Lyhennyssumma (€)"/>
-            <EditText
-                android:id="@+id/et_interest_amount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Korkosumma (€)"/>
-            <!-- Credit selection -->
+            
+            <!-- Credit selection (only visible for credit repayment) -->
             <LinearLayout
                 android:id="@+id/ll_credit_selection"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="8dp">
+                android:orientation="vertical"
+                android:padding="8dp"
+                android:visibility="gone">
+                
                 <TextView
-                    android:id="@+id/tv_selected_credit"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/select_credit"/>
-                <Button
-                    android:id="@+id/select_credit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/select_credit"/>
+                    android:text="@string/select_credit"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp"/>
+                
+                <Button
+                    android:id="@+id/select_credit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/select_credit"
+                    android:background="@drawable/button_background"
+                    android:textColor="@android:color/white"
+                    android:layout_marginBottom="16dp"/>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
