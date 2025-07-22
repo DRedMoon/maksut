@@ -41,7 +41,6 @@ class JsonExportImportUtils {
                 categories = categories,
                 loans = loans,
                 credits = credits,
-                exportDate = Date()
             )
             
             val jsonString = gson.toJson(exportData)
