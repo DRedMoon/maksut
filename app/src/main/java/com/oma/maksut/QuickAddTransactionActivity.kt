@@ -42,6 +42,10 @@ class QuickAddTransactionActivity : AppCompatActivity() {
     private lateinit var llCreditSelection: LinearLayout
     private lateinit var etRepaymentAmount: EditText
     private lateinit var etInterestAmount: EditText
+    private lateinit var etCreditRepaymentAmount: EditText
+    private lateinit var etCreditInterestAmount: EditText
+    private lateinit var spinnerLoanSelection: Spinner
+    private lateinit var spinnerCreditSelection: Spinner
     private var selectedLoan: Loan? = null
     private var selectedCredit: Credit? = null
     
@@ -75,6 +79,10 @@ class QuickAddTransactionActivity : AppCompatActivity() {
         llCreditSelection = findViewById(R.id.ll_credit_selection)
         etRepaymentAmount = findViewById(R.id.et_repayment_amount)
         etInterestAmount = findViewById(R.id.et_interest_amount)
+        etCreditRepaymentAmount = findViewById(R.id.et_credit_repayment_amount)
+        etCreditInterestAmount = findViewById(R.id.et_credit_interest_amount)
+        spinnerLoanSelection = findViewById(R.id.spinner_loan_selection)
+        spinnerCreditSelection = findViewById(R.id.spinner_credit_selection)
         
         // Set current date as default
         tvPaymentDate.text = dateFormat.format(selectedPaymentDate)
@@ -87,14 +95,44 @@ class QuickAddTransactionActivity : AppCompatActivity() {
     }
     
     private fun setupListeners() {
-        // Loan selection
-        llLoanSelection.setOnClickListener {
-            showLoanSelectionDialog()
+        // Loan selection dropdown
+        spinnerLoanSelection.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {
+                if (position > 0) { // Skip "Select Loan" option
+                    lifecycleScope.launch {
+                        val loans = repository.getAllActiveLoans().first()
+                        if (position - 1 < loans.size) {
+                            selectedLoan = loans[position - 1]
+                        }
+                    }
+                } else {
+                    selectedLoan = null
+                }
+            }
+            
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                selectedLoan = null
+            }
         }
         
-        // Credit selection
-        llCreditSelection.setOnClickListener {
-            showCreditSelectionDialog()
+        // Credit selection dropdown
+        spinnerCreditSelection.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {
+                if (position > 0) { // Skip "Select Credit" option
+                    lifecycleScope.launch {
+                        val credits = repository.getAllActiveCredits().first()
+                        if (position - 1 < credits.size) {
+                            selectedCredit = credits[position - 1]
+                        }
+                    }
+                } else {
+                    selectedCredit = null
+                }
+            }
+            
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                selectedCredit = null
+            }
         }
         
         // Payment date selection
