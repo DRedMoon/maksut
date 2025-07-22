@@ -45,12 +45,18 @@ class MonthlyPaymentsActivity : AppCompatActivity() {
 
         // Load monthly payments
         lifecycleScope.launch {
-            val repo = FinanceRepository(this@MonthlyPaymentsActivity)
-            repo.getMonthlyPayments().collect { payments ->
-                allPayments = payments
-                adapter.updateItems(payments)
-                val total = payments.sumOf { it.amount }
-                tvTotal.text = String.format(Locale.getDefault(), "%.2f €", total)
+            try {
+                val repo = FinanceRepository(this@MonthlyPaymentsActivity)
+                repo.getMonthlyPayments().collect { payments ->
+                    allPayments = payments
+                    adapter.updateItems(payments)
+                    val total = payments.sumOf { it.amount }
+                    tvTotal.text = String.format(Locale.getDefault(), "%.2f €", total)
+                }
+            } catch (e: Exception) {
+                // Handle error gracefully
+                tvTotal.text = "0.00 €"
+                android.util.Log.e("MonthlyPaymentsActivity", "Error loading payments", e)
             }
         }
 
@@ -68,8 +74,12 @@ class MonthlyPaymentsActivity : AppCompatActivity() {
 
     private fun togglePaidStatus(tx: Transaction) {
         lifecycleScope.launch {
-            val repo = FinanceRepository(this@MonthlyPaymentsActivity)
-            repo.updatePaymentStatus(tx.id, !tx.isPaid)
+            try {
+                val repo = FinanceRepository(this@MonthlyPaymentsActivity)
+                repo.updatePaymentStatus(tx.id, !tx.isPaid)
+            } catch (e: Exception) {
+                android.util.Log.e("MonthlyPaymentsActivity", "Error updating payment status", e)
+            }
         }
     }
 }

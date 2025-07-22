@@ -93,7 +93,7 @@ class MainActivity : AppCompatActivity() {
                 clickCount++
                 when (currentPage) {
                     1 -> startActivity(Intent(this, LoanCreditManagementActivity::class.java))
-                    2 -> showDetailDialog("Kuukausimaksut", emptyList())
+                    2 -> startActivity(Intent(this, MonthlyPaymentsActivity::class.java))
                     // saldolla ei avata
                 }
             }
@@ -205,10 +205,7 @@ class MainActivity : AppCompatActivity() {
         // Update page title and content
         updateRemainingText()
         rebuildList()
-        // Open MonthlyPaymentsActivity if on tab 2
-        if (currentPage == 2) {
-            startActivity(Intent(this, MonthlyPaymentsActivity::class.java))
-        }
+        // Don't automatically open MonthlyPaymentsActivity - let user click on amount instead
     }
 
     private fun updateFilterUI() {
