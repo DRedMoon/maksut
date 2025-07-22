@@ -389,7 +389,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="@string/total_repayment_amount"
+                            android:text="@string/total_repayment_label"
                             android:textColor="@android:color/white"
                             android:textSize="14sp"/>
 
@@ -412,7 +412,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="@string/total_interest_amount"
+                            android:text="@string/total_interest_label"
                             android:textColor="@android:color/white"
                             android:textSize="14sp"/>
 

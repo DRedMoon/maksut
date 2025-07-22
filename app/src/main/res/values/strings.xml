@@ -142,7 +142,6 @@
     <string name="total_repayment_amount">Kokonaislyhennys: %.2f €</string>
     <string name="click_to_show_balance">Klikkaa nähdäksesi velan</string>
     <string name="click_to_show_repayment">Klikkaa nähdäksesi lyhennyksen</string>
-    <string name="edit_loan">Muokkaa lainaa</string>
     <string name="delete_loan">Poista laina</string>
     <string name="delete_loan_confirmation">Haluatko varmasti poistaa lainan "%s"?</string>
     <string name="add_credit">Lisää luotto</string>
@@ -154,7 +153,7 @@
     <string name="interest_rate">Korko (%)</string>
     <string name="personal_margin">Henkilökohtainen marginaali (%)</string>
     <string name="loan_term">Laina-aika (vuotta)</string>
-    <string name="monthly_payment">Kuukausierä</string>
+    <string name="monthly_payment">Kuukausimaksu (€)</string>
     <string name="payment_fee">Maksupalkkio</string>
     <string name="due_day">Eräpäivä (päivä)</string>
     <string name="start_date">Aloituspäivä</string>
@@ -165,7 +164,7 @@
     <string name="invalid_values">Virheelliset arvot</string>
     <string name="credit_name">Luoton nimi</string>
     <string name="credit_limit">Luottoraja</string>
-    <string name="current_balance">Nykyinen saldo</string>
+    <string name="current_balance">Nykyinen saldo (€)</string>
     <string name="min_payment_percentage">Vähimmäislyhennys (%)</string>
     <string name="min_payment_amount">Vähimmäislyhennys (€)</string>
     <string name="grace_period">Maksuvapaa aika (päivää)</string>
@@ -234,22 +233,19 @@ Tapahtumia: %4$d</string>
     <string name="name">Nimi</string>
     <string name="enter_name">Syötä nimi</string>
     <string name="original_amount">Alkuperäinen summa (€)</string>
-    <string name="current_balance">Nykyinen saldo (€)</string>
-    <string name="monthly_payment">Kuukausimaksu (€)</string>
+
+
     <string name="months_left">Kuukausia jäljellä *</string>
     <string name="enter_months">Syötä kuukausia</string>
     <string name="due_date">Eräpäivä</string>
     <string name="loan_details">Lainan tiedot</string>
     <string name="handling_fee">Hoitokulu (€)</string>
     <string name="euribor_rate">Euribor-korko (%)</string>
-    <string name="personal_margin">Henkilökohtainen marginaali (%)</string>
     <string name="credit_details">Luoton tiedot</string>
     <string name="credit_auto_calculation">Luottoraja ja korkotiedot lasketaan automaattisesti</string>
     <string name="calculations">Laskennat</string>
-    <string name="total_repayment_amount">Kokonaissumma:</string>
-    <string name="total_interest_amount">Kokonaiskorko:</string>
-    <string name="save">TALLENNA</string>
-    <string name="name_required">Nimi vaaditaan</string>
+    <string name="total_repayment_label">Kokonaissumma:</string>
+    <string name="total_interest_label">Kokonaiskorko:</string>
     <string name="invalid_original_amount">Virheellinen alkuperäinen summa</string>
     <string name="invalid_current_balance">Virheellinen nykyinen saldo</string>
     <string name="invalid_monthly_payment">Virheellinen kuukausimaksu</string>
