@@ -84,8 +84,14 @@ class MainActivity : AppCompatActivity() {
         
         tvRemainingAmount.setOnClickListener {
             when (currentPage) {
-                1 -> toggleLoansCreditsList()
-                2 -> toggleMonthlyPaymentsList()
+                1 -> {
+                    // Show loans/credits list in the main view
+                    showLoansCreditsView()
+                }
+                2 -> {
+                    // Show monthly payments list in the main view
+                    showMonthlyPaymentsView()
+                }
                 // saldolla ei avata
             }
         }
@@ -534,6 +540,37 @@ class MainActivity : AppCompatActivity() {
                 android.util.Log.e("MainActivity", "Error loading loans/credits", e)
             }
         }
+    }
+    
+    private fun showLoansCreditsView() {
+        // Hide transactions view
+        findViewById<LinearLayout>(R.id.ll_transactions_section).visibility = android.view.View.GONE
+        
+        // Show loans/credits view
+        findViewById<LinearLayout>(R.id.ll_loans_credits_expanded).visibility = android.view.View.VISIBLE
+        
+        // Load loans/credits data
+        loadLoansCredits()
+    }
+    
+    private fun showMonthlyPaymentsView() {
+        // Hide transactions view
+        findViewById<LinearLayout>(R.id.ll_transactions_section).visibility = android.view.View.GONE
+        
+        // Show monthly payments view
+        findViewById<LinearLayout>(R.id.ll_monthly_payments_expanded).visibility = android.view.View.VISIBLE
+        
+        // Load monthly payments data
+        loadMonthlyPayments()
+    }
+    
+    private fun showTransactionsView() {
+        // Hide other views
+        findViewById<LinearLayout>(R.id.ll_loans_credits_expanded).visibility = android.view.View.GONE
+        findViewById<LinearLayout>(R.id.ll_monthly_payments_expanded).visibility = android.view.View.GONE
+        
+        // Show transactions view
+        findViewById<LinearLayout>(R.id.ll_transactions_section).visibility = android.view.View.VISIBLE
     }
     
     private fun showLoanCreditDetailsDialog() {
