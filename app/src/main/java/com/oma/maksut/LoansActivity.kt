@@ -64,7 +64,7 @@ class LoansActivity : AppCompatActivity() {
                 card.findViewById<TextView>(R.id.tv_loan_fee).text =
                     getString(R.string.loan_fee, loan.paymentFee)
                 card.findViewById<TextView>(R.id.tv_loan_due).text =
-                    getString(R.string.loan_due_date, loan.dueDate?.let { SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(it) } ?: "-")
+                    getString(R.string.loan_due_date, loan.dueDay.toString())
 
                 // Lisää kortti näkyviin
                 container.addView(card)

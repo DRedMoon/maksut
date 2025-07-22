@@ -39,13 +39,13 @@ class CreditsActivity : AppCompatActivity() {
                 card.findViewById<TextView>(R.id.tv_credit_remaining).text =
                     String.format(Locale.getDefault(), "%.2f €", credit.currentBalance)
                 card.findViewById<TextView>(R.id.tv_credit_monthly).text =
-                    String.format(Locale.getDefault(), "%.2f €/kk", credit.minPaymentAmount)
+                    String.format(Locale.getDefault(), "%.2f €/kk", credit.minimumPaymentAmount)
                 card.findViewById<TextView>(R.id.tv_credit_rate).text =
                     String.format(Locale.getDefault(), "Korko %.2f%%", credit.totalInterestRate)
                 card.findViewById<TextView>(R.id.tv_credit_fee).text =
-                    String.format(Locale.getDefault(), "Palkkio %.2f€", 0.0) // Credits don't have fees in the model
+                    String.format(Locale.getDefault(), "Palkkio %.2f€", credit.paymentFee)
                 card.findViewById<TextView>(R.id.tv_credit_due).text =
-                    String.format(Locale.getDefault(), "Eräpäivä %s", credit.dueDate?.let { SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(it) } ?: "-")
+                    String.format(Locale.getDefault(), "Eräpäivä %d.", credit.dueDay)
                 container.addView(card)
             }
         }
