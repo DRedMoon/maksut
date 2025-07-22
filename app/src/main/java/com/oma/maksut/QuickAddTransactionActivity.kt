@@ -140,10 +140,11 @@ class QuickAddTransactionActivity : AppCompatActivity() {
     
     private fun loadDefaultCategory() {
         lifecycleScope.launch {
-            // Initialize default categories first
-            repository.initializeDefaultCategories()
-            // Load categories and populate spinner
-            repository.getAllCategories().collect { categories ->
+            try {
+                // Initialize default categories first
+                repository.initializeDefaultCategories()
+                // Load categories and populate spinner
+                val categories = repository.getAllCategories().first()
                 if (categories.isNotEmpty()) {
                     // Populate spinner with category names
                     val categoryNames = categories.map { it.name }
@@ -166,7 +167,11 @@ class QuickAddTransactionActivity : AppCompatActivity() {
                             // Do nothing
                         }
                     }
+                } else {
+                    android.util.Log.e("QuickAddTransactionActivity", "No categories found after initialization")
                 }
+            } catch (e: Exception) {
+                android.util.Log.e("QuickAddTransactionActivity", "Error loading categories", e)
             }
         }
     }
@@ -348,22 +353,5 @@ class QuickAddTransactionActivity : AppCompatActivity() {
         }
     }
     
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_quick_add, menu)
-        return true
-    }
-    
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_manage_categories -> {
-                startActivity(Intent(this, CategoryManagementActivity::class.java))
-                true
-            }
-            R.id.action_all_payments -> {
-                startActivity(Intent(this, AllPaymentsActivity::class.java))
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
+    // Menu methods removed as requested
 }

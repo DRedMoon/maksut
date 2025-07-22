@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import com.oma.maksut.repository.FinanceRepository
 import com.oma.maksut.database.entities.Transaction
+import com.oma.maksut.MonthlyPaymentsAdapter
 
 class MonthlyPaymentsActivity : AppCompatActivity() {
     private lateinit var tvTotal: TextView

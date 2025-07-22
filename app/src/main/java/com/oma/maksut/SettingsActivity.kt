@@ -32,7 +32,7 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var switchSync: SwitchMaterial
     private lateinit var switchEncryption: SwitchMaterial
     private lateinit var switchPinCode: SwitchMaterial
-    private lateinit var etPinCode: EditText
+    private var etPinCode: EditText? = null
     private lateinit var tvSyncFolderPath: TextView
     private lateinit var tvSyncStatus: TextView
     private val pickFolderLauncher = registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri: Uri? ->
@@ -144,11 +144,17 @@ class SettingsActivity : AppCompatActivity() {
     }
     
     private fun setupViews() {
-        switchTheme = findViewById(R.id.switch_theme)
-        switchSync = findViewById(R.id.switch_sync)
-        switchEncryption = findViewById(R.id.switch_encryption)
-        switchPinCode = findViewById(R.id.switch_pin_code)
-        etPinCode = findViewById(R.id.et_pin_code)
+        try {
+            switchTheme = findViewById(R.id.switch_theme)
+            switchSync = findViewById(R.id.switch_sync)
+            switchEncryption = findViewById(R.id.switch_encryption)
+            switchPinCode = findViewById(R.id.switch_pin_code)
+            // etPinCode might not exist in this layout
+            etPinCode = findViewById(R.id.et_pin_code)
+        } catch (e: Exception) {
+            android.util.Log.e("SettingsActivity", "Error in setupViews", e)
+            throw e
+        }
     }
     
     private fun setupToolbar() {
@@ -181,7 +187,7 @@ class SettingsActivity : AppCompatActivity() {
         // PIN code switch
         switchPinCode.setOnCheckedChangeListener { _, isChecked ->
             savePinCodeSetting(isChecked)
-            etPinCode.visibility = if (isChecked) android.view.View.VISIBLE else android.view.View.GONE
+            etPinCode?.visibility = if (isChecked) android.view.View.VISIBLE else android.view.View.GONE
         }
         
         // Export button
@@ -228,8 +234,8 @@ class SettingsActivity : AppCompatActivity() {
         switchEncryption.isChecked = prefs.getBoolean("encryption_enabled", false)
         switchPinCode.isChecked = prefs.getBoolean("pin_code_enabled", false)
         
-        etPinCode.setText(prefs.getString("pin_code", ""))
-        etPinCode.visibility = if (switchPinCode.isChecked) android.view.View.VISIBLE else android.view.View.GONE
+        etPinCode?.setText(prefs.getString("pin_code", ""))
+        etPinCode?.visibility = if (switchPinCode.isChecked) android.view.View.VISIBLE else android.view.View.GONE
         
         // Update display texts
         updateEncryptionAlgorithmDisplay()
