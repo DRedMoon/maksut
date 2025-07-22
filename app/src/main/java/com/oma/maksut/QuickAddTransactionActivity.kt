@@ -39,8 +39,6 @@ class QuickAddTransactionActivity : AppCompatActivity() {
     // Loan/Credit repayment fields
     private lateinit var llLoanSelection: LinearLayout
     private lateinit var llCreditSelection: LinearLayout
-    private lateinit var tvSelectedLoan: TextView
-    private lateinit var tvSelectedCredit: TextView
     private lateinit var etRepaymentAmount: EditText
     private lateinit var etInterestAmount: EditText
     private var selectedLoan: Loan? = null
@@ -74,8 +72,6 @@ class QuickAddTransactionActivity : AppCompatActivity() {
         // Loan/Credit repayment fields
         llLoanSelection = findViewById(R.id.ll_loan_selection)
         llCreditSelection = findViewById(R.id.ll_credit_selection)
-        tvSelectedLoan = findViewById(R.id.tv_selected_loan)
-        tvSelectedCredit = findViewById(R.id.tv_selected_credit)
         etRepaymentAmount = findViewById(R.id.et_repayment_amount)
         etInterestAmount = findViewById(R.id.et_interest_amount)
         
@@ -233,7 +229,6 @@ class QuickAddTransactionActivity : AppCompatActivity() {
                         .setTitle(getString(R.string.select_loan))
                         .setItems(loanNames) { _, which ->
                             selectedLoan = loans[which]
-                            tvSelectedLoan.text = selectedLoan!!.name
                         }
                         .show()
                 } else {
@@ -254,7 +249,6 @@ class QuickAddTransactionActivity : AppCompatActivity() {
                         .setTitle(getString(R.string.select_credit))
                         .setItems(creditNames) { _, which ->
                             selectedCredit = credits[which]
-                            tvSelectedCredit.text = selectedCredit!!.name
                         }
                         .show()
                 } else {
