@@ -261,7 +261,7 @@ class SettingsActivity : AppCompatActivity() {
         PreferenceManager.getDefaultSharedPreferences(this)
             .edit {
                 putBoolean("pin_code_enabled", isEnabled)
-                putString("pin_code", if (isEnabled) etPinCode.text.toString() else "")
+                putString("pin_code", if (isEnabled) etPinCode?.text?.toString() ?: "" else "")
             }
     }
     
