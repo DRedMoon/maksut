@@ -147,12 +147,12 @@ class QuickAddTransactionActivity : AppCompatActivity() {
                 if (categories.isNotEmpty()) {
                     // Populate spinner with category names
                     val categoryNames = categories.map { it.name }
-                    val adapter = ArrayAdapter(this@QuickAddTransactionActivity, android.R.layout.simple_spinner_item, categoryNames)
+                    val adapter = ArrayAdapter<String>(this@QuickAddTransactionActivity, android.R.layout.simple_spinner_item, categoryNames)
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                     spinnerCategory.adapter = adapter
                     
                     // Set default category
-                    selectedCategory = categories.first()
+                    selectedCategory = categories.firstOrNull()
                     updateCategoryDisplay()
                     
                     // Set spinner listener
