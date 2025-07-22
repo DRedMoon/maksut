@@ -94,11 +94,22 @@
 
         <TextView
             android:id="@+id/tv_transactions_header"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="@string/transactions_header"
             android:textColor="@android:color/white"
             android:textSize="14sp"/>
+
+        <ImageView
+            android:id="@+id/iv_transactions_menu"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_more_vert"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
+            app:tint="@android:color/white"/>
     </LinearLayout>
 
     <!-- 5a) Kaikki / Tulevat -suodatin -->

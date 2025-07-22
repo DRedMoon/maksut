@@ -144,11 +144,30 @@ class QuickAddTransactionActivity : AppCompatActivity() {
     
     private fun loadDefaultCategory() {
         lifecycleScope.launch {
-            // Load first available category as default
+            // Load categories and populate spinner
             repository.getAllCategories().collect { categories ->
                 if (categories.isNotEmpty()) {
+                    // Populate spinner with category names
+                    val categoryNames = categories.map { it.name }
+                    val adapter = ArrayAdapter(this@QuickAddTransactionActivity, android.R.layout.simple_spinner_item, categoryNames)
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    spinnerCategory.adapter = adapter
+                    
+                    // Set default category
                     selectedCategory = categories.first()
                     updateCategoryDisplay()
+                    
+                    // Set spinner listener
+                    spinnerCategory.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                        override fun onItemSelected(parent: AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {
+                            selectedCategory = categories[position]
+                            updateCategoryDisplay()
+                        }
+                        
+                        override fun onNothingSelected(parent: AdapterView<*>?) {
+                            // Do nothing
+                        }
+                    }
                 }
             }
         }

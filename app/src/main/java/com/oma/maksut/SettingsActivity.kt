@@ -55,8 +55,13 @@ class SettingsActivity : AppCompatActivity() {
         tvSyncStatus = findViewById(R.id.tv_sync_status)
         findViewById<Button>(R.id.btn_export_diagnostics).setOnClickListener {
             lifecycleScope.launch {
-                val file = DiagnosticsUtils.exportDiagnostics(this@SettingsActivity)
-                Toast.makeText(this@SettingsActivity, "Raportti viety: ${file.absolutePath}", Toast.LENGTH_LONG).show()
+                try {
+                    val file = DiagnosticsUtils.exportDiagnostics(this@SettingsActivity)
+                    Toast.makeText(this@SettingsActivity, "Raportti viety: ${file.absolutePath}", Toast.LENGTH_LONG).show()
+                } catch (e: Exception) {
+                    Toast.makeText(this@SettingsActivity, "Virhe raportin viennissä", Toast.LENGTH_SHORT).show()
+                    android.util.Log.e("SettingsActivity", "Error exporting diagnostics", e)
+                }
             }
         }
         findViewById<Button>(R.id.btn_view_events).setOnClickListener {
@@ -82,30 +87,45 @@ class SettingsActivity : AppCompatActivity() {
         }
         findViewById<Button>(R.id.btn_export_sync).setOnClickListener {
             lifecycleScope.launch {
-                val uri = SyncUtils.getSyncFolderUri(this@SettingsActivity)
-                val ok = if (uri != null) {
-                    SyncUtils.exportToUserSyncFolder(this@SettingsActivity)
-                } else {
-                    SyncUtils.exportToSyncFile(this@SettingsActivity)
-                    true
+                try {
+                    val uri = SyncUtils.getSyncFolderUri(this@SettingsActivity)
+                    val ok = if (uri != null) {
+                        SyncUtils.exportToUserSyncFolder(this@SettingsActivity)
+                    } else {
+                        SyncUtils.exportToSyncFile(this@SettingsActivity)
+                        true
+                    }
+                    tvSyncStatus.text = if (ok) "Synkronointitiedosto viety" else "Virhe viennissä"
+                } catch (e: Exception) {
+                    tvSyncStatus.text = "Virhe viennissä"
+                    android.util.Log.e("SettingsActivity", "Error exporting sync", e)
                 }
-                tvSyncStatus.text = if (ok) "Synkronointitiedosto viety" else "Virhe viennissä"
             }
         }
         findViewById<Button>(R.id.btn_import_sync).setOnClickListener {
             lifecycleScope.launch {
-                val uri = SyncUtils.getSyncFolderUri(this@SettingsActivity)
-                val ok = if (uri != null) {
-                    SyncUtils.importFromUserSyncFolder(this@SettingsActivity)
-                } else {
-                    SyncUtils.importFromSyncFile(this@SettingsActivity)
+                try {
+                    val uri = SyncUtils.getSyncFolderUri(this@SettingsActivity)
+                    val ok = if (uri != null) {
+                        SyncUtils.importFromUserSyncFolder(this@SettingsActivity)
+                    } else {
+                        SyncUtils.importFromSyncFile(this@SettingsActivity)
+                    }
+                    tvSyncStatus.text = if (ok) "Synkronointitiedosto tuotu" else "Virhe tuonnissa"
+                } catch (e: Exception) {
+                    tvSyncStatus.text = "Virhe tuonnissa"
+                    android.util.Log.e("SettingsActivity", "Error importing sync", e)
                 }
-                tvSyncStatus.text = if (ok) "Synkronointitiedosto tuotu" else "Virhe tuonnissa"
             }
         }
         // Show current sync folder path
-        val uri = SyncUtils.getSyncFolderUri(this)
-        tvSyncFolderPath.text = uri?.toString() ?: SyncUtils.getDefaultSyncFolder(this).absolutePath
+        try {
+            val uri = SyncUtils.getSyncFolderUri(this)
+            tvSyncFolderPath.text = uri?.toString() ?: SyncUtils.getDefaultSyncFolder(this).absolutePath
+        } catch (e: Exception) {
+            tvSyncFolderPath.text = "Virhe synkronointikansion lataamisessa"
+            android.util.Log.e("SettingsActivity", "Error loading sync folder", e)
+        }
     }
     
     private fun setupViews() {
