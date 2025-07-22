@@ -8,6 +8,10 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.appbar.MaterialToolbar
 import kotlin.math.abs
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+import com.oma.maksut.repository.FinanceRepository
+import java.text.SimpleDateFormat
 
 /**
  * Näyttää listan lainoista korttimuodossa.
@@ -36,34 +40,34 @@ class LoansActivity : AppCompatActivity() {
                 // TODO: Avaa EditLoanActivity valitulla lainalla
             }
 
-        // 3) Hae lainat ja luo kortit
-        val loans = TransactionRepository.transactions
-            .filter { it.category == Category.LOAN }
+        lifecycleScope.launch {
+            val repository = FinanceRepository(this@LoansActivity)
+            val loans = repository.getAllActiveLoans().first()
 
-        // 4) Löydä korttien kontaineri
+            // 4) Löydä korttien kontaineri
+            val container = findViewById<LinearLayout>(R.id.ll_container_loans)
+            val inflater = LayoutInflater.from(this@LoansActivity)
 
-        val container = findViewById<LinearLayout>(R.id.ll_container_loans)
-        val inflater  = LayoutInflater.from(this)
+            // 5) Lisää jokainen laina korttipohjaan
+            loans.forEach { loan ->
+                val card = inflater.inflate(R.layout.item_payment_card, container, false)
 
-        // 5) Lisää jokainen laina korttipohjaan
-        loans.forEach { loan ->
-            val card = inflater.inflate(R.layout.item_payment_card, container, false)
+                // Täytä kortin kentät
+                card.findViewById<TextView>(R.id.tv_loan_name).text = loan.name
+                card.findViewById<TextView>(R.id.tv_loan_remaining).text =
+                    getString(R.string.loan_remaining_amount, kotlin.math.abs(loan.currentBalance))
+                card.findViewById<TextView>(R.id.tv_loan_monthly).text =
+                    getString(R.string.loan_monthly_payment, loan.monthlyPayment)
+                card.findViewById<TextView>(R.id.tv_loan_rate).text =
+                    getString(R.string.loan_interest_rate, loan.totalInterestRate)
+                card.findViewById<TextView>(R.id.tv_loan_fee).text =
+                    getString(R.string.loan_fee, loan.paymentFee)
+                card.findViewById<TextView>(R.id.tv_loan_due).text =
+                    getString(R.string.loan_due_date, loan.dueDate?.let { SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(it) } ?: "-")
 
-            // Täytä kortin kentät
-            card.findViewById<TextView>(R.id.tv_loan_name).text = loan.label
-            card.findViewById<TextView>(R.id.tv_loan_remaining).text =
-                getString(R.string.loan_remaining_amount, kotlin.math.abs(loan.amount))
-            card.findViewById<TextView>(R.id.tv_loan_monthly).text =
-                getString(R.string.loan_monthly_payment, loan.monthlyPayment)
-            card.findViewById<TextView>(R.id.tv_loan_rate).text =
-                getString(R.string.loan_interest_rate, loan.rate)
-            card.findViewById<TextView>(R.id.tv_loan_fee).text =
-                getString(R.string.loan_fee, loan.fee)
-            card.findViewById<TextView>(R.id.tv_loan_due).text =
-                getString(R.string.loan_due_date, loan.dueDate?.toString() ?: "-")
-
-            // Lisää kortti näkyviin
-            container.addView(card)
+                // Lisää kortti näkyviin
+                container.addView(card)
+            }
         }
     }
 }
