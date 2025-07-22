@@ -26,8 +26,7 @@
     <string name="export_csv">Vie CSV</string>
     <string name="zero_euro">0,00 €</string>
     <string name="sample_date">Päivä</string>
-    <string name="add_salary">Lisää palkka</string>
-    <string name="add_expense">Lisää kulu</string>
+
     <string name="salary">Palkka</string>
     <string name="expense">Kulu</string>
     <string name="cancel">Peruuta</string>
@@ -71,23 +70,14 @@
     <string name="ok">OK</string>
     <string name="loans_template">Lainat: %1$s</string>
     <string name="third_page">Kolmas sivu</string>
-    <string name="button_add_salary">Lisää palkka</string>
-    <string name="button_add_expense">Lisää kulu</string>
     <string name="button_add_credit">Lisää luotto</string>
     <string name="button_add_loan">Lisää laina</string>
-    <string name="button_add_insurance">Lisää vakuutus</string>
     <string name="button_summary">Näytä yhteenveto</string>
     <string name="text_total_loans">Lainat yhteensä: 0 €</string>
     <string name="text_total_credits">Luotot yhteensä: 0 €</string>
     <string name="text_remaining_money">Rahaa jäljellä: 0 €</string>
     <string name="text_savings_status">Ei säästötavoitetta</string>
-    <string name="add_salary_label_month">Vuosi-Kuukausi (YYYY-MM)</string>
-    <string name="add_salary_label_amount">Summa (€)</string>
-    <string name="button_save_salary">Tallenna palkka</string>
-    <string name="add_expense_label_month">Vuosi-Kuukausi (YYYY-MM)</string>
-    <string name="add_expense_label_category">Kategoria (ruoka / sähkö / muu)</string>
-    <string name="add_expense_label_amount">Summa (€)</string>
-    <string name="button_save_expense">Tallenna kulu</string>
+
     <string name="add_credit_label_name">Luoton nimi</string>
     <string name="add_credit_label_amount">Summa (€)</string>
     <string name="add_credit_label_min_sum">Vähimmäislyhennys (€)</string>
@@ -107,10 +97,7 @@
     <string name="add_loan_label_payment">Maksuerä (€)/kk</string>
     <string name="add_loan_label_due">Eräpäivä (pp)</string>
     <string name="button_save_loan">Tallenna laina</string>
-    <string name="add_ins_label_rec">Toistuvuus (kk)</string>
-    <string name="add_ins_label_cost">Kustannus (€)</string>
-    <string name="add_ins_label_due">Eräpäivä (pp)</string>
-    <string name="button_save_insurance">Tallenna vakuutus</string>
+
     <string name="home">Koti</string>
     <string name="upcoming">Tulevat</string>
     <string name="add">Lisää</string>
@@ -238,5 +225,38 @@ Tapahtumia: %4$d</string>
     <string name="loan_interest_rate">Korko: %.2f%%</string>
     <string name="loan_fee">Palkkio: %.2f €</string>
     <string name="loan_due_date">Eräpäivä: %s</string>
+    <string name="monthly_payments_header">Kuukausimaksut</string>
+    <string name="loans_credits_header">Lainat &amp; Luotot</string>
+    <string name="show_more">Näytä lisää</string>
+    <string name="show_less">Näytä vähemmän</string>
+    <string name="add_loan_credit">Lisää laina/luotto</string>
+    <string name="basic_information">Perustiedot</string>
+    <string name="name">Nimi</string>
+    <string name="enter_name">Syötä nimi</string>
+    <string name="original_amount">Alkuperäinen summa (€)</string>
+    <string name="current_balance">Nykyinen saldo (€)</string>
+    <string name="monthly_payment">Kuukausimaksu (€)</string>
+    <string name="months_left">Kuukausia jäljellä *</string>
+    <string name="enter_months">Syötä kuukausia</string>
+    <string name="due_date">Eräpäivä</string>
+    <string name="loan_details">Lainan tiedot</string>
+    <string name="handling_fee">Hoitokulu (€)</string>
+    <string name="euribor_rate">Euribor-korko (%)</string>
+    <string name="personal_margin">Henkilökohtainen marginaali (%)</string>
+    <string name="credit_details">Luoton tiedot</string>
+    <string name="credit_auto_calculation">Luottoraja ja korkotiedot lasketaan automaattisesti</string>
+    <string name="calculations">Laskennat</string>
+    <string name="total_repayment_amount">Kokonaissumma:</string>
+    <string name="total_interest_amount">Kokonaiskorko:</string>
+    <string name="save">TALLENNA</string>
+    <string name="name_required">Nimi vaaditaan</string>
+    <string name="invalid_original_amount">Virheellinen alkuperäinen summa</string>
+    <string name="invalid_current_balance">Virheellinen nykyinen saldo</string>
+    <string name="invalid_monthly_payment">Virheellinen kuukausimaksu</string>
+    <string name="months_required">Kuukausia jäljellä vaaditaan</string>
+    <string name="loan_saved">Laina tallennettu</string>
+    <string name="credit_saved">Luotto tallennettu</string>
+    <string name="error_saving">Virhe tallennuksessa: %s</string>
+    <string name="type">Tyyppi</string>
 
 </resources>

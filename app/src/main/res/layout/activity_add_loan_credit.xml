@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="#294D73"
-        app:title="Lisää laina/luotto"
+        app:title="@string/add_loan_credit"
         app:titleTextColor="@android:color/white"
         app:navigationIcon="@drawable/ic_arrow_back_white"
         app:navigationIconTint="@android:color/white"
@@ -35,7 +35,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tyyppi"
+                android:text="@string/type"
                 android:textColor="@android:color/white"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -69,7 +69,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Perustiedot"
+                        android:text="@string/basic_information"
                         android:textColor="@android:color/white"
                         android:textSize="18sp"
                         android:textStyle="bold"
@@ -79,7 +79,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Nimi"
+                        android:text="@string/name"
                         android:textColor="@android:color/white"
                         android:textSize="14sp"
                         android:layout_marginBottom="4dp"/>
@@ -88,7 +88,7 @@
                         android:id="@+id/et_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Syötä nimi"
+                        android:hint="@string/enter_name"
                         android:textColor="@android:color/white"
                         android:textColorHint="#80FFFFFF"
                         android:background="@drawable/edit_text_background"
@@ -99,7 +99,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Alkuperäinen summa (€)"
+                        android:text="@string/original_amount"
                         android:textColor="@android:color/white"
                         android:textSize="14sp"
                         android:layout_marginBottom="4dp"/>
@@ -120,7 +120,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Nykyinen saldo (€)"
+                        android:text="@string/current_balance"
                         android:textColor="@android:color/white"
                         android:textSize="14sp"
                         android:layout_marginBottom="4dp"/>
@@ -141,7 +141,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Kuukausimaksu (€)"
+                        android:text="@string/monthly_payment"
                         android:textColor="@android:color/white"
                         android:textSize="14sp"
                         android:layout_marginBottom="4dp"/>
@@ -162,7 +162,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Kuukausia jäljellä *"
+                        android:text="@string/months_left"
                         android:textColor="@android:color/white"
                         android:textSize="14sp"
                         android:layout_marginBottom="4dp"/>
@@ -171,7 +171,7 @@
                         android:id="@+id/et_months_left"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Syötä kuukausia"
+                        android:hint="@string/enter_months"
                         android:inputType="number"
                         android:textColor="@android:color/white"
                         android:textColorHint="#80FFFFFF"
@@ -183,7 +183,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Eräpäivä"
+                        android:text="@string/due_date"
                         android:textColor="@android:color/white"
                         android:textSize="14sp"
                         android:layout_marginBottom="4dp"/>
@@ -241,7 +241,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Lainan tiedot"
+                            android:text="@string/loan_details"
                             android:textColor="@android:color/white"
                             android:textSize="18sp"
                             android:textStyle="bold"
@@ -251,7 +251,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Hoitokulu (€)"
+                            android:text="@string/handling_fee"
                             android:textColor="@android:color/white"
                             android:textSize="14sp"
                             android:layout_marginBottom="4dp"/>
@@ -272,7 +272,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Euribor-korko (%)"
+                            android:text="@string/euribor_rate"
                             android:textColor="@android:color/white"
                             android:textSize="14sp"
                             android:layout_marginBottom="4dp"/>
@@ -293,7 +293,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Henkilökohtainen marginaali (%)"
+                            android:text="@string/personal_margin"
                             android:textColor="@android:color/white"
                             android:textSize="14sp"
                             android:layout_marginBottom="4dp"/>
@@ -338,7 +338,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Luoton tiedot"
+                            android:text="@string/credit_details"
                             android:textColor="@android:color/white"
                             android:textSize="18sp"
                             android:textStyle="bold"
@@ -348,7 +348,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Luottoraja ja korkotiedot lasketaan automaattisesti"
+                            android:text="@string/credit_auto_calculation"
                             android:textColor="#80FFFFFF"
                             android:textSize="14sp"/>
                     </LinearLayout>
@@ -373,7 +373,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Laskennat"
+                        android:text="@string/calculations"
                         android:textColor="@android:color/white"
                         android:textSize="18sp"
                         android:textStyle="bold"
@@ -389,7 +389,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Kokonaissumma:"
+                            android:text="@string/total_repayment_amount"
                             android:textColor="@android:color/white"
                             android:textSize="14sp"/>
 
@@ -412,7 +412,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Kokonaiskorko:"
+                            android:text="@string/total_interest_amount"
                             android:textColor="@android:color/white"
                             android:textSize="14sp"/>
 
@@ -433,7 +433,7 @@
                 android:id="@+id/btn_save"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TALLENNA"
+                android:text="@string/save"
                 android:textColor="@android:color/white"
                 android:background="@drawable/button_background"
                 android:padding="16dp"
