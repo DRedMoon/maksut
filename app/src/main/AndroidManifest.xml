@@ -44,6 +44,7 @@
         <activity android:name=".AllPaymentsActivity" />
         <activity android:name=".UpcomingActivity" />
         <activity android:name=".MonthlyPaymentsActivity" />
+        <activity android:name=".AddLoanCreditActivity" />
 
         <activity
             android:name=".MainActivity"

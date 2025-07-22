@@ -126,7 +126,8 @@
                 android:background="@drawable/selector_background"
                 android:popupBackground="#294D73"
                 android:layout_marginBottom="16dp"
-                android:spinnerMode="dropdown"/>
+                android:spinnerMode="dropdown"
+                android:theme="@style/SpinnerStyle"/>
 
             <!-- Payment Date -->
             <TextView
@@ -248,14 +249,15 @@
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp"/>
                 
-                <Button
-                    android:id="@+id/select_loan"
+                <Spinner
+                    android:id="@+id/spinner_loan_selection"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/select_loan"
-                    android:background="@drawable/button_background"
-                    android:textColor="@android:color/white"
-                    android:layout_marginBottom="16dp"/>
+                    android:background="@drawable/selector_background"
+                    android:popupBackground="#294D73"
+                    android:layout_marginBottom="16dp"
+                    android:spinnerMode="dropdown"
+                    android:theme="@style/SpinnerStyle"/>
                 
                 <EditText
                     android:id="@+id/et_repayment_amount"
@@ -300,13 +302,38 @@
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp"/>
                 
-                <Button
-                    android:id="@+id/select_credit"
+                <Spinner
+                    android:id="@+id/spinner_credit_selection"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/select_credit"
-                    android:background="@drawable/button_background"
+                    android:background="@drawable/selector_background"
+                    android:popupBackground="#294D73"
+                    android:layout_marginBottom="16dp"
+                    android:spinnerMode="dropdown"
+                    android:theme="@style/SpinnerStyle"/>
+                
+                <EditText
+                    android:id="@+id/et_credit_repayment_amount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Luoton lyhennyssumma (€)"
                     android:textColor="@android:color/white"
+                    android:textColorHint="#80FFFFFF"
+                    android:background="@drawable/edit_text_background"
+                    android:padding="12dp"
+                    android:inputType="numberDecimal"
+                    android:layout_marginBottom="8dp"/>
+                
+                <EditText
+                    android:id="@+id/et_credit_interest_amount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Luoton korkosumma (€)"
+                    android:textColor="@android:color/white"
+                    android:textColorHint="#80FFFFFF"
+                    android:background="@drawable/edit_text_background"
+                    android:padding="12dp"
+                    android:inputType="numberDecimal"
                     android:layout_marginBottom="16dp"/>
             </LinearLayout>
         </LinearLayout>

@@ -82,6 +82,98 @@
         android:layout_height="1dp"
         android:background="#294D73"/>
 
+    <!-- Expandable Monthly Payments List -->
+    <LinearLayout
+        android:id="@+id/ll_monthly_payments_expanded"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#192E45"
+        android:visibility="gone"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Monthly Payments"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_monthly_payments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"/>
+
+        <Button
+            android:id="@+id/btn_show_more_monthly"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Show more"
+            android:textColor="@android:color/white"
+            android:background="@drawable/button_background"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/btn_show_less_monthly"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Show less"
+            android:textColor="@android:color/white"
+            android:background="@drawable/button_background"
+            android:layout_marginTop="4dp"
+            android:visibility="gone"/>
+    </LinearLayout>
+
+    <!-- Expandable Loans & Credits List -->
+    <LinearLayout
+        android:id="@+id/ll_loans_credits_expanded"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#192E45"
+        android:visibility="gone"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Loans & Credits"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_loans_credits"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"/>
+
+        <Button
+            android:id="@+id/btn_show_more_loans"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Show more"
+            android:textColor="@android:color/white"
+            android:background="@drawable/button_background"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/btn_show_less_loans"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Show less"
+            android:textColor="@android:color/white"
+            android:background="@drawable/button_background"
+            android:layout_marginTop="4dp"
+            android:visibility="gone"/>
+    </LinearLayout>
+
     <!-- 3) Tapahtumat-otsikko + pieni "+" -->
     <LinearLayout
         android:id="@+id/ll_transactions_header"

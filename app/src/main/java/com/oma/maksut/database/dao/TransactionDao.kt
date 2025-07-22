@@ -38,6 +38,9 @@ interface TransactionDao {
     @Query("SELECT * FROM transactions WHERE is_loan_repayment = 1 OR is_credit_repayment = 1 OR amount > 0 OR category_id IN (SELECT id FROM categories WHERE is_monthly_payment = 1 OR name = 'Subscription' OR name = 'Expense' OR name = 'Income') ORDER BY payment_date DESC")
     fun getRealTransactions(): Flow<List<Transaction>>
     
+    @Query("SELECT * FROM transactions WHERE id = :transactionId")
+    suspend fun getTransactionById(transactionId: Long): Transaction?
+    
     @Query("UPDATE transactions SET is_paid = :isPaid WHERE id = :transactionId")
     suspend fun updatePaymentStatus(transactionId: Long, isPaid: Boolean)
     

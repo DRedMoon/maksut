@@ -58,6 +58,12 @@ class LoanCreditManagementActivity : AppCompatActivity() {
         loadData()
     }
     
+    override fun onResume() {
+        super.onResume()
+        // Reload data when returning from AddLoanCreditActivity
+        loadData()
+    }
+    
     private fun setupViews() {
         tabLayout = findViewById(R.id.tab_layout)
         recyclerView = findViewById(R.id.rv_items)
@@ -149,12 +155,16 @@ class LoanCreditManagementActivity : AppCompatActivity() {
     
     private fun showLoans() {
         recyclerView.adapter = loanAdapter
-        fabAdd.setOnClickListener { showAddLoanDialog() }
+        fabAdd.setOnClickListener { 
+            startActivity(Intent(this, AddLoanCreditActivity::class.java))
+        }
     }
     
     private fun showCredits() {
         recyclerView.adapter = creditAdapter
-        fabAdd.setOnClickListener { showAddCreditDialog() }
+        fabAdd.setOnClickListener { 
+            startActivity(Intent(this, AddLoanCreditActivity::class.java))
+        }
     }
     
     private fun updateTotalDisplay() {

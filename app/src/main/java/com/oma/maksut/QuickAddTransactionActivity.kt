@@ -42,6 +42,10 @@ class QuickAddTransactionActivity : AppCompatActivity() {
     private lateinit var llCreditSelection: LinearLayout
     private lateinit var etRepaymentAmount: EditText
     private lateinit var etInterestAmount: EditText
+    private lateinit var etCreditRepaymentAmount: EditText
+    private lateinit var etCreditInterestAmount: EditText
+    private lateinit var spinnerLoanSelection: Spinner
+    private lateinit var spinnerCreditSelection: Spinner
     private var selectedLoan: Loan? = null
     private var selectedCredit: Credit? = null
     
@@ -75,6 +79,10 @@ class QuickAddTransactionActivity : AppCompatActivity() {
         llCreditSelection = findViewById(R.id.ll_credit_selection)
         etRepaymentAmount = findViewById(R.id.et_repayment_amount)
         etInterestAmount = findViewById(R.id.et_interest_amount)
+        etCreditRepaymentAmount = findViewById(R.id.et_credit_repayment_amount)
+        etCreditInterestAmount = findViewById(R.id.et_credit_interest_amount)
+        spinnerLoanSelection = findViewById(R.id.spinner_loan_selection)
+        spinnerCreditSelection = findViewById(R.id.spinner_credit_selection)
         
         // Set current date as default
         tvPaymentDate.text = dateFormat.format(selectedPaymentDate)
@@ -87,14 +95,44 @@ class QuickAddTransactionActivity : AppCompatActivity() {
     }
     
     private fun setupListeners() {
-        // Loan selection
-        llLoanSelection.setOnClickListener {
-            showLoanSelectionDialog()
+        // Loan selection dropdown
+        spinnerLoanSelection.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {
+                if (position > 0) { // Skip "Select Loan" option
+                    lifecycleScope.launch {
+                        val loans = repository.getAllActiveLoans().first()
+                        if (position - 1 < loans.size) {
+                            selectedLoan = loans[position - 1]
+                        }
+                    }
+                } else {
+                    selectedLoan = null
+                }
+            }
+            
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                selectedLoan = null
+            }
         }
         
-        // Credit selection
-        llCreditSelection.setOnClickListener {
-            showCreditSelectionDialog()
+        // Credit selection dropdown
+        spinnerCreditSelection.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {
+                if (position > 0) { // Skip "Select Credit" option
+                    lifecycleScope.launch {
+                        val credits = repository.getAllActiveCredits().first()
+                        if (position - 1 < credits.size) {
+                            selectedCredit = credits[position - 1]
+                        }
+                    }
+                } else {
+                    selectedCredit = null
+                }
+            }
+            
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                selectedCredit = null
+            }
         }
         
         // Payment date selection
@@ -146,25 +184,31 @@ class QuickAddTransactionActivity : AppCompatActivity() {
                 // Load categories and populate spinner
                 val categories = repository.getAllCategories().first()
                 if (categories.isNotEmpty()) {
-                    // Populate spinner with category names
-                    val categoryNames = categories.map { category -> category.name }
+                    // Add empty option at the beginning
+                    val categoryNames = listOf("Select Category") + categories.map { category -> category.name }
                     val adapter = ArrayAdapter(this@QuickAddTransactionActivity, android.R.layout.simple_spinner_item, categoryNames)
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                     spinnerCategory.adapter = adapter
                     
-                    // Set default category
-                    selectedCategory = categories.firstOrNull()
+                    // Start with no category selected (empty)
+                    selectedCategory = null
                     updateCategoryDisplay()
                     
                     // Set spinner listener
                     spinnerCategory.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                         override fun onItemSelected(parent: AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {
-                            selectedCategory = categories[position]
+                            if (position == 0) {
+                                // "Select Category" option
+                                selectedCategory = null
+                            } else {
+                                selectedCategory = categories[position - 1] // -1 because of the empty option
+                            }
                             updateCategoryDisplay()
                         }
                         
                         override fun onNothingSelected(parent: AdapterView<*>?) {
-                            // Do nothing
+                            selectedCategory = null
+                            updateCategoryDisplay()
                         }
                     }
                 } else {
@@ -203,26 +247,59 @@ class QuickAddTransactionActivity : AppCompatActivity() {
     
     private fun updateCategoryDisplay() {
         selectedCategory?.let { category ->
-            // Replace spinnerCategory.setSelection(category.name) with logic to find the index of the category in the spinner adapter and setSelection(index)
+            // Find the index of the category in the spinner adapter and setSelection(index)
             val adapter = spinnerCategory.adapter as? ArrayAdapter<String>
             val index = adapter?.getPosition(category.name) ?: -1
-            spinnerCategory.setSelection(index)
+            if (index >= 0) {
+                spinnerCategory.setSelection(index)
+            }
             
             // Show/hide loan/credit selection based on category type
             if (category.isLoanRepayment) {
                 llLoanSelection.visibility = android.view.View.VISIBLE
                 llCreditSelection.visibility = android.view.View.GONE
+                loadLoanDropdown()
             } else if (category.isCreditRepayment) {
                 llLoanSelection.visibility = android.view.View.GONE
                 llCreditSelection.visibility = android.view.View.VISIBLE
+                loadCreditDropdown()
             } else {
                 llLoanSelection.visibility = android.view.View.GONE
                 llCreditSelection.visibility = android.view.View.GONE
             }
         } ?: run {
-            spinnerCategory.setSelection(R.string.select_category)
+            // No category selected, show "Select Category"
+            spinnerCategory.setSelection(0)
             llLoanSelection.visibility = android.view.View.GONE
             llCreditSelection.visibility = android.view.View.GONE
+        }
+    }
+    
+    private fun loadLoanDropdown() {
+        lifecycleScope.launch {
+            try {
+                val loans = repository.getAllActiveLoans().first()
+                val loanNames = listOf("Select Loan") + loans.map { "${it.name} - €${String.format(Locale.getDefault(), "%.2f", it.currentBalance)}" }
+                val adapter = ArrayAdapter(this@QuickAddTransactionActivity, android.R.layout.simple_spinner_item, loanNames)
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spinnerLoanSelection.adapter = adapter
+            } catch (e: Exception) {
+                android.util.Log.e("QuickAddTransactionActivity", "Error loading loans", e)
+            }
+        }
+    }
+    
+    private fun loadCreditDropdown() {
+        lifecycleScope.launch {
+            try {
+                val credits = repository.getAllActiveCredits().first()
+                val creditNames = listOf("Select Credit") + credits.map { "${it.name} - €${String.format(Locale.getDefault(), "%.2f", it.currentBalance)}" }
+                val adapter = ArrayAdapter(this@QuickAddTransactionActivity, android.R.layout.simple_spinner_item, creditNames)
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spinnerCreditSelection.adapter = adapter
+            } catch (e: Exception) {
+                android.util.Log.e("QuickAddTransactionActivity", "Error loading credits", e)
+            }
         }
     }
     
@@ -322,8 +399,16 @@ class QuickAddTransactionActivity : AppCompatActivity() {
             isCreditRepayment = selectedCategory!!.isCreditRepayment,
             loanId = selectedLoan?.id,
             creditId = selectedCredit?.id,
-            repaymentAmount = etRepaymentAmount.text.toString().toDoubleOrNull(),
-            interestAmount = etInterestAmount.text.toString().toDoubleOrNull(),
+            repaymentAmount = when {
+                selectedCategory!!.isLoanRepayment -> etRepaymentAmount.text.toString().toDoubleOrNull()
+                selectedCategory!!.isCreditRepayment -> etCreditRepaymentAmount.text.toString().toDoubleOrNull()
+                else -> null
+            },
+            interestAmount = when {
+                selectedCategory!!.isLoanRepayment -> etInterestAmount.text.toString().toDoubleOrNull()
+                selectedCategory!!.isCreditRepayment -> etCreditInterestAmount.text.toString().toDoubleOrNull()
+                else -> null
+            },
             description = null
         )
         
@@ -331,19 +416,9 @@ class QuickAddTransactionActivity : AppCompatActivity() {
             try {
                 val transactionId = repository.insertTransaction(transaction)
                 
-                // Handle loan/credit balance reduction
-                if (transaction.isLoanRepayment && selectedLoan != null && transaction.repaymentAmount != null) {
-                    repository.reduceLoanBalance(selectedLoan!!.id, transaction.repaymentAmount)
-                    Toast.makeText(this@QuickAddTransactionActivity, 
-                        getString(R.string.loan_balance_reduced), Toast.LENGTH_SHORT).show()
-                } else if (transaction.isCreditRepayment && selectedCredit != null && transaction.repaymentAmount != null) {
-                    repository.reduceCreditBalance(selectedCredit!!.id, transaction.repaymentAmount)
-                    Toast.makeText(this@QuickAddTransactionActivity, 
-                        getString(R.string.credit_balance_reduced), Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(this@QuickAddTransactionActivity, 
-                        getString(R.string.transaction_saved), Toast.LENGTH_SHORT).show()
-                }
+                // Don't reduce loan/credit balances immediately - only when transaction is marked as paid
+                Toast.makeText(this@QuickAddTransactionActivity, 
+                    getString(R.string.transaction_saved), Toast.LENGTH_SHORT).show()
                 
                 finish()
             } catch (e: Exception) {
