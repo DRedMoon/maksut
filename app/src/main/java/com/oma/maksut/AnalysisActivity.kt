@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.first
 import com.oma.maksut.repository.FinanceRepository
 
 class AnalysisActivity : AppCompatActivity() {

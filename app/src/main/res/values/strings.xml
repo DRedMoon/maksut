@@ -220,7 +220,7 @@
     <string name="this_year">Tänä vuonna</string>
     <string name="calendar_view">Kalenterinäkymä</string>
     <string name="monthly_payments">Kuukausimaksut</string>
-    <string name="diagnostics_analytics">Diagnostiikka & Analytiikka</string>
+    <string name="diagnostics_analytics">Diagnostiikka &amp; Analytiikka</string>
     <string name="export_diagnostics">Vie diagnostiikkaraportti</string>
     <string name="view_events">Näytä tapahtumat</string>
     <string name="view_errors">Näytä virheet</string>
