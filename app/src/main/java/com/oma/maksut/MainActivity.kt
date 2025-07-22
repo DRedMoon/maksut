@@ -431,9 +431,9 @@ class MainActivity : AppCompatActivity() {
                 recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
                 
                 val adapter = MonthlyPaymentsAdapter(payments.take(3)) { payment ->
-                    // Toggle paid status
+                    // Toggle paid status and handle loan/credit balance reduction
                     lifecycleScope.launch {
-                        repository.updatePaymentStatus(payment.id, !payment.isPaid)
+                        repository.handleTransactionPaymentStatus(payment.id, !payment.isPaid)
                         loadMonthlyPayments() // Reload
                     }
                 }

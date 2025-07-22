@@ -198,4 +198,36 @@ class FinanceRepository(context: Context) {
     
     suspend fun getTotalMonthlyDebtPayments(): Double = 
         getTotalLoanMonthlyPayments() + getTotalCreditMinimumPayments()
+    
+    // Handle loan/credit balance reduction when transaction is marked as paid
+    suspend fun handleTransactionPaymentStatus(transactionId: Long, isPaid: Boolean) {
+        val transaction = transactionDao.getTransactionById(transactionId) ?: return
+        
+        if (isPaid) {
+            // Transaction is being marked as paid - reduce loan/credit balances
+            if (transaction.isLoanRepayment && transaction.loanId != null && transaction.repaymentAmount != null) {
+                reduceLoanBalance(transaction.loanId, transaction.repaymentAmount)
+            } else if (transaction.isCreditRepayment && transaction.creditId != null && transaction.repaymentAmount != null) {
+                reduceCreditBalance(transaction.creditId, transaction.repaymentAmount)
+            }
+        } else {
+            // Transaction is being marked as unpaid - restore loan/credit balances
+            if (transaction.isLoanRepayment && transaction.loanId != null && transaction.repaymentAmount != null) {
+                // Add the amount back to the loan balance
+                val loan = getLoanById(transaction.loanId)
+                loan?.let {
+                    updateLoan(it.copy(currentBalance = it.currentBalance + transaction.repaymentAmount))
+                }
+            } else if (transaction.isCreditRepayment && transaction.creditId != null && transaction.repaymentAmount != null) {
+                // Add the amount back to the credit balance
+                val credit = getCreditById(transaction.creditId)
+                credit?.let {
+                    updateCredit(it.copy(currentBalance = it.currentBalance + transaction.repaymentAmount))
+                }
+            }
+        }
+        
+        // Update the transaction's paid status
+        transactionDao.updatePaymentStatus(transactionId, isPaid)
+    }
 }

@@ -258,9 +258,11 @@ class QuickAddTransactionActivity : AppCompatActivity() {
             if (category.isLoanRepayment) {
                 llLoanSelection.visibility = android.view.View.VISIBLE
                 llCreditSelection.visibility = android.view.View.GONE
+                loadLoanDropdown()
             } else if (category.isCreditRepayment) {
                 llLoanSelection.visibility = android.view.View.GONE
                 llCreditSelection.visibility = android.view.View.VISIBLE
+                loadCreditDropdown()
             } else {
                 llLoanSelection.visibility = android.view.View.GONE
                 llCreditSelection.visibility = android.view.View.GONE
@@ -270,6 +272,34 @@ class QuickAddTransactionActivity : AppCompatActivity() {
             spinnerCategory.setSelection(0)
             llLoanSelection.visibility = android.view.View.GONE
             llCreditSelection.visibility = android.view.View.GONE
+        }
+    }
+    
+    private fun loadLoanDropdown() {
+        lifecycleScope.launch {
+            try {
+                val loans = repository.getAllActiveLoans().first()
+                val loanNames = listOf("Select Loan") + loans.map { "${it.name} - €${String.format(Locale.getDefault(), "%.2f", it.currentBalance)}" }
+                val adapter = ArrayAdapter(this@QuickAddTransactionActivity, android.R.layout.simple_spinner_item, loanNames)
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spinnerLoanSelection.adapter = adapter
+            } catch (e: Exception) {
+                android.util.Log.e("QuickAddTransactionActivity", "Error loading loans", e)
+            }
+        }
+    }
+    
+    private fun loadCreditDropdown() {
+        lifecycleScope.launch {
+            try {
+                val credits = repository.getAllActiveCredits().first()
+                val creditNames = listOf("Select Credit") + credits.map { "${it.name} - €${String.format(Locale.getDefault(), "%.2f", it.currentBalance)}" }
+                val adapter = ArrayAdapter(this@QuickAddTransactionActivity, android.R.layout.simple_spinner_item, creditNames)
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spinnerCreditSelection.adapter = adapter
+            } catch (e: Exception) {
+                android.util.Log.e("QuickAddTransactionActivity", "Error loading credits", e)
+            }
         }
     }
     
@@ -369,8 +399,16 @@ class QuickAddTransactionActivity : AppCompatActivity() {
             isCreditRepayment = selectedCategory!!.isCreditRepayment,
             loanId = selectedLoan?.id,
             creditId = selectedCredit?.id,
-            repaymentAmount = etRepaymentAmount.text.toString().toDoubleOrNull(),
-            interestAmount = etInterestAmount.text.toString().toDoubleOrNull(),
+            repaymentAmount = when {
+                selectedCategory!!.isLoanRepayment -> etRepaymentAmount.text.toString().toDoubleOrNull()
+                selectedCategory!!.isCreditRepayment -> etCreditRepaymentAmount.text.toString().toDoubleOrNull()
+                else -> null
+            },
+            interestAmount = when {
+                selectedCategory!!.isLoanRepayment -> etInterestAmount.text.toString().toDoubleOrNull()
+                selectedCategory!!.isCreditRepayment -> etCreditInterestAmount.text.toString().toDoubleOrNull()
+                else -> null
+            },
             description = null
         )
         
@@ -378,19 +416,9 @@ class QuickAddTransactionActivity : AppCompatActivity() {
             try {
                 val transactionId = repository.insertTransaction(transaction)
                 
-                // Handle loan/credit balance reduction
-                if (transaction.isLoanRepayment && selectedLoan != null && transaction.repaymentAmount != null) {
-                    repository.reduceLoanBalance(selectedLoan!!.id, transaction.repaymentAmount)
-                    Toast.makeText(this@QuickAddTransactionActivity, 
-                        getString(R.string.loan_balance_reduced), Toast.LENGTH_SHORT).show()
-                } else if (transaction.isCreditRepayment && selectedCredit != null && transaction.repaymentAmount != null) {
-                    repository.reduceCreditBalance(selectedCredit!!.id, transaction.repaymentAmount)
-                    Toast.makeText(this@QuickAddTransactionActivity, 
-                        getString(R.string.credit_balance_reduced), Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(this@QuickAddTransactionActivity, 
-                        getString(R.string.transaction_saved), Toast.LENGTH_SHORT).show()
-                }
+                // Don't reduce loan/credit balances immediately - only when transaction is marked as paid
+                Toast.makeText(this@QuickAddTransactionActivity, 
+                    getString(R.string.transaction_saved), Toast.LENGTH_SHORT).show()
                 
                 finish()
             } catch (e: Exception) {
