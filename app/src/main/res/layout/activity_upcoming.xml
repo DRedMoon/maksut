@@ -17,58 +17,125 @@
         app:menu="@menu/menu_upcoming"
         app:titleCentered="true"/>
 
-    <ScrollView
+    <!-- Filter Buttons -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <LinearLayout
-            android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#192E45"
+        android:padding="8dp">
+
+        <Button
+            android:id="@+id/btn_this_week"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="This week"
+            android:textColor="@android:color/white"
+            android:background="@drawable/button_background"
+            android:layout_marginEnd="4dp"/>
+
+        <Button
+            android:id="@+id/btn_month"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Month"
+            android:textColor="@android:color/white"
+            android:background="@drawable/button_background"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"/>
+
+        <Button
+            android:id="@+id/btn_year"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Year"
+            android:textColor="@android:color/white"
+            android:background="@drawable/button_background"
+            android:layout_marginStart="4dp"/>
+    </LinearLayout>
+
+    <!-- Content Area -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <!-- This Week View -->
+        <LinearLayout
+            android:id="@+id/ll_this_week"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="16dp"
+            android:visibility="visible">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/this_week"
+                android:text="This week"
                 android:textColor="@android:color/white"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp"/>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_this_week"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="#192E45"/>
+        </LinearLayout>
+
+        <!-- Month View -->
+        <LinearLayout
+            android:id="@+id/ll_month"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/this_month"
+                android:text="Month"
                 android:textColor="@android:color/white"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:layout_marginTop="24dp"
                 android:layout_marginBottom="8dp"/>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_this_month"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="#192E45"/>
+        </LinearLayout>
+
+        <!-- Year View -->
+        <LinearLayout
+            android:id="@+id/ll_year"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/this_year"
+                android:text="Year"
                 android:textColor="@android:color/white"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:layout_marginTop="24dp"
                 android:layout_marginBottom="8dp"/>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_this_year"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="#192E45"/>
         </LinearLayout>
-    </ScrollView>
+    </FrameLayout>
 </LinearLayout>

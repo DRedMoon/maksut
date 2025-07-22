@@ -126,7 +126,8 @@
                 android:background="@drawable/selector_background"
                 android:popupBackground="#294D73"
                 android:layout_marginBottom="16dp"
-                android:spinnerMode="dropdown"/>
+                android:spinnerMode="dropdown"
+                android:theme="@style/SpinnerStyle"/>
 
             <!-- Payment Date -->
             <TextView

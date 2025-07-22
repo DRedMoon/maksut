@@ -1,6 +1,8 @@
 package com.oma.maksut
 
 import android.os.Bundle
+import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -52,21 +54,74 @@ class UpcomingActivity : AppCompatActivity() {
             return
         }
 
-        // Only start loading data if adapters were successfully initialized
-        if (::weekAdapter.isInitialized && ::monthAdapter.isInitialized && ::yearAdapter.isInitialized) {
-            lifecycleScope.launch {
-                try {
-                    val repo = com.oma.maksut.repository.FinanceRepository(this@UpcomingActivity)
-                    repo.getUpcomingTransactions(/*start*/Date(), /*end*/Date()).collect { transactions ->
-                        // TODO: Filter transactions for week/month/year
-                        weekAdapter.updateItems(transactions)
-                        monthAdapter.updateItems(transactions)
-                        yearAdapter.updateItems(transactions)
-                    }
-                } catch (e: Exception) {
-                    android.util.Log.e("UpcomingActivity", "Error loading upcoming transactions", e)
-                }
+        // Setup filter button clicks
+        findViewById<Button>(R.id.btn_this_week).setOnClickListener {
+            showView(R.id.ll_this_week)
+            loadThisWeekData()
+        }
+        
+        findViewById<Button>(R.id.btn_month).setOnClickListener {
+            showView(R.id.ll_month)
+            loadMonthData()
+        }
+        
+        findViewById<Button>(R.id.btn_year).setOnClickListener {
+            showView(R.id.ll_year)
+            loadYearData()
+        }
+        
+        // Start with "This week" view
+        showView(R.id.ll_this_week)
+        loadThisWeekData()
+    }
+    
+    private fun showView(viewId: Int) {
+        // Hide all views
+        findViewById<LinearLayout>(R.id.ll_this_week).visibility = android.view.View.GONE
+        findViewById<LinearLayout>(R.id.ll_month).visibility = android.view.View.GONE
+        findViewById<LinearLayout>(R.id.ll_year).visibility = android.view.View.GONE
+        
+        // Show selected view
+        findViewById<LinearLayout>(viewId).visibility = android.view.View.VISIBLE
+    }
+    
+    private fun loadThisWeekData() {
+        lifecycleScope.launch {
+            try {
+                val repo = com.oma.maksut.repository.FinanceRepository(this@UpcomingActivity)
+                // TODO: Filter for this week (Monday to Sunday)
+                val transactions = repo.getUpcomingTransactions(Date(), Date()).first()
+                weekAdapter.updateItems(transactions)
+            } catch (e: Exception) {
+                android.util.Log.e("UpcomingActivity", "Error loading this week data", e)
             }
         }
+    }
+    
+    private fun loadMonthData() {
+        lifecycleScope.launch {
+            try {
+                val repo = com.oma.maksut.repository.FinanceRepository(this@UpcomingActivity)
+                // TODO: Filter for this month
+                val transactions = repo.getUpcomingTransactions(Date(), Date()).first()
+                monthAdapter.updateItems(transactions)
+            } catch (e: Exception) {
+                android.util.Log.e("UpcomingActivity", "Error loading month data", e)
+            }
+        }
+    }
+    
+    private fun loadYearData() {
+        lifecycleScope.launch {
+            try {
+                val repo = com.oma.maksut.repository.FinanceRepository(this@UpcomingActivity)
+                // TODO: Filter for this year
+                val transactions = repo.getUpcomingTransactions(Date(), Date()).first()
+                yearAdapter.updateItems(transactions)
+            } catch (e: Exception) {
+                android.util.Log.e("UpcomingActivity", "Error loading year data", e)
+            }
+        }
+    }
     }
 }

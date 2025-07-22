@@ -146,25 +146,31 @@ class QuickAddTransactionActivity : AppCompatActivity() {
                 // Load categories and populate spinner
                 val categories = repository.getAllCategories().first()
                 if (categories.isNotEmpty()) {
-                    // Populate spinner with category names
-                    val categoryNames = categories.map { category -> category.name }
+                    // Add empty option at the beginning
+                    val categoryNames = listOf("Select Category") + categories.map { category -> category.name }
                     val adapter = ArrayAdapter(this@QuickAddTransactionActivity, android.R.layout.simple_spinner_item, categoryNames)
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                     spinnerCategory.adapter = adapter
                     
-                    // Set default category
-                    selectedCategory = categories.firstOrNull()
+                    // Start with no category selected (empty)
+                    selectedCategory = null
                     updateCategoryDisplay()
                     
                     // Set spinner listener
                     spinnerCategory.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                         override fun onItemSelected(parent: AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {
-                            selectedCategory = categories[position]
+                            if (position == 0) {
+                                // "Select Category" option
+                                selectedCategory = null
+                            } else {
+                                selectedCategory = categories[position - 1] // -1 because of the empty option
+                            }
                             updateCategoryDisplay()
                         }
                         
                         override fun onNothingSelected(parent: AdapterView<*>?) {
-                            // Do nothing
+                            selectedCategory = null
+                            updateCategoryDisplay()
                         }
                     }
                 } else {
@@ -203,10 +209,12 @@ class QuickAddTransactionActivity : AppCompatActivity() {
     
     private fun updateCategoryDisplay() {
         selectedCategory?.let { category ->
-            // Replace spinnerCategory.setSelection(category.name) with logic to find the index of the category in the spinner adapter and setSelection(index)
+            // Find the index of the category in the spinner adapter and setSelection(index)
             val adapter = spinnerCategory.adapter as? ArrayAdapter<String>
             val index = adapter?.getPosition(category.name) ?: -1
-            spinnerCategory.setSelection(index)
+            if (index >= 0) {
+                spinnerCategory.setSelection(index)
+            }
             
             // Show/hide loan/credit selection based on category type
             if (category.isLoanRepayment) {
@@ -220,7 +228,8 @@ class QuickAddTransactionActivity : AppCompatActivity() {
                 llCreditSelection.visibility = android.view.View.GONE
             }
         } ?: run {
-            spinnerCategory.setSelection(R.string.select_category)
+            // No category selected, show "Select Category"
+            spinnerCategory.setSelection(0)
             llLoanSelection.visibility = android.view.View.GONE
             llCreditSelection.visibility = android.view.View.GONE
         }

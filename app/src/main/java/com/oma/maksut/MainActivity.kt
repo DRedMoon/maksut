@@ -8,6 +8,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
+import android.view.LayoutInflater
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -79,25 +81,11 @@ class MainActivity : AppCompatActivity() {
         var lastClickTime = 0L
         
         tvRemainingAmount.setOnClickListener {
-            val currentTime = System.currentTimeMillis()
-            if (currentTime - lastClickTime < 300) {
-                // Double click detected
-                clickCount = 0
-                when (currentPage) {
-                    1 -> showLoanCreditDetailsDialog()
-                    2 -> startActivity(Intent(this, MonthlyPaymentsActivity::class.java))
-                    // saldolla ei avata
-                }
-            } else {
-                // Single click
-                clickCount++
-                when (currentPage) {
-                    1 -> startActivity(Intent(this, LoanCreditManagementActivity::class.java))
-                    2 -> startActivity(Intent(this, MonthlyPaymentsActivity::class.java))
-                    // saldolla ei avata
-                }
+            when (currentPage) {
+                1 -> toggleLoansCreditsList()
+                2 -> toggleMonthlyPaymentsList()
+                // saldolla ei avata
             }
-            lastClickTime = currentTime
         }
 
         // 5) Swipe vain “Jäljellä”-headeriin ja saldoon
@@ -401,6 +389,143 @@ class MainActivity : AppCompatActivity() {
                 button.setBackgroundResource(R.drawable.bottom_nav_selected)
             } else {
                 button.setBackgroundResource(android.R.color.transparent)
+            }
+        }
+    }
+    
+    private fun toggleMonthlyPaymentsList() {
+        val expandedLayout = findViewById<LinearLayout>(R.id.ll_monthly_payments_expanded)
+        val isVisible = expandedLayout.visibility == android.view.View.VISIBLE
+        
+        if (isVisible) {
+            // Hide the list
+            expandedLayout.visibility = android.view.View.GONE
+        } else {
+            // Show the list
+            expandedLayout.visibility = android.view.View.VISIBLE
+            loadMonthlyPayments()
+        }
+    }
+    
+    private fun toggleLoansCreditsList() {
+        val expandedLayout = findViewById<LinearLayout>(R.id.ll_loans_credits_expanded)
+        val isVisible = expandedLayout.visibility == android.view.View.VISIBLE
+        
+        if (isVisible) {
+            // Hide the list
+            expandedLayout.visibility = android.view.View.GONE
+        } else {
+            // Show the list
+            expandedLayout.visibility = android.view.View.VISIBLE
+            loadLoansCredits()
+        }
+    }
+    
+    private fun loadMonthlyPayments() {
+        lifecycleScope.launch {
+            try {
+                val repository = FinanceRepository(this@MainActivity)
+                val payments = repository.getMonthlyPayments().first()
+                
+                val recyclerView = findViewById<RecyclerView>(R.id.rv_monthly_payments)
+                recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
+                
+                val adapter = MonthlyPaymentsAdapter(payments.take(3)) { payment ->
+                    // Toggle paid status
+                    lifecycleScope.launch {
+                        repository.updatePaymentStatus(payment.id, !payment.isPaid)
+                        loadMonthlyPayments() // Reload
+                    }
+                }
+                recyclerView.adapter = adapter
+                
+                // Show/hide show more/less buttons
+                val btnShowMore = findViewById<Button>(R.id.btn_show_more_monthly)
+                val btnShowLess = findViewById<Button>(R.id.btn_show_less_monthly)
+                
+                if (payments.size > 3) {
+                    btnShowMore.visibility = android.view.View.VISIBLE
+                    btnShowMore.setOnClickListener {
+                        adapter.updateItems(payments)
+                        btnShowMore.visibility = android.view.View.GONE
+                        btnShowLess.visibility = android.view.View.VISIBLE
+                    }
+                    
+                    btnShowLess.setOnClickListener {
+                        adapter.updateItems(payments.take(3))
+                        btnShowMore.visibility = android.view.View.VISIBLE
+                        btnShowLess.visibility = android.view.View.GONE
+                    }
+                } else {
+                    btnShowMore.visibility = android.view.View.GONE
+                    btnShowLess.visibility = android.view.View.GONE
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("MainActivity", "Error loading monthly payments", e)
+            }
+        }
+    }
+    
+    private fun loadLoansCredits() {
+        lifecycleScope.launch {
+            try {
+                val repository = FinanceRepository(this@MainActivity)
+                val loans = repository.getAllActiveLoans().first()
+                val credits = repository.getAllActiveCredits().first()
+                val allItems = loans + credits
+                
+                val recyclerView = findViewById<RecyclerView>(R.id.rv_loans_credits)
+                recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
+                
+                // Create a simple adapter for loans/credits with show more/less functionality
+                var currentItems = allItems.take(3)
+                val adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+                    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+                        val view = LayoutInflater.from(parent.context)
+                            .inflate(android.R.layout.simple_list_item_1, parent, false)
+                        return object : RecyclerView.ViewHolder(view) {}
+                    }
+                    
+                    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+                        val item = currentItems[position]
+                        holder.itemView.findViewById<TextView>(android.R.id.text1).apply {
+                            text = "${item.name}: ${String.format(Locale.getDefault(), "%.2f €", item.currentBalance)}"
+                            setTextColor(android.graphics.Color.WHITE)
+                        }
+                    }
+                    
+                    override fun getItemCount() = currentItems.size
+                    
+                    fun updateItems(items: List<Any>) {
+                        currentItems = items
+                        notifyDataSetChanged()
+                    }
+                }
+                recyclerView.adapter = adapter
+                
+                // Show/hide show more/less buttons
+                val btnShowMore = findViewById<Button>(R.id.btn_show_more_loans)
+                val btnShowLess = findViewById<Button>(R.id.btn_show_less_loans)
+                
+                if (allItems.size > 3) {
+                    btnShowMore.visibility = android.view.View.VISIBLE
+                    btnShowMore.setOnClickListener {
+                        adapter.updateItems(allItems)
+                        btnShowMore.visibility = android.view.View.GONE
+                        btnShowLess.visibility = android.view.View.VISIBLE
+                    }
+                    
+                    btnShowLess.setOnClickListener {
+                        adapter.updateItems(allItems.take(3))
+                        btnShowMore.visibility = android.view.View.VISIBLE
+                        btnShowLess.visibility = android.view.View.GONE
+                    }
+                } else {
+                    btnShowMore.visibility = android.view.View.GONE
+                    btnShowLess.visibility = android.view.View.GONE
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("MainActivity", "Error loading loans/credits", e)
             }
         }
     }

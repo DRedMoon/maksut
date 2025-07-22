@@ -123,6 +123,19 @@
         android:paddingEnd="16dp"
         android:gravity="center_vertical" />
 
+    <!-- PIN Code Input -->
+    <EditText
+        android:id="@+id/et_pin_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Syötä PIN-koodi"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#80FFFFFF"
+        android:background="#294D73"
+        android:padding="16dp"
+        android:inputType="numberPassword"
+        android:visibility="gone"/>
+
     <!-- Export/Import JSON Buttons -->
     <Button
         android:id="@+id/btn_export_json"
