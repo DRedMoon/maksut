@@ -52,17 +52,20 @@ class UpcomingActivity : AppCompatActivity() {
             return
         }
 
-        lifecycleScope.launch {
-            try {
-                val repo = com.oma.maksut.repository.FinanceRepository(this@UpcomingActivity)
-                repo.getUpcomingTransactions(/*start*/Date(), /*end*/Date()).collect { transactions ->
-                    // TODO: Filter transactions for week/month/year
-                    weekAdapter.updateItems(transactions)
-                    monthAdapter.updateItems(transactions)
-                    yearAdapter.updateItems(transactions)
+        // Only start loading data if adapters were successfully initialized
+        if (::weekAdapter.isInitialized && ::monthAdapter.isInitialized && ::yearAdapter.isInitialized) {
+            lifecycleScope.launch {
+                try {
+                    val repo = com.oma.maksut.repository.FinanceRepository(this@UpcomingActivity)
+                    repo.getUpcomingTransactions(/*start*/Date(), /*end*/Date()).collect { transactions ->
+                        // TODO: Filter transactions for week/month/year
+                        weekAdapter.updateItems(transactions)
+                        monthAdapter.updateItems(transactions)
+                        yearAdapter.updateItems(transactions)
+                    }
+                } catch (e: Exception) {
+                    android.util.Log.e("UpcomingActivity", "Error loading upcoming transactions", e)
                 }
-            } catch (e: Exception) {
-                android.util.Log.e("UpcomingActivity", "Error loading upcoming transactions", e)
             }
         }
     }
