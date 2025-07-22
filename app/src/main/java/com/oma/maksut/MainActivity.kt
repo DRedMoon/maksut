@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity() {
                 clickCount = 0
                 when (currentPage) {
                     1 -> showLoanCreditDetailsDialog()
-                    2 -> showDetailDialog("Kuukausimaksut", emptyList())
+                    2 -> startActivity(Intent(this, MonthlyPaymentsActivity::class.java))
                     // saldolla ei avata
                 }
             } else {
@@ -131,8 +131,9 @@ class MainActivity : AppCompatActivity() {
         // 10) Bottom Navigation Setup
         setupBottomNavigation()
 
-        // Load data from repository
+        // Initialize default categories and load data from repository
         lifecycleScope.launch {
+            repository.initializeDefaultCategories()
             repository.getRealTransactions().collect { transactions ->
                 adapter.updateItems(transactions)
                 // Update balance

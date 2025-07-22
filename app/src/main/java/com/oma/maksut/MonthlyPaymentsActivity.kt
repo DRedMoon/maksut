@@ -48,10 +48,15 @@ class MonthlyPaymentsActivity : AppCompatActivity() {
             try {
                 val repo = FinanceRepository(this@MonthlyPaymentsActivity)
                 repo.getMonthlyPayments().collect { payments ->
-                    allPayments = payments
-                    adapter.updateItems(payments)
-                    val total = payments.sumOf { it.amount }
-                    tvTotal.text = String.format(Locale.getDefault(), "%.2f €", total)
+                    try {
+                        allPayments = payments
+                        adapter.updateItems(payments)
+                        val total = payments.sumOf { it.amount }
+                        tvTotal.text = String.format(Locale.getDefault(), "%.2f €", total)
+                    } catch (e: Exception) {
+                        android.util.Log.e("MonthlyPaymentsActivity", "Error processing payments", e)
+                        tvTotal.text = "0.00 €"
+                    }
                 }
             } catch (e: Exception) {
                 // Handle error gracefully

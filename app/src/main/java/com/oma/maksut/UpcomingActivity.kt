@@ -15,9 +15,15 @@ class UpcomingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_upcoming)
 
-        val toolbar = findViewById<MaterialToolbar>(R.id.topAppBar)
-        setSupportActionBar(toolbar)
-        toolbar.setNavigationOnClickListener { finish() }
+        try {
+            val toolbar = findViewById<MaterialToolbar>(R.id.topAppBar)
+            setSupportActionBar(toolbar)
+            toolbar.setNavigationOnClickListener { finish() }
+        } catch (e: Exception) {
+            android.util.Log.e("UpcomingActivity", "Error in onCreate", e)
+            Toast.makeText(this, "Error loading upcoming", Toast.LENGTH_SHORT).show()
+            finish()
+        }
 
         val rvThisWeek = findViewById<RecyclerView>(R.id.rv_this_week)
         val rvThisMonth = findViewById<RecyclerView>(R.id.rv_this_month)

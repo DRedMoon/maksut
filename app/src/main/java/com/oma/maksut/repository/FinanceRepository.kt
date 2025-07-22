@@ -78,6 +78,64 @@ class FinanceRepository(context: Context) {
     suspend fun deleteCategory(category: Category) = 
         categoryDao.deleteCategory(category)
     
+    suspend fun initializeDefaultCategories() {
+        val count = categoryDao.getCategoryCount()
+        if (count == 0) {
+            // Insert default categories
+            val defaultCategories = listOf(
+                Category(
+                    name = "Income",
+                    iconResource = "💰",
+                    color = 0xFF4CAF50.toInt(),
+                    hasDueDate = false,
+                    isMonthlyPayment = false,
+                    isLoanRepayment = false,
+                    isCreditRepayment = false
+                ),
+                Category(
+                    name = "Expense",
+                    iconResource = "💸",
+                    color = 0xFFF44336.toInt(),
+                    hasDueDate = false,
+                    isMonthlyPayment = false,
+                    isLoanRepayment = false,
+                    isCreditRepayment = false
+                ),
+                Category(
+                    name = "Subscription",
+                    iconResource = "📱",
+                    color = 0xFF2196F3.toInt(),
+                    hasDueDate = true,
+                    isMonthlyPayment = true,
+                    isLoanRepayment = false,
+                    isCreditRepayment = false
+                ),
+                Category(
+                    name = "Loan Repayment",
+                    iconResource = "🏦",
+                    color = 0xFFFF9800.toInt(),
+                    hasDueDate = true,
+                    isMonthlyPayment = false,
+                    isLoanRepayment = true,
+                    isCreditRepayment = false
+                ),
+                Category(
+                    name = "Credit Repayment",
+                    iconResource = "💳",
+                    color = 0xFF9C27B0.toInt(),
+                    hasDueDate = true,
+                    isMonthlyPayment = false,
+                    isLoanRepayment = false,
+                    isCreditRepayment = true
+                )
+            )
+            
+            defaultCategories.forEach { category ->
+                categoryDao.insertCategory(category)
+            }
+        }
+    }
+    
     // Loan operations
     fun getAllActiveLoans(): Flow<List<Loan>> = loanDao.getAllActiveLoans()
     
