@@ -25,18 +25,32 @@ class MonthlyPaymentsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_monthly_payments)
 
-        val toolbar = findViewById<MaterialToolbar>(R.id.topAppBar)
-        setSupportActionBar(toolbar)
-        toolbar.setNavigationOnClickListener { finish() }
-
-        tvTotal = findViewById(R.id.tv_monthly_payments_total)
-        rvPayments = findViewById(R.id.rv_monthly_payments)
-        rvPayments.layoutManager = LinearLayoutManager(this)
-
-        adapter = MonthlyPaymentsAdapter(emptyList()) { tx ->
-            togglePaidStatus(tx)
+        try {
+            val toolbar = findViewById<MaterialToolbar>(R.id.topAppBar)
+            setSupportActionBar(toolbar)
+            toolbar.setNavigationOnClickListener { finish() }
+        } catch (e: Exception) {
+            android.util.Log.e("MonthlyPaymentsActivity", "Error in onCreate", e)
+            Toast.makeText(this, "Error loading monthly payments", Toast.LENGTH_SHORT).show()
+            finish()
+            return
         }
-        rvPayments.adapter = adapter
+
+        try {
+            tvTotal = findViewById(R.id.tv_monthly_payments_total)
+            rvPayments = findViewById(R.id.rv_monthly_payments)
+            rvPayments.layoutManager = LinearLayoutManager(this)
+
+            adapter = MonthlyPaymentsAdapter(emptyList()) { tx ->
+                togglePaidStatus(tx)
+            }
+            rvPayments.adapter = adapter
+        } catch (e: Exception) {
+            android.util.Log.e("MonthlyPaymentsActivity", "Error setting up views", e)
+            Toast.makeText(this, "Error setting up monthly payments", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
 
         // Toggle list visibility on total click
         tvTotal.setOnClickListener {

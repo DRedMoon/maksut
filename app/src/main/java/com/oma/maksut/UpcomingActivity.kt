@@ -25,19 +25,26 @@ class UpcomingActivity : AppCompatActivity() {
             finish()
         }
 
-        val rvThisWeek = findViewById<RecyclerView>(R.id.rv_this_week)
-        val rvThisMonth = findViewById<RecyclerView>(R.id.rv_this_month)
-        val rvThisYear = findViewById<RecyclerView>(R.id.rv_this_year)
-        rvThisWeek.layoutManager = LinearLayoutManager(this)
-        rvThisMonth.layoutManager = LinearLayoutManager(this)
-        rvThisYear.layoutManager = LinearLayoutManager(this)
+        try {
+            val rvThisWeek = findViewById<RecyclerView>(R.id.rv_this_week)
+            val rvThisMonth = findViewById<RecyclerView>(R.id.rv_this_month)
+            val rvThisYear = findViewById<RecyclerView>(R.id.rv_this_year)
+            rvThisWeek.layoutManager = LinearLayoutManager(this)
+            rvThisMonth.layoutManager = LinearLayoutManager(this)
+            rvThisYear.layoutManager = LinearLayoutManager(this)
 
-        val weekAdapter = TransactionAdapter(emptyList())
-        val monthAdapter = TransactionAdapter(emptyList())
-        val yearAdapter = TransactionAdapter(emptyList())
-        rvThisWeek.adapter = weekAdapter
-        rvThisMonth.adapter = monthAdapter
-        rvThisYear.adapter = yearAdapter
+            val weekAdapter = TransactionAdapter(emptyList())
+            val monthAdapter = TransactionAdapter(emptyList())
+            val yearAdapter = TransactionAdapter(emptyList())
+            rvThisWeek.adapter = weekAdapter
+            rvThisMonth.adapter = monthAdapter
+            rvThisYear.adapter = yearAdapter
+        } catch (e: Exception) {
+            android.util.Log.e("UpcomingActivity", "Error setting up RecyclerViews", e)
+            Toast.makeText(this, "Error setting up upcoming", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
 
         lifecycleScope.launch {
             try {

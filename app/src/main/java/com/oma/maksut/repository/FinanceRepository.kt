@@ -80,7 +80,9 @@ class FinanceRepository(context: Context) {
     
     suspend fun initializeDefaultCategories() {
         val count = categoryDao.getCategoryCount()
+        android.util.Log.d("FinanceRepository", "Category count: $count")
         if (count == 0) {
+            android.util.Log.d("FinanceRepository", "Creating default categories")
             // Insert default categories
             val defaultCategories = listOf(
                 Category(
@@ -131,8 +133,12 @@ class FinanceRepository(context: Context) {
             )
             
             defaultCategories.forEach { category ->
-                categoryDao.insertCategory(category)
+                val id = categoryDao.insertCategory(category)
+                android.util.Log.d("FinanceRepository", "Created category: ${category.name} with ID: $id")
             }
+            android.util.Log.d("FinanceRepository", "Default categories created successfully")
+        } else {
+            android.util.Log.d("FinanceRepository", "Categories already exist, skipping initialization")
         }
     }
     

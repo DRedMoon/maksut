@@ -140,6 +140,8 @@ class QuickAddTransactionActivity : AppCompatActivity() {
     
     private fun loadDefaultCategory() {
         lifecycleScope.launch {
+            // Initialize default categories first
+            repository.initializeDefaultCategories()
             // Load categories and populate spinner
             repository.getAllCategories().collect { categories ->
                 if (categories.isNotEmpty()) {
