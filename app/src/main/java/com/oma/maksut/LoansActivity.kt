@@ -10,6 +10,7 @@ import com.google.android.material.appbar.MaterialToolbar
 import kotlin.math.abs
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.first
 import com.oma.maksut.repository.FinanceRepository
 import java.text.SimpleDateFormat
 
