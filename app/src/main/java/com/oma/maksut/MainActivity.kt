@@ -24,6 +24,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 import androidx.core.content.ContextCompat
 import com.oma.maksut.database.entities.Transaction
+import com.oma.maksut.database.entities.Loan
+import com.oma.maksut.database.entities.Credit
 
 // 0) Luokan kentät: suodatus-enum, formaatit, nykyinen suodatin
 class MainActivity : AppCompatActivity() {
@@ -489,7 +491,11 @@ class MainActivity : AppCompatActivity() {
                     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
                         val item = currentItems[position]
                         holder.itemView.findViewById<TextView>(android.R.id.text1).apply {
-                            text = "${item.name}: ${String.format(Locale.getDefault(), "%.2f €", item.amount)}"
+                            text = when (item) {
+                                is Loan -> "${item.name}: ${String.format(Locale.getDefault(), "%.2f €", item.currentBalance)}"
+                                is Credit -> "${item.name}: ${String.format(Locale.getDefault(), "%.2f €", item.currentBalance)}"
+                                else -> "Unknown item"
+                            }
                             setTextColor(android.graphics.Color.WHITE)
                         }
                     }
