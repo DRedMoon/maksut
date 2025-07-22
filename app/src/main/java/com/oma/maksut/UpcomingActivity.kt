@@ -12,7 +12,7 @@ import com.oma.maksut.database.entities.Transaction
 import com.oma.maksut.TransactionAdapter
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.collect
 import java.util.Date
 
 class UpcomingActivity : AppCompatActivity() {
@@ -91,8 +91,9 @@ class UpcomingActivity : AppCompatActivity() {
             try {
                 val repo = com.oma.maksut.repository.FinanceRepository(this@UpcomingActivity)
                 // TODO: Filter for this week (Monday to Sunday)
-                val transactions = repo.getUpcomingTransactions(Date(), Date()).first()
-                weekAdapter.updateItems(transactions)
+                repo.getUpcomingTransactions(Date(), Date()).collect { transactions ->
+                    weekAdapter.updateItems(transactions)
+                }
             } catch (e: Exception) {
                 android.util.Log.e("UpcomingActivity", "Error loading this week data", e)
             }
@@ -104,8 +105,9 @@ class UpcomingActivity : AppCompatActivity() {
             try {
                 val repo = com.oma.maksut.repository.FinanceRepository(this@UpcomingActivity)
                 // TODO: Filter for this month
-                val transactions = repo.getUpcomingTransactions(Date(), Date()).first()
-                monthAdapter.updateItems(transactions)
+                repo.getUpcomingTransactions(Date(), Date()).collect { transactions ->
+                    monthAdapter.updateItems(transactions)
+                }
             } catch (e: Exception) {
                 android.util.Log.e("UpcomingActivity", "Error loading month data", e)
             }
@@ -117,8 +119,9 @@ class UpcomingActivity : AppCompatActivity() {
             try {
                 val repo = com.oma.maksut.repository.FinanceRepository(this@UpcomingActivity)
                 // TODO: Filter for this year
-                val transactions = repo.getUpcomingTransactions(Date(), Date()).first()
-                yearAdapter.updateItems(transactions)
+                repo.getUpcomingTransactions(Date(), Date()).collect { transactions ->
+                    yearAdapter.updateItems(transactions)
+                }
             } catch (e: Exception) {
                 android.util.Log.e("UpcomingActivity", "Error loading year data", e)
             }
