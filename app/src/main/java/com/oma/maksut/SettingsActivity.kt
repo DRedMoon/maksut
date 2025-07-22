@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.switchmaterial.SwitchMaterial
+import android.widget.Switch
 import com.oma.maksut.utils.EncryptionUtils
 import com.oma.maksut.utils.JsonExportImportUtils
 import com.oma.maksut.utils.DiagnosticsUtils
@@ -28,10 +28,10 @@ import androidx.core.content.edit
 
 class SettingsActivity : AppCompatActivity() {
     
-    private lateinit var switchTheme: SwitchMaterial
-    private lateinit var switchSync: SwitchMaterial
-    private lateinit var switchEncryption: SwitchMaterial
-    private lateinit var switchPinCode: SwitchMaterial
+    private lateinit var switchTheme: Switch
+    private lateinit var switchSync: Switch
+    private lateinit var switchEncryption: Switch
+    private lateinit var switchPinCode: Switch
     private var etPinCode: EditText? = null
     private lateinit var tvSyncFolderPath: TextView
     private lateinit var tvSyncStatus: TextView

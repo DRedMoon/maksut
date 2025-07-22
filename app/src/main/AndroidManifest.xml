@@ -42,6 +42,8 @@
         <activity android:name=".CategoryManagementActivity" />
         <activity android:name=".LoanCreditManagementActivity" />
         <activity android:name=".AllPaymentsActivity" />
+        <activity android:name=".UpcomingActivity" />
+        <activity android:name=".MonthlyPaymentsActivity" />
 
         <activity
             android:name=".MainActivity"
