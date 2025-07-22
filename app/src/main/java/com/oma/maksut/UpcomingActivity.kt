@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.oma.maksut.database.entities.Transaction
-import com.oma.maksut.adapter.TransactionAdapter
+import com.oma.maksut.TransactionAdapter
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import java.util.Date
