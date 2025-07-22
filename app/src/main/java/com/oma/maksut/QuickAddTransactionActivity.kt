@@ -16,6 +16,7 @@ import com.oma.maksut.database.entities.Loan
 import com.oma.maksut.database.entities.Credit
 import com.oma.maksut.repository.FinanceRepository
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.first
 import java.text.SimpleDateFormat
 import java.util.*
 
