@@ -29,15 +29,19 @@ class MonthlyPaymentsAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val tx = items[position]
-        holder.name.text = tx.name
-        holder.amount.text = String.format(Locale.getDefault(), "%.2f €", tx.amount)
-        holder.due.text = tx.dueDate?.toString() ?: ""
-        val paid = tx.isPaid
-        holder.status.setImageResource(
-            if (paid) R.drawable.ic_check_circle else R.drawable.ic_radio_button_unchecked
-        )
-        holder.status.setOnClickListener { onStatusToggle(tx) }
+        try {
+            val tx = items[position]
+            holder.name.text = tx.name
+            holder.amount.text = String.format(Locale.getDefault(), "%.2f €", tx.amount)
+            holder.due.text = tx.dueDate?.toString() ?: ""
+            val paid = tx.isPaid
+            holder.status.setImageResource(
+                if (paid) R.drawable.ic_check_circle else R.drawable.ic_radio_button_unchecked
+            )
+            holder.status.setOnClickListener { onStatusToggle(tx) }
+        } catch (e: Exception) {
+            android.util.Log.e("MonthlyPaymentsAdapter", "Error binding view holder", e)
+        }
     }
 
     override fun getItemCount(): Int = minOf(items.size, visibleCount)

@@ -47,10 +47,16 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
         
-        setupViews()
-        setupToolbar()
-        setupListeners()
-        loadSettings()
+        try {
+            setupViews()
+            setupToolbar()
+            setupListeners()
+            loadSettings()
+        } catch (e: Exception) {
+            android.util.Log.e("SettingsActivity", "Error in onCreate", e)
+            Toast.makeText(this, "Error loading settings", Toast.LENGTH_SHORT).show()
+            finish()
+        }
         tvSyncFolderPath = findViewById(R.id.tv_sync_folder_path)
         tvSyncStatus = findViewById(R.id.tv_sync_status)
         findViewById<Button>(R.id.btn_export_diagnostics).setOnClickListener {
