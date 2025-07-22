@@ -56,9 +56,18 @@ class SettingsActivity : AppCompatActivity() {
             android.util.Log.e("SettingsActivity", "Error in onCreate", e)
             Toast.makeText(this, "Error loading settings", Toast.LENGTH_SHORT).show()
             finish()
+            return
         }
-        tvSyncFolderPath = findViewById(R.id.tv_sync_folder_path)
-        tvSyncStatus = findViewById(R.id.tv_sync_status)
+        
+        try {
+            tvSyncFolderPath = findViewById(R.id.tv_sync_folder_path)
+            tvSyncStatus = findViewById(R.id.tv_sync_status)
+        } catch (e: Exception) {
+            android.util.Log.e("SettingsActivity", "Error finding sync views", e)
+            Toast.makeText(this, "Error loading settings", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
         findViewById<Button>(R.id.btn_export_diagnostics).setOnClickListener {
             lifecycleScope.launch {
                 try {
