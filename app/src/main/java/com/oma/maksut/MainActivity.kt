@@ -25,7 +25,6 @@ import com.oma.maksut.database.entities.Transaction
 
 // 0) Luokan kentät: suodatus-enum, formaatit, nykyinen suodatin
 class MainActivity : AppCompatActivity() {
-    private val transaction get() = TransactionRepository.transactions
     private lateinit var adapter: TransactionAdapter
     private lateinit var repository: FinanceRepository
 

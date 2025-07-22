@@ -357,7 +357,6 @@ class SettingsActivity : AppCompatActivity() {
     private fun resetAllSettings() {
         PreferenceManager.getDefaultSharedPreferences(this)
             .edit { clear() }
-            .apply()
         
         loadSettings()
         Toast.makeText(this, getString(R.string.settings_reset), Toast.LENGTH_SHORT).show()
