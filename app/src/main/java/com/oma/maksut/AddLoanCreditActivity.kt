@@ -218,16 +218,15 @@ class AddLoanCreditActivity : AppCompatActivity() {
                         name = name,
                         originalAmount = originalAmount,
                         currentBalance = currentBalance,
-                        monthlyPayment = monthlyPayment,
-                        handlingFee = handlingFee,
-                        euriborRate = euriborRate,
+                        interestRate = euriborRate,
                         personalMargin = personalMargin,
-                        totalInterestRate = euriborRate + personalMargin,
                         loanTermYears = monthsLeft / 12,
-                        remainingMonths = monthsLeft,
+                        monthlyPayment = monthlyPayment,
+                        paymentFee = handlingFee,
                         dueDay = selectedDueDate.date,
                         startDate = Date(),
                         endDate = selectedDueDate,
+                        totalRepaymentAmount = monthlyPayment * monthsLeft,
                         isActive = true
                     )
                     repository.insertLoan(loan)
@@ -238,11 +237,13 @@ class AddLoanCreditActivity : AppCompatActivity() {
                         name = name,
                         creditLimit = originalAmount,
                         currentBalance = currentBalance,
+                        interestRate = euriborRate,
+                        personalMargin = personalMargin,
+                        minimumPaymentPercentage = 5.0, // Default 5%
                         minimumPaymentAmount = monthlyPayment,
-                        totalInterestRate = euriborRate + personalMargin,
                         paymentFee = handlingFee,
                         dueDay = selectedDueDate.date,
-                        paymentFreePeriod = 0,
+                        gracePeriodDays = 0,
                         isActive = true
                     )
                     repository.insertCredit(credit)
