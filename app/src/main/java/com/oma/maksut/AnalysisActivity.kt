@@ -7,6 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.appbar.MaterialToolbar
 import java.text.SimpleDateFormat
 import java.util.*
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+import com.oma.maksut.repository.FinanceRepository
 
 class AnalysisActivity : AppCompatActivity() {
     private val fmtIso = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
@@ -25,7 +28,9 @@ class AnalysisActivity : AppCompatActivity() {
     }
 
     private fun showAnalysis(type: String) {
-        val transactions = TransactionRepository.transactions
+        lifecycleScope.launch {
+            val repository = FinanceRepository(this@AnalysisActivity)
+            val transactions = repository.getRealTransactions().first()
         val today = Calendar.getInstance().apply {
             set(Calendar.HOUR_OF_DAY, 0)
             set(Calendar.MINUTE, 0)
@@ -34,41 +39,36 @@ class AnalysisActivity : AppCompatActivity() {
         }
         val currentMonth = today.get(Calendar.MONTH)
         val currentYear = today.get(Calendar.YEAR)
-        val filteredTransactions = when (type) {
-            "monthly" -> transactions.filter { tx ->
-                val date = parseDate(tx.time)
-                date?.let {
-                    val cal = Calendar.getInstance().apply { time = it }
+            val filteredTransactions = when (type) {
+                "monthly" -> transactions.filter { tx ->
+                    val cal = Calendar.getInstance().apply { time = tx.paymentDate }
                     cal.get(Calendar.MONTH) == currentMonth && cal.get(Calendar.YEAR) == currentYear
-                } ?: false
-            }
-            "yearly" -> transactions.filter { tx ->
-                val date = parseDate(tx.time)
-                date?.let {
-                    val cal = Calendar.getInstance().apply { time = it }
+                }
+                "yearly" -> transactions.filter { tx ->
+                    val cal = Calendar.getInstance().apply { time = tx.paymentDate }
                     cal.get(Calendar.YEAR) == currentYear
-                } ?: false
+                }
+                else -> transactions
             }
-            else -> transactions
+            val income = filteredTransactions.filter { it.amount > 0 }.sumOf { it.amount }
+            val expenses = filteredTransactions.filter { it.amount < 0 }.sumOf { -it.amount }
+            val netBalance = income - expenses
+            val title = when (type) {
+                "monthly" -> getString(R.string.monthly_analysis)
+                "yearly" -> getString(R.string.yearly_analysis)
+                else -> getString(R.string.full_analysis)
+            }
+            val message = getString(
+                R.string.analysis_message,
+                income,
+                expenses,
+                netBalance,
+                filteredTransactions.size
+            )
+            findViewById<TextView>(R.id.tv_analysis_title).text = title
+            findViewById<TextView>(R.id.tv_analysis_content).text = message
+            findViewById<LinearLayout>(R.id.ll_analysis_result).visibility = android.view.View.VISIBLE
         }
-        val income = filteredTransactions.filter { it.amount > 0 }.sumOf { it.amount }
-        val expenses = filteredTransactions.filter { it.amount < 0 }.sumOf { -it.amount }
-        val netBalance = income - expenses
-        val title = when (type) {
-            "monthly" -> getString(R.string.monthly_analysis)
-            "yearly" -> getString(R.string.yearly_analysis)
-            else -> getString(R.string.full_analysis)
-        }
-        val message = getString(
-            R.string.analysis_message,
-            income,
-            expenses,
-            netBalance,
-            filteredTransactions.size
-        )
-        findViewById<TextView>(R.id.tv_analysis_title).text = title
-        findViewById<TextView>(R.id.tv_analysis_content).text = message
-        findViewById<LinearLayout>(R.id.ll_analysis_result).visibility = android.view.View.VISIBLE
     }
 
     private fun parseDate(dateStr: String): Date? {

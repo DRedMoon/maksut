@@ -9,6 +9,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.DiffUtil
 import java.util.Locale
+import com.oma.maksut.database.entities.Transaction
+import java.text.SimpleDateFormat
 
 // Adapteri RecyclerView’lle, näyttää listan Transaction-olioita
 class TransactionAdapter(
@@ -31,14 +33,15 @@ class TransactionAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val tx = items[position]
-        holder.label.text = tx.label
+        holder.label.text = tx.name
 
         // Värjää summa riippuen sen merkistä
         holder.amount.text = String.format(Locale.getDefault(), "%.2f €", tx.amount)
         holder.amount.setTextColor(if (tx.amount >= 0) Color.GREEN else Color.RED)
 
         // Nyt näytetään päivämäärä, ei kellonaika
-        holder.time.text = tx.time  // tx.time sisältää nyt esim. "2025-06-08"
+        val fmt = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        holder.time.text = fmt.format(tx.paymentDate)
     }
 
     override fun getItemCount(): Int = items.size

@@ -8,6 +8,10 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.appbar.MaterialToolbar
 import java.util.Locale
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+import com.oma.maksut.repository.FinanceRepository
+import java.text.SimpleDateFormat
 
 class OthersActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,17 +28,22 @@ class OthersActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btn_edit_other)
             .setOnClickListener { /* TODO */ }
 
-        val list      = TransactionRepository.transactions.filter { it.category == Category.OTHER }
-        val container = findViewById<LinearLayout>(R.id.ll_container_others)
-        val inflater  = LayoutInflater.from(this)
+        lifecycleScope.launch {
+            val repository = FinanceRepository(this@OthersActivity)
+            val transactions = repository.getRealTransactions().first()
+            val list = transactions.filter { it.categoryId == 3L } // Assuming 3L is for OTHER category
+            val container = findViewById<LinearLayout>(R.id.ll_container_others)
+            val inflater = LayoutInflater.from(this@OthersActivity)
 
-        list.forEach { tx ->
-            val card = inflater.inflate(R.layout.item_other_card, container, false)
-            card.findViewById<TextView>(R.id.tv_other_name).text   = tx.label
-            card.findViewById<TextView>(R.id.tv_other_amount).text =
-                String.format(Locale.getDefault(), "%.2f €", tx.amount)
-            card.findViewById<TextView>(R.id.tv_other_date).text   = tx.time
-            container.addView(card)
+            list.forEach { tx ->
+                val card = inflater.inflate(R.layout.item_other_card, container, false)
+                card.findViewById<TextView>(R.id.tv_other_name).text = tx.name
+                card.findViewById<TextView>(R.id.tv_other_amount).text =
+                    String.format(Locale.getDefault(), "%.2f €", tx.amount)
+                val fmt = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                card.findViewById<TextView>(R.id.tv_other_date).text = fmt.format(tx.paymentDate)
+                container.addView(card)
+            }
         }
     }
 }

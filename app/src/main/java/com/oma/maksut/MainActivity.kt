@@ -60,40 +60,14 @@ class MainActivity : AppCompatActivity() {
             adapter = this@MainActivity.adapter
         }
 
-        // 3) Testidata
-        val sampleDate = getString(R.string.sample_date)
-        TransactionRepository.transactions += listOf(
-            Transaction(
-                iconRes  = R.drawable.ic_bank,
-                label    = getString(R.string.salary),
-                amount   = +2500.0,
-                time     = sampleDate,
-                category = Category.INCOME
-            ),
-            Transaction(
-                iconRes  = R.drawable.ic_shopping,
-                label    = getString(R.string.expense),
-                amount   = -75.50,
-                time     = sampleDate,
-                category = Category.EXPENSE
-            ),
-            Transaction(
-                iconRes  = R.drawable.ic_loan,
-                label    = getString(R.string.loan_payment),
-                amount   = -640.0,
-                time     = sampleDate,
-                rate     = 1.5,
-                category = Category.LOAN
-            ),
-            Transaction(
-                iconRes  = R.drawable.ic_subscription,
-                label    = "Netflix",
-                amount   = -12.99,
-                time     = sampleDate,
-                category = Category.SUBSCRIPTION
-            )
-        )
-        adapter.notifyItemRangeInserted(0, TransactionRepository.transactions.size)
+        // 3) Load real transactions from database
+        lifecycleScope.launch {
+            repository.getRealTransactions().collect { transactions ->
+                adapter.updateItems(transactions)
+                val value = transactions.sumOf { it.amount }
+                findViewById<TextView>(R.id.tv_remaining_amount).text = String.format(Locale.getDefault(), "%.2f €", value)
+            }
+        }
 
         // 4) Alku-näkymä: saldon ja indikaattorin päivitys
         updateRemainingText()
@@ -111,7 +85,7 @@ class MainActivity : AppCompatActivity() {
                 clickCount = 0
                 when (currentPage) {
                     1 -> showLoanCreditDetailsDialog()
-                    2 -> showDetailDialog("Kuukausimaksut", TransactionRepository.transactions.filter { it.category == Category.SUBSCRIPTION })
+                    2 -> showDetailDialog("Kuukausimaksut", emptyList())
                     // saldolla ei avata
                 }
             } else {
@@ -119,7 +93,7 @@ class MainActivity : AppCompatActivity() {
                 clickCount++
                 when (currentPage) {
                     1 -> startActivity(Intent(this, LoanCreditManagementActivity::class.java))
-                    2 -> showDetailDialog("Kuukausimaksut", TransactionRepository.transactions.filter { it.category == Category.SUBSCRIPTION })
+                    2 -> showDetailDialog("Kuukausimaksut", emptyList())
                     // saldolla ei avata
                 }
             }
@@ -196,21 +170,22 @@ class MainActivity : AppCompatActivity() {
             set(Calendar.SECOND, 0);     set(Calendar.MILLISECOND, 0)
         }.time
 
-        val past = TransactionRepository.transactions.mapNotNull { tx ->
-            val date = runCatching { fmtIso.parse(tx.time) }.getOrNull()
-                ?: runCatching { fmtDot.parse(tx.time) }.getOrNull()
-            date?.takeIf { it <= today }?.let { tx }
-        }
+        lifecycleScope.launch {
+            val transactions = repository.getRealTransactions().first()
+            val past = transactions.filter { tx ->
+                tx.paymentDate <= today
+            }
 
-        // 4) Summataan luvut sivun logiikalla
-        val value = when (currentPage) {
-            0 -> past.sumOf   { it.amount }                       // Saldo
-            1 -> -past.filter { it.amount < 0 }.sumOf { it.amount }   // Lainat (muutetaan positiiviseksi)
-            else -> past.filter { it.amount > 0 }.sumOf { it.amount } // Kuukausimaksut
-        }
+            // 4) Summataan luvut sivun logiikalla
+            val value = when (currentPage) {
+                0 -> past.sumOf { it.amount }                       // Saldo
+                1 -> -past.filter { it.amount < 0 }.sumOf { it.amount }   // Lainat (muutetaan positiiviseksi)
+                else -> past.filter { it.amount > 0 }.sumOf { it.amount } // Kuukausimaksut
+            }
 
-        // 5) Näytetään laskettu summa
-        amountTv.text = String.format(Locale.getDefault(), "%.2f €", value)
+            // 5) Näytetään laskettu summa
+            amountTv.text = String.format(Locale.getDefault(), "%.2f €", value)
+        }
     }
 
     // updatePageIndicator: kolme pistettä
@@ -253,30 +228,31 @@ class MainActivity : AppCompatActivity() {
             set(Calendar.SECOND,0);    set(Calendar.MILLISECOND,0)
         }.time
 
-        // b) Jaetaan tapahtumat menneisiin/nykyhetkeen ja tuleviin
-        val upcoming = TransactionRepository.transactions.filter { tx ->
-            val d = runCatching { fmtIso.parse(tx.time) }.getOrNull()
-                ?: runCatching { fmtDot.parse(tx.time) }.getOrNull()
-            d != null && d.after(today)
-        }
-        // c) Muut: kaikki paitsi upcoming
-        val pastOrToday = TransactionRepository.transactions.filter { !upcoming.contains(it) }
+        lifecycleScope.launch {
+            val transactions = repository.getRealTransactions().first()
+            // b) Jaetaan tapahtumat menneisiin/nykyhetkeen ja tuleviin
+            val upcoming = transactions.filter { tx ->
+                tx.paymentDate.after(today)
+            }
+            // c) Muut: kaikki paitsi upcoming
+            val pastOrToday = transactions.filter { !upcoming.contains(it) }
 
-        // d) Valitaan näytettävä data - Aika-suodatus
-        val timeFiltered = when (currentFilter) {
-            Filter.ALL      -> pastOrToday + upcoming
-            Filter.UPCOMING -> upcoming
-        }
-        // d) Sen jälkeen sivu-suodatus kategoriaan
-        val pageFiltered = when (currentPage) {
-            0 -> timeFiltered                                        // Saldo = kaikki ajassa
-            1 -> timeFiltered.filter { it.category == Category.LOAN }         // Lainat
-            2 -> timeFiltered.filter { it.category == Category.SUBSCRIPTION } // Muut (tilaukset)
-            else -> timeFiltered
-        }
+            // d) Valitaan näytettävä data - Aika-suodatus
+            val timeFiltered = when (currentFilter) {
+                Filter.ALL      -> pastOrToday + upcoming
+                Filter.UPCOMING -> upcoming
+            }
+            // d) Sen jälkeen sivu-suodatus kategoriaan
+            val pageFiltered = when (currentPage) {
+                0 -> timeFiltered                                        // Saldo = kaikki ajassa
+                1 -> timeFiltered.filter { it.isLoanRepayment }         // Lainat
+                2 -> timeFiltered.filter { it.isMonthlyPayment } // Muut (tilaukset)
+                else -> timeFiltered
+            }
 
-        // e) Päivitetään adapterin data
-        adapter.updateItems(pageFiltered)
+            // e) Päivitetään adapterin data
+            adapter.updateItems(pageFiltered)
+        }
     }
 
     // setupSwipe: pyyhkäisy vain headerissa
@@ -305,7 +281,8 @@ class MainActivity : AppCompatActivity() {
     private fun showDetailDialog(title: String, list: List<Transaction>) {
         val items = list.joinToString("\n") { tx ->
             // Muotoile esim. “Netflix: –12.99 € (2025-06-08)”
-            "${tx.label}: ${"%.2f €".format(tx.amount)} (${tx.time})"
+            val fmt = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            "${tx.name}: ${"%.2f €".format(tx.amount)} (${fmt.format(tx.paymentDate)})"
         }.ifBlank { "Ei tapahtumia." }
 
         MaterialAlertDialogBuilder(this)
@@ -340,24 +317,27 @@ class MainActivity : AppCompatActivity() {
                 var amt = etAmount.text.toString().toDoubleOrNull() ?: 0.0
                 // käännä miinukseksi tarvittaessa
                 if (rgType.checkedRadioButtonId != R.id.rb_income) amt = -amt
-                // kategoria
-                val cat = when (rgType.checkedRadioButtonId) {
-                    R.id.rb_income       -> Category.INCOME
-                    R.id.rb_expense      -> Category.EXPENSE
-                    else                 -> Category.OTHER
+                // kategoria ID (default to 1 for now)
+                val categoryId = when (rgType.checkedRadioButtonId) {
+                    R.id.rb_income       -> 1L
+                    R.id.rb_expense      -> 2L
+                    else                 -> 3L
                 }
                 val dateStr = tvDate.text.toString().ifBlank {
                     SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
                 }
-                TransactionRepository.transactions.add(Transaction(
-                    iconRes  = if (amt>=0) R.drawable.ic_bank else R.drawable.ic_shopping,
-                    label    = etDesc.text.toString(),
-                    amount   = amt,
-                    time     = dateStr,
-                    category = cat
-                ))
-                rebuildList()
-                updateRemainingText()
+                lifecycleScope.launch {
+                    val transaction = Transaction(
+                        name = etDesc.text.toString(),
+                        amount = amt,
+                        categoryId = categoryId,
+                        paymentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(dateStr) ?: Date(),
+                        description = etDesc.text.toString()
+                    )
+                    repository.insertTransaction(transaction)
+                    rebuildList()
+                    updateRemainingText()
+                }
                 dlg.dismiss()
             }
             .setNegativeButton(android.R.string.cancel, null)
