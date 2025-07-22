@@ -12,6 +12,7 @@ import com.oma.maksut.database.entities.Transaction
 import com.oma.maksut.TransactionAdapter
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.first
 import java.util.Date
 
 class UpcomingActivity : AppCompatActivity() {
@@ -122,6 +123,5 @@ class UpcomingActivity : AppCompatActivity() {
                 android.util.Log.e("UpcomingActivity", "Error loading year data", e)
             }
         }
-    }
     }
 }
