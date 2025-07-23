@@ -249,14 +249,22 @@
         android:background="#192E45"/>
 
     <!-- 4) Tapahtumat-lista -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_transactions"
+    <LinearLayout
+        android:id="@+id/ll_transactions_section"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="#192E45"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"/>
+        android:orientation="vertical"
+        android:background="#192E45">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_transactions"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#192E45"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"/>
+    </LinearLayout>
 
     <!-- 5) Bottom Navigation Bar -->
     <LinearLayout
