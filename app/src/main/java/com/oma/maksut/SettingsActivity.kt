@@ -192,19 +192,7 @@ class SettingsActivity : AppCompatActivity() {
         
         // Export button
         findViewById<Button>(R.id.btn_export_json).setOnClickListener {
-            lifecycleScope.launch {
-                try {
-                    val jsonData = JsonExportImportUtils.exportToJson(this@SettingsActivity)
-                    val file = File(getExternalFilesDir(null), "maksut_backup_${System.currentTimeMillis()}.json")
-                    file.writeText(jsonData)
-                    
-                    Toast.makeText(this@SettingsActivity, 
-                        "Backup exported to: ${file.absolutePath}", Toast.LENGTH_LONG).show()
-                } catch (e: Exception) {
-                    Toast.makeText(this@SettingsActivity, 
-                        "Export failed: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
-            }
+            exportToJson()
         }
         
         // Import button

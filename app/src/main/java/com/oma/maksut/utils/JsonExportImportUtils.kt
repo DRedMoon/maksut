@@ -18,8 +18,7 @@ data class ExportData(
     val transactions: List<Transaction>,
     val categories: List<Category>,
     val loans: List<Loan>,
-    val credits: List<Credit>,
-    val exportDate: Date
+    val credits: List<Credit>
 )
 
 class JsonExportImportUtils {
@@ -41,7 +40,7 @@ class JsonExportImportUtils {
                 transactions = transactions,
                 categories = categories,
                 loans = loans,
-                credits = credits,
+                credits = credits
             )
             
             val jsonString = gson.toJson(exportData)
