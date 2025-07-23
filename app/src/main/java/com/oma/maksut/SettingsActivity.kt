@@ -327,16 +327,18 @@ class SettingsActivity : AppCompatActivity() {
     }
     
     private fun exportToJson() {
-        try {
-            val jsonData = JsonExportImportUtils.exportToJson(this)
-            val file = File(getExternalFilesDir(null), "maksut_backup_${System.currentTimeMillis()}.json")
-            file.writeText(jsonData)
-            
-            Toast.makeText(this, 
-                "Backup exported to: ${file.absolutePath}", Toast.LENGTH_LONG).show()
-        } catch (e: Exception) {
-            Toast.makeText(this, 
-                "Export failed: ${e.message}", Toast.LENGTH_SHORT).show()
+        lifecycleScope.launch {
+            try {
+                val jsonData = JsonExportImportUtils.exportToJson(this@SettingsActivity)
+                val file = File(getExternalFilesDir(null), "maksut_backup_${System.currentTimeMillis()}.json")
+                file.writeText(jsonData)
+                
+                Toast.makeText(this@SettingsActivity, 
+                    "Backup exported to: ${file.absolutePath}", Toast.LENGTH_LONG).show()
+            } catch (e: Exception) {
+                Toast.makeText(this@SettingsActivity, 
+                    "Export failed: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
         }
     }
     

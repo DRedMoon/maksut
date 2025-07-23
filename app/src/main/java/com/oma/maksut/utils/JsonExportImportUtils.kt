@@ -18,7 +18,8 @@ data class ExportData(
     val transactions: List<Transaction>,
     val categories: List<Category>,
     val loans: List<Loan>,
-    val credits: List<Credit>
+    val credits: List<Credit>,
+    val exportDate: Date
 )
 
 class JsonExportImportUtils {
