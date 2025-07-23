@@ -29,7 +29,8 @@ class QuickAddTransactionActivity : AppCompatActivity() {
     
     private lateinit var etName: EditText
     private lateinit var etAmount: EditText
-    private lateinit var spinnerCategory: Spinner
+    private lateinit var tvCategorySelected: TextView
+    private lateinit var llCategorySelector: LinearLayout
     private lateinit var tvPaymentDate: TextView
     private lateinit var tvDueDate: TextView
     private lateinit var cbIsMonthlyPayment: CheckBox
@@ -66,7 +67,8 @@ class QuickAddTransactionActivity : AppCompatActivity() {
     private fun setupViews() {
         etName = findViewById(R.id.et_transaction_name)
         etAmount = findViewById(R.id.et_transaction_amount)
-        spinnerCategory = findViewById(R.id.spinner_category)
+        tvCategorySelected = findViewById(R.id.tv_category_selected)
+        llCategorySelector = findViewById(R.id.ll_category_selector)
         tvPaymentDate = findViewById(R.id.tv_payment_date)
         tvDueDate = findViewById(R.id.tv_due_date)
         cbIsMonthlyPayment = findViewById(R.id.cb_is_monthly_payment)
@@ -181,35 +183,16 @@ class QuickAddTransactionActivity : AppCompatActivity() {
             try {
                 // Initialize default categories first
                 repository.initializeDefaultCategories()
-                // Load categories and populate spinner
+                // Load categories
                 val categories = repository.getAllCategories().first()
                 if (categories.isNotEmpty()) {
-                    // Add empty option at the beginning
-                    val categoryNames = listOf("Select Category") + categories.map { category -> category.name }
-                    val adapter = ArrayAdapter(this@QuickAddTransactionActivity, android.R.layout.simple_spinner_item, categoryNames)
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                    spinnerCategory.adapter = adapter
-                    
                     // Start with no category selected (empty)
                     selectedCategory = null
                     updateCategoryDisplay()
                     
-                    // Set spinner listener
-                    spinnerCategory.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                        override fun onItemSelected(parent: AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {
-                            if (position == 0) {
-                                // "Select Category" option
-                                selectedCategory = null
-                            } else {
-                                selectedCategory = categories[position - 1] // -1 because of the empty option
-                            }
-                            updateCategoryDisplay()
-                        }
-                        
-                        override fun onNothingSelected(parent: AdapterView<*>?) {
-                            selectedCategory = null
-                            updateCategoryDisplay()
-                        }
+                    // Set category selector click listener
+                    llCategorySelector.setOnClickListener {
+                        showCategorySelectionDialog()
                     }
                 } else {
                     android.util.Log.e("QuickAddTransactionActivity", "No categories found after initialization")
@@ -247,12 +230,8 @@ class QuickAddTransactionActivity : AppCompatActivity() {
     
     private fun updateCategoryDisplay() {
         selectedCategory?.let { category ->
-            // Find the index of the category in the spinner adapter and setSelection(index)
-            val adapter = spinnerCategory.adapter as? ArrayAdapter<String>
-            val index = adapter?.getPosition(category.name) ?: -1
-            if (index >= 0) {
-                spinnerCategory.setSelection(index)
-            }
+            // Update the category display text
+            tvCategorySelected.text = category.name
             
             // Show/hide loan/credit selection based on category type
             if (category.isLoanRepayment) {
@@ -268,8 +247,8 @@ class QuickAddTransactionActivity : AppCompatActivity() {
                 llCreditSelection.visibility = android.view.View.GONE
             }
         } ?: run {
-            // No category selected, show "Select Category"
-            spinnerCategory.setSelection(0)
+            // No category selected, show empty
+            tvCategorySelected.text = ""
             llLoanSelection.visibility = android.view.View.GONE
             llCreditSelection.visibility = android.view.View.GONE
         }
