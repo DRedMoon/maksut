@@ -9,7 +9,6 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.oma.maksut.database.entities.Category
 import com.oma.maksut.database.entities.Transaction
 import com.oma.maksut.database.entities.Loan
@@ -29,14 +28,13 @@ class QuickAddTransactionActivity : AppCompatActivity() {
     
     private lateinit var etName: EditText
     private lateinit var etAmount: EditText
-    private lateinit var tvCategorySelected: TextView
-    private lateinit var llCategorySelector: LinearLayout
-    private lateinit var tvPaymentDate: TextView
+    private lateinit var spinnerCategory: Spinner
     private lateinit var tvDueDate: TextView
     private lateinit var cbIsMonthlyPayment: CheckBox
     private lateinit var cbHasDueDate: CheckBox
     private lateinit var rgTransactionType: RadioGroup
     private lateinit var btnSave: Button
+    private lateinit var llAmountSection: LinearLayout
     
     // Loan/Credit repayment fields
     private lateinit var llLoanSelection: LinearLayout
@@ -61,21 +59,20 @@ class QuickAddTransactionActivity : AppCompatActivity() {
         setupViews()
         setupToolbar()
         setupListeners()
-        loadDefaultCategory()
+        loadCategories()
     }
     
     private fun setupViews() {
         etName = findViewById(R.id.et_transaction_name)
         etAmount = findViewById(R.id.et_transaction_amount)
-        tvCategorySelected = findViewById(R.id.tv_category_selected)
-        llCategorySelector = findViewById(R.id.ll_category_selector)
-        tvPaymentDate = findViewById(R.id.tv_payment_date)
+        spinnerCategory = findViewById(R.id.spinner_category)
         tvDueDate = findViewById(R.id.tv_due_date)
         cbIsMonthlyPayment = findViewById(R.id.cb_is_monthly_payment)
         cbHasDueDate = findViewById(R.id.cb_has_due_date)
         rgTransactionType = findViewById(R.id.rg_transaction_type)
         btnSave = findViewById(R.id.btn_save_transaction)
-        
+        llAmountSection = findViewById(R.id.ll_amount_section)
+
         // Loan/Credit repayment fields
         llLoanSelection = findViewById(R.id.ll_loan_selection)
         llCreditSelection = findViewById(R.id.ll_credit_selection)
@@ -85,18 +82,57 @@ class QuickAddTransactionActivity : AppCompatActivity() {
         etCreditInterestAmount = findViewById(R.id.et_credit_interest_amount)
         spinnerLoanSelection = findViewById(R.id.spinner_loan_selection)
         spinnerCreditSelection = findViewById(R.id.spinner_credit_selection)
-        
-        // Set current date as default
-        tvPaymentDate.text = dateFormat.format(selectedPaymentDate)
     }
     
     private fun setupToolbar() {
-        findViewById<MaterialToolbar>(R.id.topAppBar).apply {
-            setNavigationOnClickListener { finish() }
+        val toolbar = findViewById<MaterialToolbar>(R.id.topAppBar)
+        setSupportActionBar(toolbar)
+        toolbar.setNavigationOnClickListener { finish() }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_quick_add, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_manage_categories -> {
+                startActivity(Intent(this, CategoryManagementActivity::class.java))
+                true
+            }
+            R.id.action_all_payments -> {
+                startActivity(Intent(this, MainActivity::class.java))
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
     
     private fun setupListeners() {
+        // Category spinner
+        spinnerCategory.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {
+                if (position > 0) { // Skip "Select category" option
+                    lifecycleScope.launch {
+                        val categories = repository.getAllCategories().first()
+                        if (position - 1 < categories.size) {
+                            selectedCategory = categories[position - 1]
+                            updateLayoutForCategory()
+                        }
+                    }
+                } else {
+                    selectedCategory = null
+                    updateLayoutForCategory()
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                selectedCategory = null
+                updateLayoutForCategory()
+            }
+        }
+
         // Loan selection dropdown
         spinnerLoanSelection.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {
@@ -136,15 +172,7 @@ class QuickAddTransactionActivity : AppCompatActivity() {
                 selectedCredit = null
             }
         }
-        
-        // Payment date selection
-        findViewById<LinearLayout>(R.id.ll_payment_date_selector).setOnClickListener {
-            showDatePickerDialog { date ->
-                selectedPaymentDate = date
-                tvPaymentDate.text = dateFormat.format(date)
-            }
-        }
-        
+
         // Due date selection
         findViewById<LinearLayout>(R.id.ll_due_date_selector).setOnClickListener {
             showDatePickerDialog { date ->
@@ -160,78 +188,40 @@ class QuickAddTransactionActivity : AppCompatActivity() {
         
         // Checkbox listeners
         cbHasDueDate.setOnCheckedChangeListener { _, isChecked ->
-            findViewById<LinearLayout>(R.id.ll_due_date_selector).visibility = 
+            findViewById<LinearLayout>(R.id.ll_due_date_selector).visibility =
                 if (isChecked) android.view.View.VISIBLE else android.view.View.GONE
             if (!isChecked) {
                 selectedDueDate = null
-                tvDueDate.text = ""
-            }
-        }
-        
-        cbIsMonthlyPayment.setOnCheckedChangeListener { _, isChecked ->
-            // Update category if needed
-            selectedCategory?.let { category ->
-                if (category.isMonthlyPayment != isChecked) {
-                    showCategorySelectionDialog()
-                }
+                tvDueDate.text = getString(R.string.select_due_date)
             }
         }
     }
     
-    private fun loadDefaultCategory() {
+    private fun loadCategories() {
         lifecycleScope.launch {
             try {
                 // Initialize default categories first
                 repository.initializeDefaultCategories()
                 // Load categories
                 val categories = repository.getAllCategories().first()
-                if (categories.isNotEmpty()) {
-                    // Start with no category selected (empty)
-                    selectedCategory = null
-                    updateCategoryDisplay()
-                    
-                    // Set category selector click listener
-                    llCategorySelector.setOnClickListener {
-                        showCategorySelectionDialog()
-                    }
-                } else {
-                    android.util.Log.e("QuickAddTransactionActivity", "No categories found after initialization")
-                }
+                val categoryNames = listOf(getString(R.string.select_category)) + categories.map { it.name }
+                val adapter = ArrayAdapter(this@QuickAddTransactionActivity, android.R.layout.simple_spinner_item, categoryNames)
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spinnerCategory.adapter = adapter
             } catch (e: Exception) {
                 android.util.Log.e("QuickAddTransactionActivity", "Error loading categories", e)
             }
         }
     }
-    
-    private fun showCategorySelectionDialog() {
-        lifecycleScope.launch {
-            repository.getAllCategories().collect { categories ->
-                val categoryNames = categories.map { it.name }.toTypedArray()
-                
-                MaterialAlertDialogBuilder(this@QuickAddTransactionActivity)
-                    .setTitle(getString(R.string.select_category))
-                    .setItems(categoryNames) { _, which ->
-                        selectedCategory = categories[which]
-                        updateCategoryDisplay()
-                        
-                        // Update checkboxes based on category settings
-                        selectedCategory?.let { category ->
-                            cbHasDueDate.isChecked = category.hasDueDate
-                            cbIsMonthlyPayment.isChecked = category.isMonthlyPayment
-                        }
-                    }
-                    .setNeutralButton(getString(R.string.manage_categories)) { _, _ ->
-                        startActivity(Intent(this@QuickAddTransactionActivity, CategoryManagementActivity::class.java))
-                    }
-                    .show()
-            }
-        }
-    }
-    
-    private fun updateCategoryDisplay() {
+
+    private fun updateLayoutForCategory() {
         selectedCategory?.let { category ->
-            // Update the category display text
-            tvCategorySelected.text = category.name
+            // Show/hide amount section based on category type
+            if (category.isLoanRepayment || category.isCreditRepayment) {
+                llAmountSection.visibility = android.view.View.GONE
+            } else {
+                llAmountSection.visibility = android.view.View.VISIBLE
+            }
             
             // Show/hide loan/credit selection based on category type
             if (category.isLoanRepayment) {
@@ -246,9 +236,13 @@ class QuickAddTransactionActivity : AppCompatActivity() {
                 llLoanSelection.visibility = android.view.View.GONE
                 llCreditSelection.visibility = android.view.View.GONE
             }
+
+            //Update checkboxes based on category settings
+            cbHasDueDate.isChecked = category.hasDueDate
+            cbIsMonthlyPayment.isChecked = category.isMonthlyPayment
         } ?: run {
-            // No category selected, show empty
-            tvCategorySelected.text = ""
+            // No category selected
+            llAmountSection.visibility = android.view.View.VISIBLE
             llLoanSelection.visibility = android.view.View.GONE
             llCreditSelection.visibility = android.view.View.GONE
         }
@@ -258,7 +252,7 @@ class QuickAddTransactionActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 val loans = repository.getAllActiveLoans().first()
-                val loanNames = listOf("Select Loan") + loans.map { "${it.name} - €${String.format(Locale.getDefault(), "%.2f", it.currentBalance)}" }
+                val loanNames = listOf(getString(R.string.select_loan)) + loans.map { "${it.name} - €${String.format(Locale.getDefault(), "%.2f", it.currentBalance)}" }
                 val adapter = ArrayAdapter(this@QuickAddTransactionActivity, android.R.layout.simple_spinner_item, loanNames)
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 spinnerLoanSelection.adapter = adapter
@@ -272,52 +266,12 @@ class QuickAddTransactionActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 val credits = repository.getAllActiveCredits().first()
-                val creditNames = listOf("Select Credit") + credits.map { "${it.name} - €${String.format(Locale.getDefault(), "%.2f", it.currentBalance)}" }
+                val creditNames = listOf(getString(R.string.select_credit)) + credits.map { "${it.name} - €${String.format(Locale.getDefault(), "%.2f", it.currentBalance)}" }
                 val adapter = ArrayAdapter(this@QuickAddTransactionActivity, android.R.layout.simple_spinner_item, creditNames)
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 spinnerCreditSelection.adapter = adapter
             } catch (e: Exception) {
                 android.util.Log.e("QuickAddTransactionActivity", "Error loading credits", e)
-            }
-        }
-    }
-    
-    private fun showLoanSelectionDialog() {
-        lifecycleScope.launch {
-            repository.getAllActiveLoans().collect { loans ->
-                if (loans.isNotEmpty()) {
-                    val loanNames = loans.map { it.name }.toTypedArray()
-                    
-                    MaterialAlertDialogBuilder(this@QuickAddTransactionActivity)
-                        .setTitle(getString(R.string.select_loan))
-                        .setItems(loanNames) { _, which ->
-                            selectedLoan = loans[which]
-                        }
-                        .show()
-                } else {
-                    Toast.makeText(this@QuickAddTransactionActivity, 
-                        "No loans available", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }
-    
-    private fun showCreditSelectionDialog() {
-        lifecycleScope.launch {
-            repository.getAllActiveCredits().collect { credits ->
-                if (credits.isNotEmpty()) {
-                    val creditNames = credits.map { it.name }.toTypedArray()
-                    
-                    MaterialAlertDialogBuilder(this@QuickAddTransactionActivity)
-                        .setTitle(getString(R.string.select_credit))
-                        .setItems(creditNames) { _, which ->
-                            selectedCredit = credits[which]
-                        }
-                        .show()
-                } else {
-                    Toast.makeText(this@QuickAddTransactionActivity, 
-                        "No credits available", Toast.LENGTH_SHORT).show()
-                }
             }
         }
     }
@@ -338,26 +292,60 @@ class QuickAddTransactionActivity : AppCompatActivity() {
     
     private fun saveTransaction() {
         val name = etName.text.toString().trim()
-        val amountStr = etAmount.text.toString().trim()
         
         if (name.isEmpty()) {
-            etName.error = getString(R.string.name_required)
+            etName.error = getString(R.string.enter_transaction_name)
             return
         }
-        
-        if (amountStr.isEmpty()) {
-            etAmount.error = getString(R.string.amount_required)
-            return
-        }
-        
-        val amount = amountStr.toDoubleOrNull()
-        if (amount == null || amount == 0.0) {
-            etAmount.error = getString(R.string.invalid_amount)
-            return
-        }
-        
+
         if (selectedCategory == null) {
-            Toast.makeText(this, getString(R.string.category_required), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.select_category), Toast.LENGTH_SHORT).show()
+            return
+        }
+        
+        // Validate loan/credit selection for repayment categories
+        if (selectedCategory!!.isLoanRepayment && selectedLoan == null) {
+            Toast.makeText(this, getString(R.string.select_loan), Toast.LENGTH_SHORT).show()
+            return
+        }
+        
+        if (selectedCategory!!.isCreditRepayment && selectedCredit == null) {
+            Toast.makeText(this, getString(R.string.select_credit), Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Get amount based on category type
+        val amount = when {
+            selectedCategory!!.isLoanRepayment -> {
+                val repaymentStr = etRepaymentAmount.text.toString().trim()
+                val interestStr = etInterestAmount.text.toString().trim()
+                if (repaymentStr.isEmpty() && interestStr.isEmpty()) {
+                    Toast.makeText(this, getString(R.string.enter_amount), Toast.LENGTH_SHORT).show()
+                    return
+                }
+                (repaymentStr.toDoubleOrNull() ?: 0.0) + (interestStr.toDoubleOrNull() ?: 0.0)
+            }
+            selectedCategory!!.isCreditRepayment -> {
+                val repaymentStr = etCreditRepaymentAmount.text.toString().trim()
+                val interestStr = etCreditInterestAmount.text.toString().trim()
+                if (repaymentStr.isEmpty() && interestStr.isEmpty()) {
+                    Toast.makeText(this, getString(R.string.enter_amount), Toast.LENGTH_SHORT).show()
+                    return
+                }
+                (repaymentStr.toDoubleOrNull() ?: 0.0) + (interestStr.toDoubleOrNull() ?: 0.0)
+            }
+            else -> {
+                val amountStr = etAmount.text.toString().trim()
+                if (amountStr.isEmpty()) {
+                    etAmount.error = getString(R.string.enter_amount)
+                    return
+                }
+                amountStr.toDoubleOrNull() ?: 0.0
+            }
+        }
+
+        if (amount == 0.0) {
+            Toast.makeText(this, getString(R.string.enter_amount), Toast.LENGTH_SHORT).show()
             return
         }
         
@@ -394,11 +382,8 @@ class QuickAddTransactionActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 val transactionId = repository.insertTransaction(transaction)
-                
-                // Don't reduce loan/credit balances immediately - only when transaction is marked as paid
-                Toast.makeText(this@QuickAddTransactionActivity, 
-                    getString(R.string.transaction_saved), Toast.LENGTH_SHORT).show()
-                
+                Toast.makeText(this@QuickAddTransactionActivity,
+                    getString(R.string.save_transaction), Toast.LENGTH_SHORT).show()
                 finish()
             } catch (e: Exception) {
                 Toast.makeText(this@QuickAddTransactionActivity, 
@@ -406,6 +391,5 @@ class QuickAddTransactionActivity : AppCompatActivity() {
             }
         }
     }
-    
-    // Menu methods removed as requested
+
 }

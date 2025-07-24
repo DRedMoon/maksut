@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_manage_categories"
+        android:title="@string/manage_categories"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_all_payments"
+        android:title="@string/all_payments"
+        app:showAsAction="never"/>
+
+</menu>

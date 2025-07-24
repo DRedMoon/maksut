@@ -97,6 +97,16 @@
     <string name="add_loan_label_payment">Maksuerä (€)/kk</string>
     <string name="add_loan_label_due">Eräpäivä (pp)</string>
     <string name="button_save_loan">Tallenna laina</string>
+    <string name="sum">Summa</string>
+
+    <string name="loan_repayment">Lainan lyhennys</string>
+    <string name="credit_repayment">Luoton lyhennys</string>
+
+
+    <string name="repayment_amount">Lyhennyssumma</string>
+    <string name="interest_amount">Korkosumma</string>
+    <string name="repayment_amount_euro">Lyhennyssumma €</string>
+    <string name="interest_amount_euro">Korkosumma €</string>
 
     <string name="home">Koti</string>
     <string name="upcoming">Tulevat</string>
@@ -255,4 +265,27 @@ Tapahtumia: %4$d</string>
     <string name="error_saving">Virhe tallennuksessa: %s</string>
     <string name="type">Tyyppi</string>
 
+    <!-- Upcoming Page Additional -->
+    <string name="no_payments">Ei maksuja</string>
+    <string name="this_week_total">Tällä viikolla:</string>
+    <string name="this_month_total">Tässä kuussa:</string>
+    <string name="this_year_total">Tänä vuonna:</string>
+    <string name="previous">Edellinen</string>
+    <string name="next">Seuraava</string>
+
+    <!-- Months -->
+    <string name="january">Tammikuu</string>
+    <string name="february">Helmikuu</string>
+    <string name="march">Maaliskuu</string>
+    <string name="april">Huhtikuu</string>
+    <string name="may">Toukokuu</string>
+    <string name="june">Kesäkuu</string>
+    <string name="july">Heinäkuu</string>
+    <string name="august">Elokuu</string>
+    <string name="september">Syyskuu</string>
+    <string name="october">Lokakuu</string>
+    <string name="november">Marraskuu</string>
+    <string name="december">Joulukuu</string>
+
+    <string name="year">2025</string>
 </resources>
