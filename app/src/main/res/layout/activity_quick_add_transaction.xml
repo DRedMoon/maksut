@@ -12,13 +12,24 @@
         android:id="@+id/topAppBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#294D73"
+        android:background="@color/brand_primary_dark"
         app:title="@string/add_transaction"
         app:titleTextColor="@android:color/white"
         app:navigationIcon="@drawable/ic_arrow_back_white"
-        app:navigationIconTint="@android:color/white"
-        app:menu="@menu/menu_quick_add"
-        app:titleCentered="true"/>
+        app:navigationIconTint="@android:color/white">
+
+        <ImageButton
+            android:id="@+id/btn_menu"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_more_vert"
+            android:tint="@android:color/white"
+            android:contentDescription="@string/menu"/>
+
+    </com.google.android.material.appbar.MaterialToolbar>
 
     <!-- Content -->
     <ScrollView
@@ -101,12 +112,10 @@
             <Spinner
                 android:id="@+id/spinner_category"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/selector_background"
-                android:popupBackground="#294D73"
+                android:layout_height="48dp"
                 android:layout_marginBottom="16dp"
                 android:spinnerMode="dropdown"
-                android:theme="@style/SpinnerStyle"/>
+                style="@style/CustomSpinnerStyle"/>
 
             <!-- Loan Selection (only visible for loan repayment) -->
             <LinearLayout
@@ -129,12 +138,10 @@
                 <Spinner
                     android:id="@+id/spinner_loan_selection"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/selector_background"
-                    android:popupBackground="#294D73"
+                    android:layout_height="48dp"
                     android:layout_marginBottom="16dp"
                     android:spinnerMode="dropdown"
-                    android:theme="@style/SpinnerStyle"/>
+                    style="@style/CustomSpinnerStyle"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -200,12 +207,10 @@
                 <Spinner
                     android:id="@+id/spinner_credit_selection"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/selector_background"
-                    android:popupBackground="#294D73"
+                    android:layout_height="48dp"
                     android:layout_marginBottom="16dp"
                     android:spinnerMode="dropdown"
-                    android:theme="@style/SpinnerStyle"/>
+                    style="@style/CustomSpinnerStyle"/>
 
                 <TextView
                     android:layout_width="wrap_content"

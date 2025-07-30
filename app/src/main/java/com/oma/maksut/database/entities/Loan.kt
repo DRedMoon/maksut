@@ -16,8 +16,8 @@ data class Loan(
     @ColumnInfo(name = "original_amount")
     val originalAmount: Double,
     
-    @ColumnInfo(name = "current_balance")
-    val currentBalance: Double,
+    @ColumnInfo(name = "remaining_balance")
+    val remainingBalance: Double,
     
     @ColumnInfo(name = "interest_rate")
     val interestRate: Double,
@@ -31,14 +31,17 @@ data class Loan(
     @ColumnInfo(name = "loan_term_years")
     val loanTermYears: Int,
     
-    @ColumnInfo(name = "monthly_payment")
-    val monthlyPayment: Double,
+    @ColumnInfo(name = "monthly_payment_amount")
+    val monthlyPaymentAmount: Double,
     
     @ColumnInfo(name = "payment_fee")
     val paymentFee: Double = 0.0,
     
     @ColumnInfo(name = "due_day")
     val dueDay: Int,
+    
+    @ColumnInfo(name = "due_date")
+    val dueDate: Date,
     
     @ColumnInfo(name = "start_date")
     val startDate: Date,
@@ -48,6 +51,12 @@ data class Loan(
     
     @ColumnInfo(name = "total_repayment_amount")
     val totalRepaymentAmount: Double,
+    
+    @ColumnInfo(name = "total_interest_amount")
+    val totalInterestAmount: Double,
+    
+    @ColumnInfo(name = "is_paid")
+    var isPaid: Boolean = false,
     
     @ColumnInfo(name = "is_active")
     val isActive: Boolean = true,

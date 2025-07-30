@@ -3,10 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     
     <item
+        android:id="@+id/action_more"
+        android:title=""
+        app:showAsAction="always"
+        android:icon="@drawable/ic_more_vert"
+        app:iconTint="@android:color/white"/>
+
+    <item
         android:id="@+id/action_add_category"
         android:title="@string/add_category"
-        android:icon="@drawable/ic_add"
-        app:showAsAction="ifRoom"
-        app:iconTint="@android:color/white"/>
+        app:showAsAction="never"/>
         
 </menu>

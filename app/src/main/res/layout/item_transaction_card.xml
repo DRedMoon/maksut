@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="8dp"
+    android:layout_marginVertical="4dp"
+    app:cardBackgroundColor="@color/brand_primary"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:gravity="center_vertical">
+
+        <!-- Left side: Icon, Name, Date, Type -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <!-- Icon -->
+            <ImageView
+                android:id="@+id/iv_transaction_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_analytics"
+                android:tint="@android:color/white"
+                android:layout_marginEnd="12dp" />
+
+            <!-- Text content -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_transaction_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Transaction Name"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+
+                <TextView
+                    android:id="@+id/tv_transaction_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="15.07.2025"
+                    android:textColor="@android:color/white"
+                    android:textSize="12sp"
+                    android:alpha="0.7" />
+
+                <TextView
+                    android:id="@+id/tv_transaction_category"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Category"
+                    android:textColor="@android:color/white"
+                    android:textSize="12sp"
+                    android:alpha="0.7" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Right side: Amount, Label, Menu -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="end">
+
+            <!-- Amount -->
+            <TextView
+                android:id="@+id/tv_transaction_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="€150.00"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <!-- Label (Income/Expense) -->
+            <TextView
+                android:id="@+id/tv_transaction_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Income"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:alpha="0.7"
+                android:background="@drawable/status_badge_background"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="2dp"
+                android:layout_marginTop="2dp" />
+
+        </LinearLayout>
+
+        <!-- 3-dot menu button -->
+        <ImageButton
+            android:id="@+id/btn_transaction_menu"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_more_vert"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:tint="@android:color/white"
+            android:layout_marginStart="8dp"
+            android:contentDescription="@string/menu" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView> 

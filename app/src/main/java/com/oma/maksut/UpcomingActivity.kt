@@ -1,7 +1,14 @@
 package com.oma.maksut
 
+import android.graphics.Color
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.view.WindowInsets
+import android.view.WindowInsetsController
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -13,10 +20,14 @@ import kotlinx.coroutines.flow.first
 import java.util.*
 import java.text.SimpleDateFormat
 import java.util.Locale
+import com.oma.maksut.repository.FinanceRepository
+import android.view.Menu
+import android.view.MenuItem
 
 class UpcomingActivity : AppCompatActivity() {
     private var currentMonth = Calendar.getInstance().get(Calendar.MONTH)
     private var currentYear = Calendar.getInstance().get(Calendar.YEAR)
+    private lateinit var repository: FinanceRepository
 
     private lateinit var tvMonthTitle: TextView
     private lateinit var tvYearTitle: TextView
@@ -32,24 +43,25 @@ class UpcomingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_upcoming)
-
+        
         try {
-            val toolbar = findViewById<MaterialToolbar>(R.id.topAppBar)
-            setSupportActionBar(toolbar)
-            toolbar.setNavigationOnClickListener { finish() }
+            repository = FinanceRepository(this)
+            setupToolbar()
+            initializeViews()
+            setupFilterButtons()
+            loadData()
         } catch (e: Exception) {
             android.util.Log.e("UpcomingActivity", "Error in onCreate", e)
-            Toast.makeText(this, "Error loading upcoming", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Error initializing activity", Toast.LENGTH_SHORT).show()
             finish()
         }
-
-        initializeViews()
-        setupNavigationButtons()
-        setupFilterButtons()
-
-        // Start with "This week" view
-        showView(R.id.ll_this_week)
-        loadThisWeekData()
+    }
+    
+    private fun setupToolbar() {
+        findViewById<MaterialToolbar>(R.id.topAppBar).apply {
+            setSupportActionBar(this)
+            setNavigationOnClickListener { finish() }
+        }
     }
 
     private fun initializeViews() {
@@ -68,10 +80,16 @@ class UpcomingActivity : AppCompatActivity() {
         updateMonthTitle()
         updateYearTitle()
     }
-
+    
+    private fun loadData() {
+        loadThisWeekData()
+        loadMonthData()
+        loadYearData()
+    }
+    
     private fun setupNavigationButtons() {
         // Month navigation
-        findViewById<Button>(R.id.btn_prev_month).setOnClickListener {
+        findViewById<ImageButton>(R.id.btn_prev_month).setOnClickListener {
             currentMonth--
             if (currentMonth < 0) {
                 currentMonth = 11
@@ -81,7 +99,7 @@ class UpcomingActivity : AppCompatActivity() {
             loadMonthData()
         }
 
-        findViewById<Button>(R.id.btn_next_month).setOnClickListener {
+        findViewById<ImageButton>(R.id.btn_next_month).setOnClickListener {
             currentMonth++
             if (currentMonth > 11) {
                 currentMonth = 0
@@ -92,13 +110,13 @@ class UpcomingActivity : AppCompatActivity() {
         }
 
         // Year navigation
-        findViewById<Button>(R.id.btn_prev_year).setOnClickListener {
+        findViewById<ImageButton>(R.id.btn_prev_year).setOnClickListener {
             currentYear--
             updateYearTitle()
             loadYearData()
         }
 
-        findViewById<Button>(R.id.btn_next_year).setOnClickListener {
+        findViewById<ImageButton>(R.id.btn_next_year).setOnClickListener {
             currentYear++
             updateYearTitle()
             loadYearData()
@@ -168,7 +186,7 @@ class UpcomingActivity : AppCompatActivity() {
                 val loansCredits = mutableListOf<String>()
 
                 loans.forEach { loan ->
-                    loansCredits.add("• ${loan.name}: ${String.format("%.2f €", loan.monthlyPayment)}")
+                    loansCredits.add("• ${loan.name}: ${String.format("%.2f €", loan.monthlyPaymentAmount)}")
                 }
                 credits.forEach { credit ->
                     val creditPayment = credit.minimumPaymentAmount
@@ -183,7 +201,7 @@ class UpcomingActivity : AppCompatActivity() {
 
                 // Calculate total for this week
                 val total = monthlyPayments.sumOf { it.amount } +
-                        loans.sumOf { it.monthlyPayment } +
+                        loans.sumOf { it.monthlyPaymentAmount } +
                         credits.sumOf { it.minimumPaymentAmount }
                 tvWeekTotal.text = String.format("%.2f €", total)
 
@@ -218,7 +236,7 @@ class UpcomingActivity : AppCompatActivity() {
                 val loansCredits = mutableListOf<String>()
 
                 loans.forEach { loan ->
-                    loansCredits.add("• ${loan.name}: ${String.format("%.2f €", loan.monthlyPayment)}")
+                    loansCredits.add("• ${loan.name}: ${String.format("%.2f €", loan.monthlyPaymentAmount)}")
                 }
                 credits.forEach { credit ->
                     val creditPayment = credit.minimumPaymentAmount
@@ -233,7 +251,7 @@ class UpcomingActivity : AppCompatActivity() {
 
                 // Calculate total for selected month
                 val total = monthlyPayments.sumOf { it.amount } +
-                        loans.sumOf { it.monthlyPayment } +
+                        loans.sumOf { it.monthlyPaymentAmount } +
                         credits.sumOf { it.minimumPaymentAmount }
                 tvMonthTotal.text = String.format("%.2f €", total)
 
@@ -257,7 +275,7 @@ class UpcomingActivity : AppCompatActivity() {
                 val credits = repo.getAllCredits().first()
 
                 val total = (monthlyPayments.sumOf { it.amount } +
-                        loans.sumOf { it.monthlyPayment } +
+                        loans.sumOf { it.monthlyPaymentAmount } +
                         credits.sumOf { it.minimumPaymentAmount }) * 12
 
                 tvYearTotal.text = String.format("%.2f €", total)

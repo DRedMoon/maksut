@@ -16,7 +16,7 @@ import com.oma.maksut.database.converters.DateConverter
         Loan::class,
         Credit::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(DateConverter::class)

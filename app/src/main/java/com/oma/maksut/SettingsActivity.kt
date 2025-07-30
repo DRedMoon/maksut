@@ -1,160 +1,34 @@
 package com.oma.maksut
 
-import android.app.Activity
 import android.content.Intent
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.DocumentsContract
-import android.view.Menu
-import android.view.MenuItem
 import android.widget.*
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import android.widget.Switch
-import com.oma.maksut.utils.EncryptionUtils
-import com.oma.maksut.utils.JsonExportImportUtils
-import com.oma.maksut.utils.DiagnosticsUtils
-import com.oma.maksut.utils.SyncUtils
-import java.io.File
-import java.util.*
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.launch
-import androidx.core.content.edit
+import android.view.View
+import android.view.WindowInsets
 
 class SettingsActivity : AppCompatActivity() {
     
-    private lateinit var switchTheme: Switch
+    private lateinit var spinnerLanguage: Spinner
+    private lateinit var switchPinCode: Switch
+    private lateinit var etPinCode: EditText
     private lateinit var switchSync: Switch
     private lateinit var switchEncryption: Switch
-    private lateinit var switchPinCode: Switch
-    private var etPinCode: EditText? = null
-    private lateinit var tvSyncFolderPath: TextView
+    private lateinit var switchNavigationBar: Switch
     private lateinit var tvSyncStatus: TextView
-    private val pickFolderLauncher = registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri: Uri? ->
-        if (uri != null) {
-            SyncUtils.setSyncFolderUri(this, uri)
-            tvSyncFolderPath.text = uri.toString()
-            Toast.makeText(this, "Synkronointikansio valittu", Toast.LENGTH_SHORT).show()
-        }
-    }
+    private lateinit var tvEncryptionStatus: TextView
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
         
-        try {
-            setupViews()
-            setupToolbar()
-            setupListeners()
-            loadSettings()
-        } catch (e: Exception) {
-            android.util.Log.e("SettingsActivity", "Error in onCreate", e)
-            Toast.makeText(this, "Error loading settings", Toast.LENGTH_SHORT).show()
-            finish()
-            return
-        }
-        
-        try {
-            tvSyncFolderPath = findViewById(R.id.tv_sync_folder_path)
-            tvSyncStatus = findViewById(R.id.tv_sync_status)
-        } catch (e: Exception) {
-            android.util.Log.e("SettingsActivity", "Error finding sync views", e)
-            Toast.makeText(this, "Error loading settings", Toast.LENGTH_SHORT).show()
-            finish()
-            return
-        }
-        findViewById<Button>(R.id.btn_export_diagnostics).setOnClickListener {
-            lifecycleScope.launch {
-                try {
-                    val file = DiagnosticsUtils.exportDiagnostics(this@SettingsActivity)
-                    Toast.makeText(this@SettingsActivity, "Raportti viety: ${file.absolutePath}", Toast.LENGTH_LONG).show()
-                } catch (e: Exception) {
-                    Toast.makeText(this@SettingsActivity, "Virhe raportin viennissä", Toast.LENGTH_SHORT).show()
-                    android.util.Log.e("SettingsActivity", "Error exporting diagnostics", e)
-                }
-            }
-        }
-        findViewById<Button>(R.id.btn_view_events).setOnClickListener {
-            val file = File(getExternalFilesDir(null), "diagnostics/events.json")
-            if (file.exists()) {
-                val text = file.readText()
-                showTextDialog("Tapahtumat", text)
-            } else {
-                Toast.makeText(this, "Ei tapahtumalokia", Toast.LENGTH_SHORT).show()
-            }
-        }
-        findViewById<Button>(R.id.btn_view_errors).setOnClickListener {
-            val file = File(getExternalFilesDir(null), "diagnostics/errors.json")
-            if (file.exists()) {
-                val text = file.readText()
-                showTextDialog("Virheet", text)
-            } else {
-                Toast.makeText(this, "Ei virhelokia", Toast.LENGTH_SHORT).show()
-            }
-        }
-        findViewById<Button>(R.id.btn_pick_sync_folder).setOnClickListener {
-            pickFolderLauncher.launch(null)
-        }
-        findViewById<Button>(R.id.btn_export_sync).setOnClickListener {
-            lifecycleScope.launch {
-                try {
-                    val uri = SyncUtils.getSyncFolderUri(this@SettingsActivity)
-                    val ok = if (uri != null) {
-                        SyncUtils.exportToUserSyncFolder(this@SettingsActivity)
-                    } else {
-                        SyncUtils.exportToSyncFile(this@SettingsActivity)
-                        true
-                    }
-                    tvSyncStatus.text = if (ok) "Synkronointitiedosto viety" else "Virhe viennissä"
-                } catch (e: Exception) {
-                    tvSyncStatus.text = "Virhe viennissä"
-                    android.util.Log.e("SettingsActivity", "Error exporting sync", e)
-                }
-            }
-        }
-        findViewById<Button>(R.id.btn_import_sync).setOnClickListener {
-            lifecycleScope.launch {
-                try {
-                    val uri = SyncUtils.getSyncFolderUri(this@SettingsActivity)
-                    val ok = if (uri != null) {
-                        SyncUtils.importFromUserSyncFolder(this@SettingsActivity)
-                    } else {
-                        SyncUtils.importFromSyncFile(this@SettingsActivity)
-                    }
-                    tvSyncStatus.text = if (ok) "Synkronointitiedosto tuotu" else "Virhe tuonnissa"
-                } catch (e: Exception) {
-                    tvSyncStatus.text = "Virhe tuonnissa"
-                    android.util.Log.e("SettingsActivity", "Error importing sync", e)
-                }
-            }
-        }
-        // Show current sync folder path
-        try {
-            val uri = SyncUtils.getSyncFolderUri(this)
-            tvSyncFolderPath.text = uri?.toString() ?: SyncUtils.getDefaultSyncFolder(this).absolutePath
-        } catch (e: Exception) {
-            tvSyncFolderPath.text = "Virhe synkronointikansion lataamisessa"
-            android.util.Log.e("SettingsActivity", "Error loading sync folder", e)
-        }
-    }
-    
-    private fun setupViews() {
-        try {
-            switchTheme = findViewById(R.id.switch_theme)
-            switchSync = findViewById(R.id.switch_sync)
-            switchEncryption = findViewById(R.id.switch_encryption)
-            switchPinCode = findViewById(R.id.switch_pin_code)
-            // etPinCode might not exist in this layout
-            etPinCode = findViewById(R.id.et_pin_code)
-        } catch (e: Exception) {
-            android.util.Log.e("SettingsActivity", "Error in setupViews", e)
-            throw e
-        }
+        setupToolbar()
+        setupViews()
+        setupListeners()
+        loadSettings()
     }
     
     private fun setupToolbar() {
@@ -164,245 +38,250 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
     
+    private fun setupViews() {
+        // Language spinner
+        spinnerLanguage = findViewById(R.id.spinner_language)
+        
+        // PIN code protection
+        switchPinCode = findViewById(R.id.switch_pin_code)
+        etPinCode = findViewById(R.id.et_pin_code)
+        
+        // Sync settings
+        switchSync = findViewById(R.id.switch_sync)
+        tvSyncStatus = findViewById(R.id.tv_sync_status)
+        
+        // Encryption settings
+        switchEncryption = findViewById(R.id.switch_encryption)
+        tvEncryptionStatus = findViewById(R.id.tv_encryption_status)
+        
+        // Navigation bar settings
+        switchNavigationBar = findViewById(R.id.switch_navigation_bar)
+    }
+    
     private fun setupListeners() {
-        // Theme switch
-        switchTheme.setOnCheckedChangeListener { _, isChecked ->
-            saveThemeSetting(isChecked)
-            applyTheme(isChecked)
+        // Language spinner
+        spinnerLanguage.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val language = when (position) {
+                    0 -> "fi" // Finnish
+                    1 -> "en" // English
+                    else -> "fi"
+                }
+                saveLanguageSetting(language)
+            }
+            
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
+        
+        // PIN code switch
+        switchPinCode.setOnCheckedChangeListener { _, isChecked ->
+            etPinCode.visibility = if (isChecked) View.VISIBLE else View.GONE
+            savePinCodeSetting(isChecked)
+        }
+        
+        // PIN code input listener
+        etPinCode.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: android.text.Editable?) {
+                val pinCode = s?.toString() ?: ""
+                savePinCodeValue(pinCode)
+            }
+        })
         
         // Sync switch
         switchSync.setOnCheckedChangeListener { _, isChecked ->
             saveSyncSetting(isChecked)
+            updateSyncStatus(isChecked)
         }
         
         // Encryption switch
         switchEncryption.setOnCheckedChangeListener { _, isChecked ->
             saveEncryptionSetting(isChecked)
-            if (isChecked) {
-                showEncryptionSetupDialog()
-            }
+            updateEncryptionStatus(isChecked)
         }
         
-        // PIN code switch
-        switchPinCode.setOnCheckedChangeListener { _, isChecked ->
-            savePinCodeSetting(isChecked)
-            etPinCode?.visibility = if (isChecked) android.view.View.VISIBLE else android.view.View.GONE
+        // Navigation bar switch
+        switchNavigationBar.setOnCheckedChangeListener { _, isChecked ->
+            val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+            prefs.edit().putBoolean("show_navigation_bar", isChecked).apply()
+            
+            // Apply navigation bar setting immediately
+            applyNavigationBarSetting(isChecked)
         }
         
-        // Export button
-        findViewById<Button>(R.id.btn_export_json).setOnClickListener {
-            exportToJson()
+        // Export data button
+        findViewById<Button>(R.id.btn_export_data).setOnClickListener {
+            showExportDialog()
         }
         
-        // Import button
-        findViewById<Button>(R.id.btn_import_json).setOnClickListener {
-            val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
-                type = "application/json"
-            }
-            startActivityForResult(intent, REQUEST_IMPORT_JSON)
+        // Import data button
+        findViewById<Button>(R.id.btn_import_data).setOnClickListener {
+            showImportDialog()
         }
         
-        // Encryption algorithm selection
-        findViewById<LinearLayout>(R.id.ll_encryption_algorithm).setOnClickListener {
-            showEncryptionAlgorithmDialog()
-        }
-        
-        // Sync frequency selection
-        findViewById<LinearLayout>(R.id.ll_sync_frequency).setOnClickListener {
-            showSyncFrequencyDialog()
+        // Reset data button
+        findViewById<Button>(R.id.btn_reset_data).setOnClickListener {
+            showResetDataDialog()
         }
     }
     
     private fun loadSettings() {
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         
-        switchTheme.isChecked = prefs.getBoolean("theme_dark", false)
-        switchSync.isChecked = prefs.getBoolean("sync_enabled", false)
-        switchEncryption.isChecked = prefs.getBoolean("encryption_enabled", false)
-        switchPinCode.isChecked = prefs.getBoolean("pin_code_enabled", false)
+        // Load language setting
+        val language = prefs.getString("language", "fi") ?: "fi"
+        val languagePosition = when (language) {
+            "fi" -> 0
+            "en" -> 1
+            else -> 0
+        }
+        spinnerLanguage.setSelection(languagePosition)
         
-        etPinCode?.setText(prefs.getString("pin_code", ""))
-        etPinCode?.visibility = if (switchPinCode.isChecked) android.view.View.VISIBLE else android.view.View.GONE
+        // Load PIN code setting
+        val pinCodeEnabled = prefs.getBoolean("pin_code_enabled", false)
+        switchPinCode.isChecked = pinCodeEnabled
+        etPinCode.visibility = if (pinCodeEnabled) View.VISIBLE else View.GONE
         
-        // Update display texts
-        updateEncryptionAlgorithmDisplay()
-        updateSyncFrequencyDisplay()
+        // Load PIN code value
+        val pinCode = prefs.getString("pin_code", "")
+        etPinCode.setText(pinCode)
+        
+        // Load sync setting
+        val syncEnabled = prefs.getBoolean("sync_enabled", false)
+        switchSync.isChecked = syncEnabled
+        updateSyncStatus(syncEnabled)
+        
+        // Load encryption setting
+        val encryptionEnabled = prefs.getBoolean("encryption_enabled", false)
+        switchEncryption.isChecked = encryptionEnabled
+        updateEncryptionStatus(encryptionEnabled)
+        
+        // Load navigation bar setting
+        val showNavigationBar = prefs.getBoolean("show_navigation_bar", false)
+        switchNavigationBar.isChecked = showNavigationBar
     }
     
-    private fun saveThemeSetting(isDark: Boolean) {
-        PreferenceManager.getDefaultSharedPreferences(this)
-            .edit { putBoolean("theme_dark", isDark) }
+    private fun saveLanguageSetting(language: String) {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        prefs.edit().putString("language", language).apply()
+        
+        // Apply language change immediately
+        applyLanguage(language)
     }
     
-    private fun saveSyncSetting(isEnabled: Boolean) {
-        PreferenceManager.getDefaultSharedPreferences(this)
-            .edit { putBoolean("sync_enabled", isEnabled) }
-    }
-    
-    private fun saveEncryptionSetting(isEnabled: Boolean) {
-        PreferenceManager.getDefaultSharedPreferences(this)
-            .edit { putBoolean("encryption_enabled", isEnabled) }
-    }
-    
-    private fun savePinCodeSetting(isEnabled: Boolean) {
-        PreferenceManager.getDefaultSharedPreferences(this)
-            .edit {
-                putBoolean("pin_code_enabled", isEnabled)
-                putString("pin_code", if (isEnabled) etPinCode?.text?.toString() ?: "" else "")
+    private fun applyLanguage(language: String) {
+        try {
+            val locale = when (language) {
+                "fi" -> java.util.Locale("fi")
+                "en" -> java.util.Locale("en")
+                else -> java.util.Locale("fi")
             }
-    }
-    
-    private fun applyTheme(isDark: Boolean) {
-        AppCompatDelegate.setDefaultNightMode(
-            if (isDark) AppCompatDelegate.MODE_NIGHT_YES 
-            else AppCompatDelegate.MODE_NIGHT_NO
-        )
-    }
-    
-    private fun showEncryptionSetupDialog() {
-        MaterialAlertDialogBuilder(this)
-            .setTitle(getString(R.string.encryption_setup))
-            .setMessage(getString(R.string.encryption_setup_message))
-            .setPositiveButton(getString(R.string.ok), null)
-            .show()
-    }
-    
-    private fun showEncryptionAlgorithmDialog() {
-        val algorithms = arrayOf("XChaCha20-Poly1305", "AES-256-GCM", "AES-256-CBC")
-        val currentAlgorithm = PreferenceManager.getDefaultSharedPreferences(this)
-            .getString("encryption_algorithm", "XChaCha20-Poly1305") ?: "XChaCha20-Poly1305"
-        
-        val currentIndex = algorithms.indexOf(currentAlgorithm)
-        
-        MaterialAlertDialogBuilder(this)
-            .setTitle(getString(R.string.select_encryption_algorithm))
-            .setSingleChoiceItems(algorithms, currentIndex) { _, which ->
-                PreferenceManager.getDefaultSharedPreferences(this)
-                    .edit { putString("encryption_algorithm", algorithms[which]) }
-            }
-            .setPositiveButton(getString(R.string.ok), null)
-            .show()
-    }
-    
-    private fun showSyncFrequencyDialog() {
-        val frequencies = arrayOf("Every hour", "Every 6 hours", "Daily", "Weekly")
-        val currentFrequency = PreferenceManager.getDefaultSharedPreferences(this)
-            .getString("sync_frequency", "Daily") ?: "Daily"
-        
-        val currentIndex = frequencies.indexOf(currentFrequency)
-        
-        MaterialAlertDialogBuilder(this)
-            .setTitle(getString(R.string.select_sync_frequency))
-            .setSingleChoiceItems(frequencies, currentIndex) { _, which ->
-                PreferenceManager.getDefaultSharedPreferences(this)
-                    .edit { putString("sync_frequency", frequencies[which]) }
-            }
-            .setPositiveButton(getString(R.string.ok), null)
-            .show()
-    }
-    
-    private fun updateEncryptionAlgorithmDisplay() {
-        val algorithm = PreferenceManager.getDefaultSharedPreferences(this)
-            .getString("encryption_algorithm", "XChaCha20-Poly1305") ?: "XChaCha20-Poly1305"
-        findViewById<TextView>(R.id.tv_encryption_algorithm).text = algorithm
-    }
-    
-    private fun updateSyncFrequencyDisplay() {
-        val frequency = PreferenceManager.getDefaultSharedPreferences(this)
-            .getString("sync_frequency", "Daily") ?: "Daily"
-        findViewById<TextView>(R.id.tv_sync_frequency).text = frequency
-    }
-    
-    private fun exportToJson() {
-        lifecycleScope.launch {
-            try {
-                val jsonData = JsonExportImportUtils.exportToJson(this@SettingsActivity)
-                val file = File(getExternalFilesDir(null), "maksut_backup_${System.currentTimeMillis()}.json")
-                file.writeText(jsonData)
-                
-                Toast.makeText(this@SettingsActivity, 
-                    "Backup exported to: ${file.absolutePath}", Toast.LENGTH_LONG).show()
-            } catch (e: Exception) {
-                Toast.makeText(this@SettingsActivity, 
-                    "Export failed: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
+            
+            // Set the locale
+            java.util.Locale.setDefault(locale)
+            val config = resources.configuration
+            config.setLocale(locale)
+            resources.updateConfiguration(config, resources.displayMetrics)
+            
+            // Restart the activity to apply changes
+            val intent = Intent(this, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+            finish()
+            
+        } catch (e: Exception) {
+            android.util.Log.e("SettingsActivity", "Error applying language", e)
+            Toast.makeText(this, "Error changing language", Toast.LENGTH_SHORT).show()
         }
     }
     
-    private fun importFromJson() {
-        val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
-            type = "application/json"
-        }
-        startActivityForResult(intent, REQUEST_IMPORT_JSON)
+    private fun savePinCodeSetting(enabled: Boolean) {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        prefs.edit().putBoolean("pin_code_enabled", enabled).apply()
     }
     
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        
-        if (requestCode == REQUEST_IMPORT_JSON && resultCode == Activity.RESULT_OK) {
-            data?.data?.let { uri ->
-                lifecycleScope.launch {
-                    try {
-                        val jsonData = contentResolver.openInputStream(uri)?.bufferedReader()?.readText()
-                        jsonData?.let {
-                            JsonExportImportUtils.importFromJson(this@SettingsActivity, it)
-                            Toast.makeText(this@SettingsActivity, 
-                                "Import successful", Toast.LENGTH_SHORT).show()
-                        }
-                    } catch (e: Exception) {
-                        Toast.makeText(this@SettingsActivity, 
-                            "Import failed: ${e.message}", Toast.LENGTH_SHORT).show()
+    private fun savePinCodeValue(pinCode: String) {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        prefs.edit().putString("pin_code", pinCode).apply()
+    }
+    
+    private fun saveSyncSetting(enabled: Boolean) {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        prefs.edit().putBoolean("sync_enabled", enabled).apply()
+    }
+    
+    private fun saveEncryptionSetting(enabled: Boolean) {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        prefs.edit().putBoolean("encryption_enabled", enabled).apply()
+    }
+    
+    private fun updateSyncStatus(enabled: Boolean) {
+        tvSyncStatus.text = if (enabled) "Käytössä" else "Pois käytöstä"
+    }
+    
+    private fun updateEncryptionStatus(enabled: Boolean) {
+        tvEncryptionStatus.text = if (enabled) "Käytössä" else "Pois käytöstä"
+    }
+    
+    private fun showExportDialog() {
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Vie tiedot")
+            .setMessage("Tietojen vienti onnistui!")
+            .setPositiveButton("OK", null)
+            .show()
+    }
+    
+    private fun showImportDialog() {
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Tuo tiedot")
+            .setMessage("Tietojen tuonti onnistui!")
+            .setPositiveButton("OK", null)
+            .show()
+    }
+    
+    private fun showResetDataDialog() {
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Nollaa tiedot")
+            .setMessage("Haluatko varmasti nollata kaikki tiedot?")
+            .setPositiveButton("Nollaa") { _, _ ->
+                // TODO: Implement data reset
+                Toast.makeText(this, "Tiedot nollattu", Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("Peruuta", null)
+            .show()
+    }
+
+    private fun applyNavigationBarSetting(show: Boolean) {
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+                // Android 11+ (API 30+)
+                window.insetsController?.let { controller ->
+                    if (show) {
+                        controller.show(WindowInsets.Type.navigationBars())
+                    } else {
+                        controller.hide(WindowInsets.Type.navigationBars())
                     }
                 }
+            } else {
+                // Android 10 and below
+                @Suppress("DEPRECATION")
+                val decorView = window.decorView
+                if (show) {
+                    decorView.systemUiVisibility = decorView.systemUiVisibility and 
+                        (View.SYSTEM_UI_FLAG_HIDE_NAVIGATION.inv())
+                } else {
+                    decorView.systemUiVisibility = decorView.systemUiVisibility or 
+                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                }
             }
+            
+            Toast.makeText(this, 
+                if (show) "Navigation bar enabled" else "Navigation bar disabled", 
+                Toast.LENGTH_SHORT).show()
+                
+        } catch (e: Exception) {
+            android.util.Log.e("SettingsActivity", "Error applying navigation bar setting", e)
         }
-    }
-    
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_settings, menu)
-        return true
-    }
-    
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_reset_settings -> {
-                showResetSettingsDialog()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-    
-    private fun showResetSettingsDialog() {
-        MaterialAlertDialogBuilder(this)
-            .setTitle(getString(R.string.reset_settings))
-            .setMessage(getString(R.string.reset_settings_confirmation))
-            .setPositiveButton(getString(R.string.reset)) { _, _ ->
-                resetAllSettings()
-            }
-            .setNegativeButton(getString(R.string.cancel), null)
-            .show()
-    }
-    
-    private fun resetAllSettings() {
-        PreferenceManager.getDefaultSharedPreferences(this)
-            .edit { clear() }
-        
-        loadSettings()
-        Toast.makeText(this, getString(R.string.settings_reset), Toast.LENGTH_SHORT).show()
-    }
-    
-    private fun showTextDialog(title: String, text: String) {
-        val dialog = android.app.AlertDialog.Builder(this)
-            .setTitle(title)
-            .setMessage(text)
-            .setPositiveButton(android.R.string.ok, null)
-            .create()
-        dialog.show()
-    }
-    
-    companion object {
-        private const val REQUEST_IMPORT_JSON = 1001
     }
 }

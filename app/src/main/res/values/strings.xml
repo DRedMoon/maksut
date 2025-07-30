@@ -3,6 +3,14 @@
     <!-- Sovelluksen nimi -->
     <string name="app_name">Maksut</string>
     <string name="settings">Asetukset</string>
+    <string name="data_management">Tietojen hallinta</string>
+    <string name="export_data">Vie tiedot</string>
+    <string name="import_data">Tuo tiedot</string>
+    <string name="reset_data">Nollaa tiedot</string>
+    <string name="security">Turvallisuus</string>
+    <string name="pin_code_protection">PIN-koodi</string>
+    <string name="about">Tietoja</string>
+    <string name="app_version">Versio 1.0.0</string>
     <string name="close">✕</string>
     <string name="back">←</string>
     <string name="set_pin">Aseta PIN-koodi:</string>
@@ -31,7 +39,7 @@
     <string name="expense">Kulu</string>
     <string name="cancel">Peruuta</string>
     <string name="loan_payment">Lainan lyhennys</string>
-    <string name="loan">Lainat/Luotot</string>
+
     <string name="subscription">Tilaus(kk)</string>
     <string name="manage_payments">Hallitse maksuja</string>
     <string name="loans">Lainat</string>
@@ -39,7 +47,11 @@
     <string name="subscriptions">Kuukausimaksut</string>
     <string name="filter_all">Kaikki</string>
     <string name="filter_upcoming">Tulevat</string>
-    <string name="loans_label">Lainat/Luotot</string>
+    <string name="all">Kaikki</string>
+    <string name="transactions">Tapahtumat</string>
+    <string name="latest_transactions">Viimeisimmät tapahtumat</string>
+    <string name="balance">Saldo</string>
+    <string name="edit">Muokkaa</string>
     <string name="subscriptions_label">Kuukausimaksut</string>
     <string name="income">Tulo</string>
     <string name="description">Kuvaus</string>
@@ -63,7 +75,7 @@
     <string name="select_date">Valitse päivämäärä</string>
     <string name="no_date_selected">Ei päivämäärää</string>
     <string name="transactions_header">Tapahtumat</string>
-    <string name="remaining">Saldo</string>
+
     <string name="menu">Valikko</string>
     <string name="more">Lisää tietoa</string>
     <string name="transaction_icon">Tapahtuma</string>
@@ -160,7 +172,7 @@
     <string name="delete_credit_confirmation">Haluatko varmasti poistaa luoton "%s"?</string>
     <string name="loan_name">Lainan nimi</string>
     <string name="loan_amount">Lainan määrä</string>
-    <string name="interest_rate">Korko (%)</string>
+
     <string name="personal_margin">Henkilökohtainen marginaali (%)</string>
     <string name="loan_term">Laina-aika (vuotta)</string>
     <string name="monthly_payment">Kuukausimaksu (€)</string>
@@ -168,7 +180,7 @@
     <string name="due_day">Eräpäivä (päivä)</string>
     <string name="start_date">Aloituspäivä</string>
     <string name="end_date">Loppupäivä</string>
-    <string name="total_repayment">Kokonaislyhennys: %.2f €</string>
+
     <string name="calculation_error">Laskentavirhe</string>
     <string name="fill_all_fields">Täytä kaikki kentät</string>
     <string name="invalid_values">Virheelliset arvot</string>
@@ -192,7 +204,6 @@
     <string name="payment_details">Maksun tiedot</string>
     <string name="payment_status">Maksun tila</string>
     <string name="paid">Maksettu</string>
-    <string name="unpaid">Maksamatta</string>
     <string name="delete">Poista</string>
     <string name="total_interest_amount">Kokonaiskorko: %.2f €</string>
     <string name="category">Kategoria</string>
@@ -213,8 +224,8 @@
     <string name="select_credit">Valitse luotto</string>
     <string name="upcoming_payments">Tulevat maksut</string>
     <string name="this_week">Tällä viikolla</string>
-    <string name="this_month">Tässä kuussa</string>
-    <string name="this_year">Tänä vuonna</string>
+    <string name="this_month">Kuukausi</string>
+    <string name="this_year">Vuosi</string>
     <string name="calendar_view">Kalenterinäkymä</string>
     <string name="monthly_payments">Kuukausimaksut</string>
     <string name="diagnostics_analytics">Diagnostiikka &amp; Analytiikka</string>
@@ -242,7 +253,7 @@ Tapahtumia: %4$d</string>
     <string name="basic_information">Perustiedot</string>
     <string name="name">Nimi</string>
     <string name="enter_name">Syötä nimi</string>
-    <string name="original_amount">Alkuperäinen summa (€)</string>
+
 
 
     <string name="months_left">Kuukausia jäljellä *</string>
@@ -256,6 +267,31 @@ Tapahtumia: %4$d</string>
     <string name="calculations">Laskennat</string>
     <string name="total_repayment_label">Kokonaissumma:</string>
     <string name="total_interest_label">Kokonaiskorko:</string>
+    <string name="total_debt">Velka yhteensä</string>
+    <string name="monthly_loan_payments">Kuukausimaksut</string>
+    <string name="total">Yhteensä</string>
+    <string name="show_all_payments">Näytä kaikki maksut</string>
+    <string name="manage_loans_credits">Hallitse lainoja ja luottoja</string>
+    <string name="regular_bills">Säännölliset laskut</string>
+    <string name="loans_credits">Lainat ja luotot</string>
+    <string name="loan">Laina</string>
+    <string name="remaining">Jäljellä</string>
+    <string name="credit">Luotto</string>
+    <string name="unpaid">Maksamatta</string>
+    <string name="overdue">Erääntynyt</string>
+    <string name="due_today">Erääntyy tänään</string>
+    <string name="due_in_days">Erääntyy %d päivässä</string>
+    <string name="overdue_days">%d päivää erääntynyt</string>
+    <string name="loans_label">Lainat ja luotot</string>
+    <string name="financial_overview">Taloudellinen yleiskatsaus</string>
+    <string name="total_interest">Korkokulut yhteensä</string>
+    <string name="repayment_progress">Maksun eteneminen</string>
+    <string name="original_amount">Alkuperäinen summa</string>
+    <string name="remaining_balance">Jäljellä oleva saldo</string>
+    <string name="interest_rate">Korkoprosentti</string>
+    <string name="total_repayment">Kokonaismaksu</string>
+    <string name="interest_cost">Korkokulut</string>
+    <string name="manage_all_loans_credits">Hallitse kaikkia lainoja ja luottoja</string>
     <string name="invalid_original_amount">Virheellinen alkuperäinen summa</string>
     <string name="invalid_current_balance">Virheellinen nykyinen saldo</string>
     <string name="invalid_monthly_payment">Virheellinen kuukausimaksu</string>
@@ -288,4 +324,43 @@ Tapahtumia: %4$d</string>
     <string name="december">Joulukuu</string>
 
     <string name="year">2025</string>
+    <string name="sync_disabled">Synkronointi pois käytöstä</string>
+    <string name="sync_enabled">Synkronointi käytössä</string>
+    <string name="encryption">Salaus</string>
+    <string name="encryption_disabled">Salaus pois käytöstä</string>
+    <string name="encryption_enabled">Salaus käytössä</string>
+    <string name="enter_pin_code">Syötä PIN-koodi</string>
+    <string name="pin_code_required">PIN-koodi vaaditaan</string>
+    <string name="enter_pin">Syötä PIN</string>
+    <string name="submit">Lähetä</string>
+    <string name="incorrect_pin">Väärä PIN-koodi</string>
+
+    <string name="all_transactions">Kaikki tapahtumat</string>
+    <string name="all_transactions_coming_soon">Kaikki tapahtumat -sivu tulossa pian</string>
+
+    <string name="search_transactions">Hae tapahtumia</string>
+    <string name="select_date_range">Valitse aikaväli</string>
+    <string name="no_transactions_found">Ei tapahtumia löytynyt</string>
+    <string name="transactions_found">tapahtumaa</string>
+    <string name="timeline">Aikajakso</string>
+    <string name="starting_point">Alkaen</string>
+    <string name="ending_point">Päättyen</string>
+    <string name="last_week">Viime viikko</string>
+    <string name="last_month">Viime kuukausi</string>
+    <string name="last_quarter">Viime neljännes</string>
+    <string name="last_year">Viime vuosi</string>
+
+    <string name="filter">Suodata</string>
+    <string name="sort">Järjestä</string>
+
+    <string name="payment_type">Maksun tyyppi</string>
+    <string name="status">Tila</string>
+    <string name="payment_count">Maksuja: %d</string>
+    <string name="no_payments_found">Maksuja ei löytynyt</string>
+    <string name="all_monthly_payments">Kaikki kuukausimaksut</string>
+    <string name="total_monthly">Kokonaiskuukausi:</string>
+    <string name="show_all_monthly_payments">Näytä kaikki kuukausimaksut</string>
+    <string name="navigation_bar">Navigointipalkki</string>
+    <string name="show_navigation_bar">Näytä navigointipalkki koko sovelluksessa</string>
+    <string name="navigation_bar_description">Näyttää navigointipalkin kaikilla sivuilla</string>
 </resources>

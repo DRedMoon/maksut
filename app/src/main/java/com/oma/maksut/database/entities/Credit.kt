@@ -40,8 +40,20 @@ data class Credit(
     @ColumnInfo(name = "due_day")
     val dueDay: Int,
     
+    @ColumnInfo(name = "due_date")
+    val dueDate: Date,
+    
     @ColumnInfo(name = "grace_period_days")
     val gracePeriodDays: Int = 0,
+    
+    @ColumnInfo(name = "total_repayment_amount")
+    val totalRepaymentAmount: Double,
+    
+    @ColumnInfo(name = "total_interest_amount")
+    val totalInterestAmount: Double,
+    
+    @ColumnInfo(name = "is_paid")
+    var isPaid: Boolean = false,
     
     @ColumnInfo(name = "is_active")
     val isActive: Boolean = true,

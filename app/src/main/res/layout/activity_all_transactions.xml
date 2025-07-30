@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/main_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/brand_primary_dark">
+
+    <!-- Toolbar -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/topAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/brand_primary_dark"
+        app:title="@string/all_transactions"
+        app:titleTextColor="@android:color/white"
+        app:navigationIcon="@drawable/ic_arrow_back_white"
+        app:navigationIconTint="@android:color/white"/>
+
+    <!-- Search Bar -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        app:boxBackgroundColor="@color/brand_primary"
+        app:boxStrokeColor="@android:color/white"
+        app:boxCornerRadiusTopStart="8dp"
+        app:boxCornerRadiusTopEnd="8dp"
+        app:boxCornerRadiusBottomStart="8dp"
+        app:boxCornerRadiusBottomEnd="8dp"
+        app:hintTextColor="@android:color/white"
+        app:startIconDrawable="@drawable/ic_search"
+        app:startIconTint="@android:color/white">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/search_transactions"
+            app:hintTextColor="@android:color/white"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"
+            android:inputType="text" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Filter Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="16dp">
+
+        <!-- Transaction Type and Timeline Dropdowns -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="2dp"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                app:boxBackgroundColor="@color/brand_primary"
+                app:boxStrokeColor="@android:color/white"
+                app:boxCornerRadiusTopStart="8dp"
+                app:boxCornerRadiusTopEnd="8dp"
+                app:boxCornerRadiusBottomStart="8dp"
+                app:boxCornerRadiusBottomEnd="8dp"
+                app:hintTextColor="@android:color/white">
+
+                <AutoCompleteTextView
+                    android:id="@+id/spinner_transaction_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text="@string/all"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:gravity="start|center_vertical"
+                    android:inputType="none"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:paddingTop="0dp"
+                    android:paddingBottom="0dp"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="2dp"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                app:boxBackgroundColor="@color/brand_primary"
+                app:boxStrokeColor="@android:color/white"
+                app:boxCornerRadiusTopStart="8dp"
+                app:boxCornerRadiusTopEnd="8dp"
+                app:boxCornerRadiusBottomStart="8dp"
+                app:boxCornerRadiusBottomEnd="8dp"
+                app:hintTextColor="@android:color/white">
+
+                <AutoCompleteTextView
+                    android:id="@+id/spinner_timeline"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text="@string/timeline"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:gravity="start|center_vertical"
+                    android:inputType="none"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:paddingTop="0dp"
+                    android:paddingBottom="0dp"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <!-- Date Range Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+
+            <!-- Start Date -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="4dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/starting_point"
+                    android:textColor="@android:color/white"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="4dp"
+                    android:gravity="start" />
+
+                <Button
+                    android:id="@+id/btn_start_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text="@string/starting_point"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:gravity="start|center_vertical"
+                    android:background="@drawable/button_background"
+                    android:drawableEnd="@drawable/ic_calendar" />
+            </LinearLayout>
+
+            <!-- End Date -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="4dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ending_point"
+                    android:textColor="@android:color/white"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="4dp"
+                    android:gravity="start" />
+
+                <Button
+                    android:id="@+id/btn_end_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text="@string/ending_point"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:gravity="start|center_vertical"
+                    android:background="@drawable/button_background"
+                    android:drawableEnd="@drawable/ic_calendar" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_transactions"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="8dp"
+        android:clipToPadding="false" />
+
+    <!-- Empty State -->
+    <TextView
+        android:id="@+id/tv_empty_state"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/no_transactions_found"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:padding="32dp"
+        android:visibility="gone" />
+</LinearLayout>

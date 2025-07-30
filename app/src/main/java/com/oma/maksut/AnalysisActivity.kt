@@ -1,5 +1,6 @@
 package com.oma.maksut
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -11,14 +12,29 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.first
 import com.oma.maksut.repository.FinanceRepository
+import android.widget.Toast
 
 class AnalysisActivity : AppCompatActivity() {
     private val fmtIso = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     private val fmtDot = SimpleDateFormat("dd.M.yyyy", Locale.getDefault())
+    private lateinit var repository: FinanceRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_analysis)
+        
+        try {
+            repository = FinanceRepository(this)
+            setupViews()
+            loadData()
+        } catch (e: Exception) {
+            android.util.Log.e("AnalysisActivity", "Error in onCreate", e)
+            Toast.makeText(this, "Error initializing activity", Toast.LENGTH_SHORT).show()
+            finish()
+        }
+    }
+
+    private fun setupViews() {
         findViewById<MaterialToolbar>(R.id.topAppBar).apply {
             setSupportActionBar(this)
             setNavigationOnClickListener { finish() }
@@ -28,19 +44,18 @@ class AnalysisActivity : AppCompatActivity() {
         findViewById<LinearLayout>(R.id.btn_full_analysis).setOnClickListener { showAnalysis("full") }
     }
 
-    private fun showAnalysis(type: String) {
+    private fun loadData() {
         lifecycleScope.launch {
-            val repository = FinanceRepository(this@AnalysisActivity)
             val transactions = repository.getRealTransactions().first()
-        val today = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-        }
-        val currentMonth = today.get(Calendar.MONTH)
-        val currentYear = today.get(Calendar.YEAR)
-            val filteredTransactions = when (type) {
+            val today = Calendar.getInstance().apply {
+                set(Calendar.HOUR_OF_DAY, 0)
+                set(Calendar.MINUTE, 0)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+            }
+            val currentMonth = today.get(Calendar.MONTH)
+            val currentYear = today.get(Calendar.YEAR)
+            val filteredTransactions = when (intent.getStringExtra("analysis_type") ?: "full") {
                 "monthly" -> transactions.filter { tx ->
                     val cal = Calendar.getInstance().apply { time = tx.paymentDate }
                     cal.get(Calendar.MONTH) == currentMonth && cal.get(Calendar.YEAR) == currentYear
@@ -54,7 +69,7 @@ class AnalysisActivity : AppCompatActivity() {
             val income = filteredTransactions.filter { it.amount > 0 }.sumOf { it.amount }
             val expenses = filteredTransactions.filter { it.amount < 0 }.sumOf { -it.amount }
             val netBalance = income - expenses
-            val title = when (type) {
+            val title = when (intent.getStringExtra("analysis_type") ?: "full") {
                 "monthly" -> getString(R.string.monthly_analysis)
                 "yearly" -> getString(R.string.yearly_analysis)
                 else -> getString(R.string.full_analysis)
@@ -70,6 +85,13 @@ class AnalysisActivity : AppCompatActivity() {
             findViewById<TextView>(R.id.tv_analysis_content).text = message
             findViewById<LinearLayout>(R.id.ll_analysis_result).visibility = android.view.View.VISIBLE
         }
+    }
+
+    private fun showAnalysis(type: String) {
+        val intent = Intent(this, AnalysisActivity::class.java).apply {
+            putExtra("analysis_type", type)
+        }
+        startActivity(intent)
     }
 
     private fun parseDate(dateStr: String): Date? {

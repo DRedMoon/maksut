@@ -3,9 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     
     <item
-        android:id="@+id/action_add_payment"
-        android:title="@string/add_transaction"
-        android:icon="@drawable/ic_add"
-        app:showAsAction="ifRoom"/>
+        android:id="@+id/action_more"
+        android:title=""
+        app:showAsAction="always"
+        android:icon="@drawable/ic_more_vert"
+        app:iconTint="@android:color/white"/>
+
+    <item
+        android:id="@+id/action_all_transactions"
+        android:title="@string/all_transactions"
+        app:showAsAction="never"/>
         
 </menu>

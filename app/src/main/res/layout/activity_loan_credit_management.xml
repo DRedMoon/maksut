@@ -1,96 +1,171 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
+    android:id="@+id/main_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#192E45">
+    android:background="@color/brand_primary_dark">
 
     <!-- Toolbar -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/topAppBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#294D73"
-        app:title="@string/loan_credit_management"
+        android:background="@color/brand_primary_dark"
+        app:title="@string/manage_loans_credits"
         app:titleTextColor="@android:color/white"
         app:navigationIcon="@drawable/ic_arrow_back_white"
-        app:navigationIconTint="@android:color/white"
-        app:titleCentered="true"/>
+        app:navigationIconTint="@android:color/white">
 
-    <!-- Tab Layout -->
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#294D73"
-        app:tabTextColor="#80FFFFFF"
-        app:tabSelectedTextColor="@android:color/white"
-        app:tabIndicatorColor="@android:color/white"/>
+        <ImageButton
+            android:id="@+id/btn_menu"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_more_vert"
+            android:tint="@android:color/white"
+            android:contentDescription="@string/menu"/>
 
-    <!-- Total Amount Display -->
-    <LinearLayout
-        android:id="@+id/ll_total_amount"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="#294D73"
-        android:padding="16dp"
-        android:clickable="true"
-        android:focusable="true">
+    </com.google.android.material.appbar.MaterialToolbar>
 
-        <TextView
-            android:id="@+id/tv_total_amount"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/total_debt_amount"
-            android:textColor="@android:color/holo_red_light"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:gravity="center"/>
-
-        <TextView
-            android:id="@+id/tv_total_repayment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/click_to_show_repayment"
-            android:textColor="#80FFFFFF"
-            android:textSize="12sp"
-            android:gravity="center"
-            android:layout_marginTop="4dp"/>
-
-        <TextView
-            android:id="@+id/tv_total_interest"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/total_interest_amount"
-            android:textColor="#FFA500"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:layout_marginTop="8dp"/>
-
-    </LinearLayout>
-
-    <!-- RecyclerView -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_items"
+    <!-- Scrollable Content -->
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:padding="8dp"
-        android:clipToPadding="false"/>
+        android:layout_weight="1">
 
-    <!-- Floating Action Button -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_add"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_add"
-        app:backgroundTint="#4CAF50"
-        app:tint="@android:color/white"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Individual Loan/Credit Cards Container -->
+            <LinearLayout
+                android:id="@+id/ll_loan_credit_cards"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="16dp">
+
+                <!-- Cards will be added here dynamically -->
+
+            </LinearLayout>
+
+            <!-- Summary Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="@color/brand_primary"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/financial_overview"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="16dp"/>
+
+                    <!-- Total Remaining Balances -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="12dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/total_debt"
+                            android:textColor="@android:color/white"
+                            android:textSize="14sp"
+                            android:alpha="0.7"/>
+
+                        <TextView
+                            android:id="@+id/tv_total_remaining"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="€0.00"
+                            android:textColor="@android:color/white"
+                            android:textSize="16sp"
+                            android:textStyle="bold"/>
+
+                    </LinearLayout>
+
+                    <!-- Total Monthly Payments -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="12dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/monthly_loan_payments"
+                            android:textColor="@android:color/white"
+                            android:textSize="14sp"
+                            android:alpha="0.7"/>
+
+                        <TextView
+                            android:id="@+id/tv_total_monthly"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="€0.00"
+                            android:textColor="@android:color/white"
+                            android:textSize="16sp"
+                            android:textStyle="bold"/>
+
+                    </LinearLayout>
+
+                    <!-- Total Interest -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/total_interest"
+                            android:textColor="@android:color/white"
+                            android:textSize="14sp"
+                            android:alpha="0.7"/>
+
+                        <TextView
+                            android:id="@+id/tv_total_interest"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="€0.00"
+                            android:textColor="@android:color/white"
+                            android:textSize="16sp"
+                            android:textStyle="bold"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>

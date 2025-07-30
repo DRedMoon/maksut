@@ -12,7 +12,7 @@
         android:id="@+id/topAppBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#294D73"
+        android:background="@color/brand_primary_dark"
         app:title="@string/add_loan_credit"
         app:titleTextColor="@android:color/white"
         app:navigationIcon="@drawable/ic_arrow_back_white"
@@ -45,11 +45,11 @@
                 android:id="@+id/spinner_type"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/selector_background"
-                android:popupBackground="#294D73"
+                android:background="@drawable/edit_text_background"
+                android:popupBackground="@color/brand_primary"
                 android:layout_marginBottom="24dp"
                 android:spinnerMode="dropdown"
-                android:theme="@style/SpinnerStyle"/>
+                style="@style/CustomSpinnerStyle"/>
 
             <!-- Basic Information Card -->
             <com.google.android.material.card.MaterialCardView

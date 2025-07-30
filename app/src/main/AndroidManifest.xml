@@ -12,24 +12,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Maksut"
         tools:targetApi="31">
-        <!-- Asetukset-aktiviteetti -->
+        <!-- Main Activities -->
+        <activity android:name=".MainActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        
         <activity android:name=".SettingsActivity" />
-
-        <!-- Yksityisyys & Turvallisuus -aktiviteetti -->
-        <activity android:name=".PrivacySecurityActivity" />
-        <!-- DataReset, AccessCode, DataImportExport -->
-        <activity android:name=".DataResetActivity" />
-        <activity android:name=".AccessCodeActivity" />
-        <activity android:name=".DataImportExportActivity" />
-        <!-- Valikko / Hallitse lainoja-aktiviteetti -->
-        <activity android:name=".ManagePaymentsActivity" />
-
-        <activity android:name=".LoansActivity" />
-        <activity android:name=".CreditsActivity" />
-        <activity android:name=".SubscriptionsActivity" />
-
-
-        <activity android:name=".AnalysisActivity" />
         <activity android:name=".QuickAddTransactionActivity" />
         <activity android:name=".CategoryManagementActivity" />
         <activity android:name=".LoanCreditManagementActivity" />
@@ -37,15 +28,11 @@
         <activity android:name=".UpcomingActivity" />
         <activity android:name=".MonthlyPaymentsActivity" />
         <activity android:name=".AddLoanCreditActivity" />
+        <activity android:name=".AnalysisActivity" />
+        <activity android:name=".PinCodeActivity" />
+        <activity android:name=".AllTransactionsActivity" />
 
-        <activity
-            android:name=".MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+
 
     </application>
 

@@ -5,19 +5,17 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#192E45">
+    android:background="@color/brand_primary_dark">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/topAppBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#294D73"
-        app:title="@string/upcoming_payments"
+        android:background="@color/brand_primary_dark"
+        app:title="@string/upcoming"
         app:titleTextColor="@android:color/white"
         app:navigationIcon="@drawable/ic_arrow_back_white"
-        app:navigationIconTint="@android:color/white"
-        app:menu="@menu/menu_upcoming"
-        app:titleCentered="true"/>
+        app:navigationIconTint="@android:color/white"/>
 
     <!-- Filter Buttons -->
     <LinearLayout
@@ -98,22 +96,32 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/monthly_payments"
-                        android:textColor="@android:color/white"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="8dp"/>
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
 
-                    <TextView
-                        android:id="@+id/tv_monthly_payments_week"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/no_payments"
-                        android:textColor="#CCCCCC"
-                        android:textSize="14sp"/>
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/monthly_payments"
+                            android:textColor="@android:color/white"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:gravity="start"/>
+
+                        <TextView
+                            android:id="@+id/tv_monthly_payments_week"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/no_payments"
+                            android:textColor="#CCCCCC"
+                            android:textSize="14sp"
+                            android:gravity="end"/>
+
+                    </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -132,14 +140,21 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:text="@string/loans_label"
                         android:textColor="@android:color/white"
                         android:textSize="16sp"
                         android:textStyle="bold"
-                        android:layout_marginBottom="8dp"/>
+                        android:gravity="start"/>
 
                     <TextView
                         android:id="@+id/tv_loans_credits_week"
@@ -147,7 +162,10 @@
                         android:layout_height="wrap_content"
                         android:text="@string/no_payments"
                         android:textColor="#CCCCCC"
-                        android:textSize="14sp"/>
+                        android:textSize="14sp"
+                        android:gravity="end"/>
+
+                    </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

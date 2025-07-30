@@ -4,17 +4,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
-    app:cardBackgroundColor="#223A5F"
-    app:cardCornerRadius="12dp">
+    android:layout_margin="4dp"
+    app:cardBackgroundColor="@color/card_light"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="16dp"
+        android:padding="12dp"
         android:gravity="center_vertical">
 
+        <!-- Checkbox for paid/unpaid status -->
+        <CheckBox
+            android:id="@+id/cb_payment_paid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:buttonTint="@color/accent_green"/>
+
+        <!-- Payment Details -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -23,37 +33,35 @@
 
             <TextView
                 android:id="@+id/tv_payment_name"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Nimi"
-                android:textColor="@android:color/white"
+                android:text="Maksun nimi"
+                android:textColor="@color/text_primary"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/tv_payment_amount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="0.00 €"
+                android:textColor="@color/text_primary"
                 android:textSize="16sp"
                 android:textStyle="bold"/>
 
-            <TextView
-                android:id="@+id/tv_payment_due"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Eräpäivä"
-                android:textColor="#B0C4DE"
-                android:textSize="12sp"
-                android:layout_marginTop="2dp"/>
         </LinearLayout>
 
+        <!-- Due Date -->
         <TextView
-            android:id="@+id/tv_payment_amount"
+            android:id="@+id/tv_payment_due_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0.00 €"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"
-            android:layout_marginEnd="16dp"/>
+            android:text="01.01.2025"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"
+            android:layout_marginStart="8dp"/>
 
-        <ImageView
-            android:id="@+id/iv_payment_status"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_radio_button_unchecked"
-            app:tint="@android:color/white"/>
     </LinearLayout>
-</com.google.android.material.card.MaterialCardView>
+
+</com.google.android.material.card.MaterialCardView> 

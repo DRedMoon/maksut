@@ -3,13 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/action_more"
+        android:title=""
+        app:showAsAction="always"
+        android:icon="@drawable/ic_more_vert"
+        app:iconTint="@android:color/white"/>
+
+    <item
         android:id="@+id/action_manage_categories"
         android:title="@string/manage_categories"
         app:showAsAction="never"/>
 
     <item
-        android:id="@+id/action_all_payments"
-        android:title="@string/all_payments"
+        android:id="@+id/action_all_transactions"
+        android:title="@string/all_transactions"
         app:showAsAction="never"/>
 
 </menu>

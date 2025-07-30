@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,13 +29,17 @@ class CategoryManagementActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_category_management)
         
-        repository = FinanceRepository(this)
-        
-        setupViews()
-        setupToolbar()
-        setupRecyclerView()
-        setupListeners()
-        loadCategories()
+        try {
+            repository = FinanceRepository(this)
+            setupViews()
+            setupToolbar()
+            setupRecyclerView() // Add this missing call
+            loadCategories()
+        } catch (e: Exception) {
+            android.util.Log.e("CategoryManagementActivity", "Error in onCreate", e)
+            Toast.makeText(this, "Error initializing activity", Toast.LENGTH_SHORT).show()
+            finish()
+        }
     }
     
     private fun setupViews() {
@@ -46,6 +51,29 @@ class CategoryManagementActivity : AppCompatActivity() {
             setSupportActionBar(this)
             setNavigationOnClickListener { finish() }
         }
+        
+        // Manual menu button
+        findViewById<ImageButton>(R.id.btn_menu).setOnClickListener {
+            showPopupMenu()
+        }
+    }
+    
+    private fun showPopupMenu() {
+        val menuButton = findViewById<ImageButton>(R.id.btn_menu)
+        val popup = PopupMenu(this, menuButton, android.view.Gravity.END)
+        popup.menuInflater.inflate(R.menu.menu_category_management, popup.menu)
+        
+        popup.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.action_add_category -> {
+                    showAddCategoryDialog()
+                    true
+                }
+                else -> false
+            }
+        }
+        
+        popup.show()
     }
     
     private fun setupRecyclerView() {
@@ -153,20 +181,5 @@ class CategoryManagementActivity : AppCompatActivity() {
             }
             .setNegativeButton(getString(R.string.cancel), null)
             .show()
-    }
-    
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_category_management, menu)
-        return true
-    }
-    
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_add_category -> {
-                showAddCategoryDialog()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
     }
 }

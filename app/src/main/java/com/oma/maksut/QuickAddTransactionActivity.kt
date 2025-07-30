@@ -2,11 +2,18 @@ package com.oma.maksut
 
 import android.app.DatePickerDialog
 import android.content.Intent
+import android.graphics.Color
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.view.WindowInsets
+import android.view.WindowInsetsController
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.MaterialToolbar
 import com.oma.maksut.database.entities.Category
@@ -54,12 +61,17 @@ class QuickAddTransactionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quick_add_transaction)
         
-        repository = FinanceRepository(this)
-        
-        setupViews()
-        setupToolbar()
-        setupListeners()
-        loadCategories()
+        try {
+            repository = FinanceRepository(this)
+            setupViews()
+            setupToolbar() // Add this missing call
+            setupSpinners()
+            setupListeners()
+        } catch (e: Exception) {
+            android.util.Log.e("QuickAddTransactionActivity", "Error in onCreate", e)
+            Toast.makeText(this, "Error initializing activity", Toast.LENGTH_SHORT).show()
+            finish()
+        }
     }
     
     private fun setupViews() {
@@ -84,55 +96,126 @@ class QuickAddTransactionActivity : AppCompatActivity() {
         spinnerCreditSelection = findViewById(R.id.spinner_credit_selection)
     }
     
+    private fun setupSpinners() {
+        // Setup category spinner
+        lifecycleScope.launch {
+            try {
+                val categories = repository.getAllCategories().first()
+                val categoryNames = mutableListOf<String>()
+                categoryNames.add("Select Category")
+                categoryNames.addAll(categories.map { it.name })
+                
+                val adapter = ArrayAdapter(this@QuickAddTransactionActivity, android.R.layout.simple_spinner_item, categoryNames)
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spinnerCategory.adapter = adapter
+            } catch (e: Exception) {
+                android.util.Log.e("QuickAddTransactionActivity", "Error loading categories", e)
+            }
+        }
+        
+        // Setup loan spinner
+        lifecycleScope.launch {
+            try {
+                val loans = repository.getAllActiveLoans().first()
+                val loanNames = mutableListOf<String>()
+                loanNames.add("Select Loan")
+                loanNames.addAll(loans.map { it.name })
+                
+                val adapter = ArrayAdapter(this@QuickAddTransactionActivity, android.R.layout.simple_spinner_item, loanNames)
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spinnerLoanSelection.adapter = adapter
+            } catch (e: Exception) {
+                android.util.Log.e("QuickAddTransactionActivity", "Error loading loans", e)
+            }
+        }
+        
+        // Setup credit spinner
+        lifecycleScope.launch {
+            try {
+                val credits = repository.getAllActiveCredits().first()
+                val creditNames = mutableListOf<String>()
+                creditNames.add("Select Credit")
+                creditNames.addAll(credits.map { it.name })
+                
+                val adapter = ArrayAdapter(this@QuickAddTransactionActivity, android.R.layout.simple_spinner_item, creditNames)
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spinnerCreditSelection.adapter = adapter
+            } catch (e: Exception) {
+                android.util.Log.e("QuickAddTransactionActivity", "Error loading credits", e)
+            }
+        }
+    }
+    
     private fun setupToolbar() {
         val toolbar = findViewById<MaterialToolbar>(R.id.topAppBar)
         setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener { finish() }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_quick_add, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_manage_categories -> {
-                startActivity(Intent(this, CategoryManagementActivity::class.java))
-                true
-            }
-            R.id.action_all_payments -> {
-                startActivity(Intent(this, MainActivity::class.java))
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
+        
+        // Manual menu button
+        findViewById<ImageButton>(R.id.btn_menu).setOnClickListener {
+            showPopupMenu()
         }
     }
-    
+
+    private fun showPopupMenu() {
+        val menuButton = findViewById<ImageButton>(R.id.btn_menu)
+        val popup = PopupMenu(this, menuButton, android.view.Gravity.END)
+        popup.menuInflater.inflate(R.menu.menu_quick_add, popup.menu)
+        
+        // Remove the "more" item from popup since it's the trigger
+        popup.menu.removeItem(R.id.action_more)
+        
+        // Style the popup menu for better visibility
+        popup.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.action_manage_categories -> {
+                    startActivity(Intent(this, CategoryManagementActivity::class.java))
+                    true
+                }
+                R.id.action_all_transactions -> {
+                    val intent = Intent(this, AllTransactionsActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    startActivity(intent)
+                    true
+                }
+                else -> false
+            }
+        }
+        
+        popup.show()
+    }
+
     private fun setupListeners() {
-        // Category spinner
+        // Category spinner - simpler version
         spinnerCategory.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {
-                if (position > 0) { // Skip "Select category" option
+                android.util.Log.d("QuickAdd", "Category selected at position: $position")
+
+                if (position == 0) {
+                    selectedCategory = null
+                    android.util.Log.d("QuickAdd", "No category selected")
+                } else {
                     lifecycleScope.launch {
                         val categories = repository.getAllCategories().first()
                         if (position - 1 < categories.size) {
                             selectedCategory = categories[position - 1]
+                            android.util.Log.d("QuickAdd", "Selected category: ${selectedCategory?.name}")
                             updateLayoutForCategory()
                         }
                     }
-                } else {
-                    selectedCategory = null
-                    updateLayoutForCategory()
                 }
+                updateLayoutForCategory()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 selectedCategory = null
+                android.util.Log.d("QuickAdd", "Nothing selected")
                 updateLayoutForCategory()
             }
         }
 
+
+        // Rest of your listeners stay the same...
         // Loan selection dropdown
         spinnerLoanSelection.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {
@@ -147,12 +230,12 @@ class QuickAddTransactionActivity : AppCompatActivity() {
                     selectedLoan = null
                 }
             }
-            
+
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 selectedLoan = null
             }
         }
-        
+
         // Credit selection dropdown
         spinnerCreditSelection.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {
@@ -167,7 +250,7 @@ class QuickAddTransactionActivity : AppCompatActivity() {
                     selectedCredit = null
                 }
             }
-            
+
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 selectedCredit = null
             }
@@ -180,12 +263,12 @@ class QuickAddTransactionActivity : AppCompatActivity() {
                 tvDueDate.text = dateFormat.format(date)
             }
         }
-        
+
         // Save button
         btnSave.setOnClickListener {
             saveTransaction()
         }
-        
+
         // Checkbox listeners
         cbHasDueDate.setOnCheckedChangeListener { _, isChecked ->
             findViewById<LinearLayout>(R.id.ll_due_date_selector).visibility =
@@ -196,7 +279,7 @@ class QuickAddTransactionActivity : AppCompatActivity() {
             }
         }
     }
-    
+
     private fun loadCategories() {
         lifecycleScope.launch {
             try {
@@ -204,12 +287,50 @@ class QuickAddTransactionActivity : AppCompatActivity() {
                 repository.initializeDefaultCategories()
                 // Load categories
                 val categories = repository.getAllCategories().first()
-                val categoryNames = listOf(getString(R.string.select_category)) + categories.map { it.name }
-                val adapter = ArrayAdapter(this@QuickAddTransactionActivity, android.R.layout.simple_spinner_item, categoryNames)
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                spinnerCategory.adapter = adapter
+
+                // Debug logging
+                android.util.Log.d("QuickAdd", "Loaded ${categories.size} categories")
+
+                val categoryNames = mutableListOf<String>()
+                categoryNames.add(getString(R.string.select_category))
+                categories.forEach { category ->
+                    categoryNames.add(category.name)
+                    android.util.Log.d("QuickAdd", "Added category: ${category.name}")
+                }
+
+                // Ensure we have at least the "Select category" option
+                if (categoryNames.size == 1) {
+                    categoryNames.add("Income")
+                    categoryNames.add("Expense")
+                }
+
+                val adapter = ArrayAdapter(this@QuickAddTransactionActivity, R.layout.spinner_item_dark, categoryNames)
+                adapter.setDropDownViewResource(R.layout.spinner_dropdown_item_dark)
+
+                // Set adapter on main thread
+                runOnUiThread {
+                    spinnerCategory.adapter = adapter
+                    android.util.Log.d("QuickAdd", "Adapter set with ${adapter.count} items")
+                    // Force the spinner to be clickable
+                    spinnerCategory.isEnabled = true
+                    spinnerCategory.isClickable = true
+                }
+
             } catch (e: Exception) {
                 android.util.Log.e("QuickAddTransactionActivity", "Error loading categories", e)
+                // Fallback: create a simple adapter with basic options
+                runOnUiThread {
+                    val fallbackCategories = listOf(
+                        getString(R.string.select_category),
+                        "Income",
+                        "Expense"
+                    )
+                    val fallbackAdapter = ArrayAdapter(this@QuickAddTransactionActivity, R.layout.spinner_item_dark, fallbackCategories)
+                    fallbackAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item_dark)
+                    spinnerCategory.adapter = fallbackAdapter
+                    spinnerCategory.isEnabled = true
+                    spinnerCategory.isClickable = true
+                }
             }
         }
     }
@@ -252,9 +373,9 @@ class QuickAddTransactionActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 val loans = repository.getAllActiveLoans().first()
-                val loanNames = listOf(getString(R.string.select_loan)) + loans.map { "${it.name} - €${String.format(Locale.getDefault(), "%.2f", it.currentBalance)}" }
-                val adapter = ArrayAdapter(this@QuickAddTransactionActivity, android.R.layout.simple_spinner_item, loanNames)
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                val loanNames = listOf(getString(R.string.select_loan)) + loans.map { "${it.name} - €${String.format(Locale.getDefault(), "%.2f", it.remainingBalance)}" }
+                val adapter = ArrayAdapter(this@QuickAddTransactionActivity, R.layout.spinner_item_dark, loanNames)
+                adapter.setDropDownViewResource(R.layout.spinner_dropdown_item_dark)
                 spinnerLoanSelection.adapter = adapter
             } catch (e: Exception) {
                 android.util.Log.e("QuickAddTransactionActivity", "Error loading loans", e)
@@ -267,8 +388,8 @@ class QuickAddTransactionActivity : AppCompatActivity() {
             try {
                 val credits = repository.getAllActiveCredits().first()
                 val creditNames = listOf(getString(R.string.select_credit)) + credits.map { "${it.name} - €${String.format(Locale.getDefault(), "%.2f", it.currentBalance)}" }
-                val adapter = ArrayAdapter(this@QuickAddTransactionActivity, android.R.layout.simple_spinner_item, creditNames)
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                val adapter = ArrayAdapter(this@QuickAddTransactionActivity, R.layout.spinner_item_dark, creditNames)
+                adapter.setDropDownViewResource(R.layout.spinner_dropdown_item_dark)
                 spinnerCreditSelection.adapter = adapter
             } catch (e: Exception) {
                 android.util.Log.e("QuickAddTransactionActivity", "Error loading credits", e)

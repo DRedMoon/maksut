@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    android:minHeight="400dp"
+    app:cardBackgroundColor="@color/brand_primary"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="8dp"
+    app:strokeColor="@color/brand_primary_dark"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- Header Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="24dp">
+
+            <ImageView
+                android:id="@+id/iv_loans_icon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_loan_modern"
+                android:layout_marginEnd="12dp"/>
+
+            <TextView
+                android:id="@+id/tv_loans_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/loans_label"
+                android:textColor="@color/text_primary"
+                android:textSize="20sp"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+
+        <!-- Summary Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="24dp">
+
+            <!-- Total Debt -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/total_debt"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="14sp"/>
+
+                <TextView
+                    android:id="@+id/tv_total_debt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="€0.00"
+                    android:textColor="@color/accent_red"
+                    android:textSize="24sp"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+            <!-- Monthly Payments -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="end">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/monthly_loan_payments"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="14sp"/>
+
+                <TextView
+                    android:id="@+id/tv_monthly_loan_payments"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="€0.00"
+                    android:textColor="@color/text_primary"
+                    android:textSize="24sp"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Loans/Credits List -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_loans_credits"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="120dp"
+            android:visibility="gone"/>
+
+        <!-- Show More/Less Buttons -->
+        <LinearLayout
+            android:id="@+id/ll_loans_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:visibility="gone"
+            android:layout_marginBottom="16dp">
+
+            <Button
+                android:id="@+id/btn_show_more_loans"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/show_more"
+                android:textColor="@color/text_primary"
+                android:background="@drawable/button_background"
+                android:layout_marginEnd="8dp"/>
+
+            <Button
+                android:id="@+id/btn_show_less_loans"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/show_less"
+                android:textColor="@color/text_primary"
+                android:background="@drawable/button_background"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
+        <!-- Spacer to push content to bottom -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <!-- Manage Button -->
+        <Button
+            android:id="@+id/btn_manage_loans"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/manage_loans_credits"
+            android:textColor="@color/text_primary"
+            android:background="@drawable/button_background"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Page Indicators at Bottom -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:src="@drawable/ic_dot_outline"
+                android:layout_marginEnd="8dp"/>
+
+            <ImageView
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:src="@drawable/ic_dot_filled"
+                android:layout_marginEnd="8dp"/>
+
+            <ImageView
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:src="@drawable/ic_dot_outline"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView> 

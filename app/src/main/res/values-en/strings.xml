@@ -3,6 +3,14 @@
     <!-- App name -->
     <string name="app_name">Maksut</string>
     <string name="settings">Settings</string>
+    <string name="data_management">Data Management</string>
+    <string name="export_data">Export Data</string>
+    <string name="import_data">Import Data</string>
+    <string name="reset_data">Reset Data</string>
+    <string name="security">Security</string>
+    <string name="pin_code_protection">PIN Code Protection</string>
+    <string name="about">About</string>
+    <string name="app_version">Version 1.0.0</string>
     <string name="close">✕</string>
     <string name="back">←</string>
     <string name="set_pin">Set PIN code:</string>
@@ -31,7 +39,7 @@
     <string name="expense">Expense</string>
     <string name="cancel">Cancel</string>
     <string name="loan_payment">Loan Payment</string>
-    <string name="loan">Loans/Credits</string>
+
     <string name="subscription">Subscription (monthly)</string>
     <string name="manage_payments">Manage Payments</string>
     <string name="loans">Loans</string>
@@ -39,7 +47,11 @@
     <string name="subscriptions">Monthly Payments</string>
     <string name="filter_all">All</string>
     <string name="filter_upcoming">Upcoming</string>
-    <string name="loans_label">Loans/Credits</string>
+    <string name="all">All</string>
+    <string name="transactions">Transactions</string>
+    <string name="latest_transactions">Latest Transactions</string>
+    <string name="balance">Balance</string>
+    <string name="edit">Edit</string>
     <string name="subscriptions_label">Monthly Payments</string>
     <string name="income">Income</string>
     <string name="description">Description</string>
@@ -63,7 +75,7 @@
     <string name="select_date">Select Date</string>
     <string name="no_date_selected">No date selected</string>
     <string name="transactions_header">Transactions</string>
-    <string name="remaining">Balance</string>
+
     <string name="menu">Menu</string>
     <string name="more">More Info</string>
     <string name="transaction_icon">Transaction</string>
@@ -124,9 +136,9 @@
 
     <!-- Upcoming Page -->
     <string name="upcoming_payments">Upcoming Payments</string>
-    <string name="this_week">This Week</string>
-    <string name="this_month">This Month</string>
-    <string name="this_year">This Year</string>
+    <string name="this_week">This week</string>
+    <string name="this_month">Month</string>
+    <string name="this_year">Year</string>
     <string name="monthly_payments">Monthly Payments</string>
     <string name="no_payments">No payments</string>
     <string name="this_week_total">This Week:</string>
@@ -176,7 +188,7 @@ Events: %4$d</string>
     <string name="basic_information">Basic information</string>
     <string name="name">Name</string>
     <string name="enter_name">Enter name</string>
-    <string name="original_amount">Original amount (€)</string>
+
 
 
     <string name="months_left">Months left *</string>
@@ -190,6 +202,31 @@ Events: %4$d</string>
     <string name="calculations">Calculations</string>
     <string name="total_repayment_label">Total repayment:</string>
     <string name="total_interest_label">Total interest:</string>
+    <string name="total_debt">Total debt</string>
+    <string name="monthly_loan_payments">Monthly payments</string>
+    <string name="total">Total</string>
+    <string name="show_all_payments">Show all payments</string>
+    <string name="manage_loans_credits">Manage loans &amp; credits</string>
+    <string name="regular_bills">Regular Bills</string>
+    <string name="loans_credits">Loans &amp; Credits</string>
+    <string name="remaining">Remaining</string>
+    <string name="loan">Loan</string>
+    <string name="credit">Credit</string>
+    <string name="unpaid">Unpaid</string>
+    <string name="overdue">Overdue</string>
+    <string name="due_today">Due today</string>
+    <string name="due_in_days">Due in %d days</string>
+    <string name="overdue_days">%d days overdue</string>
+    <string name="loans_label">Loans &amp; Credits</string>
+    <string name="financial_overview">Financial Overview</string>
+    <string name="total_interest">Total Interest</string>
+    <string name="repayment_progress">Repayment Progress</string>
+    <string name="original_amount">Original Amount</string>
+    <string name="remaining_balance">Remaining Balance</string>
+    <string name="interest_rate">Interest Rate</string>
+    <string name="total_repayment">Total Repayment</string>
+    <string name="interest_cost">Interest Cost</string>
+    <string name="manage_all_loans_credits">Manage All Loans &amp; Credits</string>
     <string name="invalid_original_amount">Invalid original amount</string>
     <string name="invalid_current_balance">Invalid current balance</string>
     <string name="invalid_monthly_payment">Invalid monthly payment</string>
@@ -214,7 +251,6 @@ Events: %4$d</string>
     <string name="payment_details">Payment details</string>
     <string name="payment_status">Payment status</string>
     <string name="paid">Paid</string>
-    <string name="unpaid">Unpaid</string>
     <string name="delete">Delete</string>
     <string name="total_interest_amount">Total interest: %.2f €</string>
 
@@ -237,7 +273,7 @@ Events: %4$d</string>
     <string name="delete_credit_confirmation">Are you sure you want to delete credit "%s"?</string>
     <string name="loan_name">Loan name</string>
     <string name="loan_amount">Loan amount</string>
-    <string name="interest_rate">Interest (%)</string>
+
     <string name="personal_margin">Personal margin (%)</string>
     <string name="loan_term">Loan-term (year)</string>
     <string name="monthly_payment">Monthly payment (€)</string>
@@ -245,7 +281,7 @@ Events: %4$d</string>
     <string name="due_day">Due day (day)</string>
     <string name="start_date">Start day</string>
     <string name="end_date">End day</string>
-    <string name="total_repayment">Total repayment: %.2f €</string>
+
     <string name="calculation_error">Calculation error</string>
     <string name="fill_all_fields">Fill all fields</string>
     <string name="invalid_values">Invalid values</string>
@@ -294,4 +330,36 @@ Events: %4$d</string>
     <string name="settings_reset">Settings have been reset</string>
 
     <string name="year">2025</string>
+    <string name="sync_disabled">Sync disabled</string>
+    <string name="sync_enabled">Sync enabled</string>
+    <string name="encryption">Encryption</string>
+    <string name="encryption_disabled">Encryption disabled</string>
+    <string name="encryption_enabled">Encryption enabled</string>
+    <string name="enter_pin_code">Enter PIN Code</string>
+    <string name="pin_code_required">PIN code required</string>
+    <string name="enter_pin">Enter PIN</string>
+    <string name="submit">Submit</string>
+    <string name="incorrect_pin">Incorrect PIN code</string>
+    <string name="search_transactions">Search transactions</string>
+    <string name="select_date_range">Select date range</string>
+    <string name="no_transactions_found">No transactions found</string>
+    <string name="transactions_found">transactions</string>
+    <string name="timeline">Timeline</string>
+    <string name="starting_point">Starting point</string>
+    <string name="ending_point">Ending point</string>
+    <string name="last_week">Last week</string>
+    <string name="last_month">Last month</string>
+    <string name="last_quarter">Last quarter</string>
+    <string name="last_year">Last year</string>
+    <string name="filter">Filter</string>
+    <string name="sort">Sort</string>
+    <string name="all_transactions">All Transactions</string>
+    <string name="all_transactions_coming_soon">All transactions page is coming soon</string>
+    <string name="payment_type">Payment type</string>
+    <string name="status">Status</string>
+    <string name="payment_count">Payments: %d</string>
+    <string name="no_payments_found">No payments found</string>
+    <string name="all_monthly_payments">All Monthly Payments</string>
+    <string name="total_monthly">Total Monthly:</string>
+    <string name="show_all_monthly_payments">Show All Monthly Payments</string>
 </resources>

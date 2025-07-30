@@ -19,7 +19,7 @@
             android:id="@+id/tv_transaction_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Transaction Label"
+                            android:text="@string/transaction_label"
             android:textColor="@android:color/white"
             android:textSize="16sp"
             android:textStyle="bold"/>

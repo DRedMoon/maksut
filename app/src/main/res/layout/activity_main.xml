@@ -1,409 +1,314 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
+    android:id="@+id/main_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/brand_primary_dark">
 
-    <!-- 1) Maksut-palkki -->
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/topAppBar"
+    <!-- App Title -->
+    <TextView
+        android:id="@+id/tv_app_title"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="#294D73"
-        app:title="@string/app_name"
-        app:titleTextColor="@android:color/white"
-        app:titleCentered="true"/>
-
-    <!-- 2) Jäljellä-palkki -->
-    <LinearLayout
-        android:id="@+id/ll_header"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:background="#192E45"
-        android:orientation="vertical"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:textColor="@android:color/white"
+        android:textSize="24sp"
+        android:textStyle="bold"
         android:gravity="center"
-        android:padding="16dp">
+        android:padding="16dp"/>
 
-        <TextView
-            android:id="@+id/tv_remaining_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/remaining"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"/>
-
-        <TextView
-            android:id="@+id/tv_remaining_amount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/zero_euro"
-            android:textColor="@android:color/white"
-            android:textSize="32sp"/>
-
-        <LinearLayout
-            android:id="@+id/ll_page_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal"
-            android:gravity="center">
-
-            <ImageView
-                android:id="@+id/iv_dot1"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
-                android:src="@drawable/ic_dot_filled"
-                app:tint="@android:color/white"/>
-
-            <ImageView
-                android:id="@+id/iv_dot2"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
-                android:layout_marginStart="8dp"
-                android:src="@drawable/ic_dot_outline"
-                app:tint="@android:color/white"/>
-
-            <ImageView
-                android:id="@+id/iv_dot3"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
-                android:layout_marginStart="8dp"
-                android:src="@drawable/ic_dot_outline"
-                app:tint="@android:color/white"/>
-        </LinearLayout>
-    </LinearLayout>
-
-    <!-- erotusviiva -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#294D73"/>
-
-    <!-- Expandable Monthly Payments List -->
+    <!-- Main Content Area -->
     <LinearLayout
-        android:id="@+id/ll_monthly_payments_expanded"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="#192E45"
-        android:visibility="gone"
-        android:padding="16dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/monthly_payments_header"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_monthly_payments"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"/>
-
-        <Button
-            android:id="@+id/btn_show_more_monthly"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/show_more"
-            android:textColor="@android:color/white"
-            android:background="@drawable/button_background"
-            android:layout_marginTop="8dp"
-            android:visibility="gone"/>
-
-        <Button
-            android:id="@+id/btn_show_less_monthly"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/show_less"
-            android:textColor="@android:color/white"
-            android:background="@drawable/button_background"
-            android:layout_marginTop="4dp"
-            android:visibility="gone"/>
-    </LinearLayout>
-
-    <!-- Expandable Loans & Credits List -->
-    <LinearLayout
-        android:id="@+id/ll_loans_credits_expanded"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="#192E45"
-        android:visibility="gone"
-        android:padding="16dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/loans_credits_header"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_loans_credits"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"/>
-
-        <Button
-            android:id="@+id/btn_show_more_loans"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/show_more"
-            android:textColor="@android:color/white"
-            android:background="@drawable/button_background"
-            android:layout_marginTop="8dp"
-            android:visibility="gone"/>
-
-        <Button
-            android:id="@+id/btn_show_less_loans"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/show_less"
-            android:textColor="@android:color/white"
-            android:background="@drawable/button_background"
-            android:layout_marginTop="4dp"
-            android:visibility="gone"/>
-    </LinearLayout>
-
-    <!-- 3) Tapahtumat-otsikko + pieni "+" -->
-    <LinearLayout
-        android:id="@+id/ll_transactions_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="#192E45"
-        android:gravity="center_vertical"
-        android:padding="12dp">
-
-        <TextView
-            android:id="@+id/tv_transactions_header"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/transactions_header"
-            android:textColor="@android:color/white"
-            android:textSize="14sp"/>
-
-        <ImageView
-            android:id="@+id/iv_transactions_menu"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_more_vert"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackground"
-            app:tint="@android:color/white"/>
-    </LinearLayout>
-
-    <!-- 5a) Kaikki / Tulevat -suodatin -->
-    <LinearLayout
-        android:id="@+id/ll_filter"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="#192E45"
-        android:padding="2dp">
-
-        <TextView
-            android:id="@+id/tv_filter_all"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/filter_all"
-            android:textColor="@android:color/white"
-            android:gravity="center"
-            android:clickable="true"
-            android:padding="4dp"/>
-
-        <!-- pystysuuntainen viiva -->
-        <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="@android:color/white"/>
-
-        <TextView
-            android:id="@+id/tv_filter_upcoming"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/filter_upcoming"
-            android:textColor="@android:color/white"
-            android:gravity="center"
-            android:clickable="true"
-            android:padding="4dp"/>
-    </LinearLayout>
-
-    <!-- pieni erotus -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#192E45"/>
-
-    <!-- 4) Tapahtumat-lista -->
-    <LinearLayout
-        android:id="@+id/ll_transactions_section"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="vertical"
-        android:background="#192E45">
+        android:orientation="vertical">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_transactions"
+        <!-- Swipeable Cards Container -->
+        <FrameLayout
+            android:id="@+id/fl_cards_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#192E45"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp"/>
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:clickable="true"
+            android:focusable="true">
+
+            <!-- Balance Card (Fixed smaller size) -->
+            <include
+                android:id="@+id/card_balance"
+                layout="@layout/card_balance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"/>
+
+            <!-- Loans & Credits Card (Expandable) -->
+            <include
+                android:id="@+id/card_loans_credits"
+                layout="@layout/card_loans_credits"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+
+            <!-- Monthly Payments Card (Expandable) -->
+            <include
+                android:id="@+id/card_monthly_payments"
+                layout="@layout/card_monthly_payments"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+
+        </FrameLayout>
+
+        <!-- Balance View Content (Only visible on Balance view) -->
+        <LinearLayout
+            android:id="@+id/ll_balance_content"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <!-- Filter Buttons -->
+            <LinearLayout
+                android:id="@+id/ll_filter_buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:gravity="center">
+
+                <Button
+                    android:id="@+id/tv_filter_all"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:text="@string/all"
+                    android:textColor="@color/text_primary"
+                    android:background="@drawable/button_background"
+                    android:layout_marginEnd="8dp"
+                    android:textSize="14sp"/>
+
+                <Button
+                    android:id="@+id/tv_filter_upcoming"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:text="@string/upcoming"
+                    android:textColor="@color/text_primary"
+                    android:background="@drawable/button_background"
+                    android:layout_marginStart="8dp"
+                    android:textSize="14sp"/>
+
+            </LinearLayout>
+
+            <!-- Transactions Section -->
+            <LinearLayout
+                android:id="@+id/ll_transactions_section"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Transactions Card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:cardBackgroundColor="@color/brand_primary"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="8dp"
+                    app:strokeColor="@color/brand_primary_dark"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="16dp">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/transactions"
+                                android:textColor="@color/text_primary"
+                                android:textSize="18sp"
+                                android:textStyle="bold"/>
+
+                            <ImageView
+                                android:id="@+id/btn_view_all_transactions"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/ic_arrow_forward_white"
+                                android:tint="@color/text_primary"
+                                android:background="?android:attr/selectableItemBackground"
+                                android:padding="4dp"/>
+
+                        </LinearLayout>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rv_transactions"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"/>
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
     </LinearLayout>
 
-    <!-- 5) Bottom Navigation Bar -->
+    <!-- Bottom Navigation - Fixed to bottom -->
     <LinearLayout
-        android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="#294D73"
-        android:gravity="center_vertical"
-        android:paddingHorizontal="8dp">
+        android:background="@color/brand_primary"
+        android:padding="8dp">
 
-        <!-- Home Button -->
         <LinearLayout
             android:id="@+id/btn_home"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center"
-            android:clickable="true"
-            android:background="?attr/selectableItemBackground">
+            android:padding="8dp"
+            android:background="?android:attr/selectableItemBackground">
 
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_home"
-                app:tint="@android:color/white"/>
+                android:tint="@color/text_primary"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/home"
-                android:textColor="@android:color/white"
-                android:textSize="10sp"
-                android:layout_marginTop="2dp"/>
+                android:textColor="@color/text_primary"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp"/>
+
         </LinearLayout>
 
-        <!-- Upcoming Button -->
         <LinearLayout
             android:id="@+id/btn_upcoming"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center"
-            android:clickable="true"
-            android:background="?attr/selectableItemBackground">
+            android:padding="8dp"
+            android:background="?android:attr/selectableItemBackground">
 
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_calendar"
-                app:tint="@android:color/white"/>
+                android:tint="@color/text_primary"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/upcoming"
-                android:textColor="@android:color/white"
-                android:textSize="10sp"
-                android:layout_marginTop="2dp"/>
+                android:textColor="@color/text_primary"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp"/>
+
         </LinearLayout>
 
-        <!-- Add Button (Center) -->
         <LinearLayout
             android:id="@+id/btn_add"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1.2"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center"
-            android:clickable="true"
-            android:background="?attr/selectableItemBackground">
+            android:padding="8dp"
+            android:background="?android:attr/selectableItemBackground">
 
             <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@drawable/ic_add_circle"
-                app:tint="@android:color/white"/>
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_add"
+                android:tint="@color/text_primary"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/add"
-                android:textColor="@android:color/white"
-                android:textSize="10sp"
-                android:layout_marginTop="2dp"/>
+                android:textColor="@color/text_primary"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp"/>
+
         </LinearLayout>
 
-        <!-- Analysis Button -->
         <LinearLayout
             android:id="@+id/btn_analysis"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center"
-            android:clickable="true"
-            android:background="?attr/selectableItemBackground">
+            android:padding="8dp"
+            android:background="?android:attr/selectableItemBackground">
 
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_analytics"
-                app:tint="@android:color/white"/>
+                android:tint="@color/text_primary"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/analysis"
-                android:textColor="@android:color/white"
-                android:textSize="10sp"
-                android:layout_marginTop="2dp"/>
+                android:textColor="@color/text_primary"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp"/>
+
         </LinearLayout>
 
-        <!-- Settings Button -->
         <LinearLayout
             android:id="@+id/btn_settings"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center"
-            android:clickable="true"
-            android:background="?attr/selectableItemBackground">
+            android:padding="8dp"
+            android:background="?android:attr/selectableItemBackground">
 
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_settings"
-                app:tint="@android:color/white"/>
+                android:tint="@color/text_primary"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/settings"
-                android:textColor="@android:color/white"
-                android:textSize="10sp"
-                android:layout_marginTop="2dp"/>
+                android:textColor="@color/text_primary"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp"/>
+
         </LinearLayout>
+
     </LinearLayout>
+
 </LinearLayout>

@@ -42,12 +42,18 @@ class AddLoanCreditActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_loan_credit)
         
-        repository = FinanceRepository(this)
-        
-        setupViews()
-        setupToolbar()
-        setupListeners()
-        setupTypeSpinner()
+        try {
+            repository = FinanceRepository(this)
+            
+            setupViews()
+            setupToolbar()
+            setupSpinners()
+            setupListeners()
+        } catch (e: Exception) {
+            android.util.Log.e("AddLoanCreditActivity", "Error in onCreate", e)
+            Toast.makeText(this, "Error initializing activity", Toast.LENGTH_SHORT).show()
+            finish()
+        }
     }
     
     private fun setupViews() {
@@ -75,10 +81,10 @@ class AddLoanCreditActivity : AppCompatActivity() {
         }
     }
     
-    private fun setupTypeSpinner() {
+    private fun setupSpinners() {
         val types = arrayOf("Laina", "Luotto")
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, types)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    val adapter = ArrayAdapter(this, R.layout.spinner_item_dark, types)
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item_dark)
         spinnerType.adapter = adapter
         
         spinnerType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -177,8 +183,8 @@ class AddLoanCreditActivity : AppCompatActivity() {
     private fun saveLoanCredit() {
         val name = etName.text.toString().trim()
         val originalAmount = etOriginalAmount.text.toString().toDoubleOrNull()
-        val currentBalance = etCurrentBalance.text.toString().toDoubleOrNull()
-        val monthlyPayment = etMonthlyPayment.text.toString().toDoubleOrNull()
+        val remainingBalance = etCurrentBalance.text.toString().toDoubleOrNull()
+        val monthlyPaymentAmount = etMonthlyPayment.text.toString().toDoubleOrNull()
         val handlingFee = etHandlingFee.text.toString().toDoubleOrNull() ?: 0.0
         val euriborRate = etEuriborRate.text.toString().toDoubleOrNull() ?: 0.0
         val personalMargin = etPersonalMargin.text.toString().toDoubleOrNull() ?: 0.0
@@ -195,12 +201,12 @@ class AddLoanCreditActivity : AppCompatActivity() {
             return
         }
         
-        if (currentBalance == null || currentBalance <= 0) {
+        if (remainingBalance == null || remainingBalance <= 0) {
             etCurrentBalance.error = getString(R.string.invalid_current_balance)
             return
         }
         
-        if (monthlyPayment == null || monthlyPayment <= 0) {
+        if (monthlyPaymentAmount == null || monthlyPaymentAmount <= 0) {
             etMonthlyPayment.error = getString(R.string.invalid_monthly_payment)
             return
         }
@@ -214,36 +220,47 @@ class AddLoanCreditActivity : AppCompatActivity() {
             try {
                 if (isLoan) {
                     // Save loan
+                    val totalRepaymentAmount = monthlyPaymentAmount * monthsLeft
+                    val totalInterestAmount = totalRepaymentAmount - originalAmount
+                    
                     val loan = Loan(
                         name = name,
                         originalAmount = originalAmount,
-                        currentBalance = currentBalance,
+                        remainingBalance = remainingBalance,
                         interestRate = euriborRate,
                         personalMargin = personalMargin,
                         loanTermYears = monthsLeft / 12,
-                        monthlyPayment = monthlyPayment,
+                        monthlyPaymentAmount = monthlyPaymentAmount,
                         paymentFee = handlingFee,
                         dueDay = selectedDueDate.date,
+                        dueDate = selectedDueDate,
                         startDate = Date(),
                         endDate = selectedDueDate,
-                        totalRepaymentAmount = monthlyPayment * monthsLeft,
+                        totalRepaymentAmount = totalRepaymentAmount,
+                        totalInterestAmount = totalInterestAmount,
                         isActive = true
                     )
                     repository.insertLoan(loan)
                     Toast.makeText(this@AddLoanCreditActivity, getString(R.string.loan_saved), Toast.LENGTH_SHORT).show()
                 } else {
                     // Save credit
+                    val totalRepaymentAmount = monthlyPaymentAmount * monthsLeft
+                    val totalInterestAmount = totalRepaymentAmount - originalAmount
+                    
                     val credit = Credit(
                         name = name,
                         creditLimit = originalAmount,
-                        currentBalance = currentBalance,
+                        currentBalance = remainingBalance,
                         interestRate = euriborRate,
                         personalMargin = personalMargin,
                         minimumPaymentPercentage = 5.0, // Default 5%
-                        minimumPaymentAmount = monthlyPayment,
+                        minimumPaymentAmount = monthlyPaymentAmount,
                         paymentFee = handlingFee,
                         dueDay = selectedDueDate.date,
+                        dueDate = selectedDueDate,
                         gracePeriodDays = 0,
+                        totalRepaymentAmount = totalRepaymentAmount,
+                        totalInterestAmount = totalInterestAmount,
                         isActive = true
                     )
                     repository.insertCredit(credit)

@@ -19,7 +19,7 @@
             android:id="@+id/tv_credit_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Credit Name"
+                            android:text="@string/credit_name"
             android:textColor="@android:color/white"
             android:textSize="18sp"
             android:textStyle="bold"/>

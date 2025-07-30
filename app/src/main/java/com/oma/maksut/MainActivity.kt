@@ -1,658 +1,518 @@
 package com.oma.maksut
 
 import android.annotation.SuppressLint
-import android.app.DatePickerDialog
 import android.content.Intent
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
-import android.view.LayoutInflater
+import android.view.WindowInsets
+import android.view.WindowInsetsController
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.oma.maksut.adapters.LoanCreditExpandedAdapter
+import com.oma.maksut.database.entities.Loan
+import com.oma.maksut.database.entities.Credit
+import com.oma.maksut.database.entities.Transaction
 import com.oma.maksut.repository.FinanceRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.*
-import androidx.core.content.ContextCompat
-import com.oma.maksut.database.entities.Transaction
-import com.oma.maksut.database.entities.Loan
-import com.oma.maksut.database.entities.Credit
+import android.view.WindowManager
 
-// 0) Luokan kentät: suodatus-enum, formaatit, nykyinen suodatin
+// Data class for loan/credit items in the expanded view
+data class LoanCreditItem(
+    val id: Long,
+    val name: String,
+    val amount: Double,
+    val interestRate: Double,
+    val totalInterest: Double,
+    val totalAmount: Double,
+    val dueDate: String,
+    val type: String
+)
+
 class MainActivity : AppCompatActivity() {
-    private lateinit var adapter: TransactionAdapter
     private lateinit var repository: FinanceRepository
-
-    // 0a) Sivut 0=saldo,1=lainat,2=muu
+    private lateinit var adapter: TransactionAdapter
     private var currentPage = 0
-
-    // 0b) Suodatus enum ja muuttuja
-    private enum class Filter { ALL, UPCOMING }
     private var currentFilter = Filter.ALL
 
-    // 0c) Päivämääräformaatit
-    private val fmtIso = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-    private val fmtDot = SimpleDateFormat("dd.M.yyyy",    Locale.getDefault())
+    enum class Filter {
+        ALL, UPCOMING
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         
-        repository = FinanceRepository(this)
-
-        // 1) Toolbar (Maksut + rattaan/valikon ikonit)
-        findViewById<MaterialToolbar>(R.id.topAppBar).apply {
-            setSupportActionBar(this)
-            setNavigationOnClickListener {
-                startActivity(Intent(this@MainActivity, SettingsActivity::class.java))
-            }
+        try {
+            repository = FinanceRepository(this)
+            
+            setupViews()
+            setupSwipe()
+            setupFilterButtons()
+            setupBottomNavigation()
+            setupCardClickListeners()
+            loadTransactions()
+            updateCardContent()
+            updatePageIndicator()
+            setupSystemBars()
+        } catch (e: Exception) {
+            android.util.Log.e("MainActivity", "Error in onCreate", e)
+            Toast.makeText(this, "Error initializing app", Toast.LENGTH_SHORT).show()
+            finish()
         }
+    }
+    
+    private fun isPinProtectionEnabled(): Boolean {
+        val prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
+        val pinEnabled = prefs.getBoolean("pin_code_enabled", false)
+        val pinCode = prefs.getString("pin_code", "") ?: ""
+        return pinEnabled && pinCode.isNotEmpty()
+    }
 
-        // 2) RecyclerView (Tapahtumat)
+    private fun setupViews() {
         adapter = TransactionAdapter(emptyList())
         findViewById<RecyclerView>(R.id.rv_transactions).apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = this@MainActivity.adapter
         }
+    }
 
-        // 3) Load real transactions from database
-        lifecycleScope.launch {
-            repository.getRealTransactions().collect { transactions ->
-                adapter.updateItems(transactions)
-                val value = transactions.sumOf { it.amount }
-                findViewById<TextView>(R.id.tv_remaining_amount).text = String.format(Locale.getDefault(), "%.2f €", value)
-            }
-        }
-
-        // 4) Alku-näkymä: saldon ja indikaattorin päivitys
-        updateRemainingText()
-        updatePageIndicator()
-
-        // Single click and double click handling for loan/credit amounts
-        val tvRemainingAmount = findViewById<TextView>(R.id.tv_remaining_amount)
-        var clickCount = 0
-        var lastClickTime = 0L
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setupSwipe() {
+        val cardsContainer = findViewById<View>(R.id.fl_cards_container)
+        var startX = 0f
+        var startY = 0f
+        var isSwiping = false
+        val threshold = 100f // Reduced threshold for easier swiping
         
-        tvRemainingAmount.setOnClickListener {
-            when (currentPage) {
-                1 -> {
-                    // Show loans/credits list in the main view
-                    showLoansCreditsView()
+        cardsContainer.setOnTouchListener { _, event ->
+            when (event.action) {
+                android.view.MotionEvent.ACTION_DOWN -> {
+                    startX = event.x
+                    startY = event.y
+                    isSwiping = false
+                    true
                 }
-                2 -> {
-                    // Show monthly payments list in the main view
-                    showMonthlyPaymentsView()
+                android.view.MotionEvent.ACTION_MOVE -> {
+                    val deltaX = event.x - startX
+                    val deltaY = event.y - startY
+                    
+                    // Check if this is a horizontal swipe
+                    if (Math.abs(deltaX) > 20 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
+                        isSwiping = true
+                    }
+                    true
                 }
-                // saldolla ei avata
+                android.view.MotionEvent.ACTION_UP -> {
+                    if (isSwiping) {
+                        val deltaX = event.x - startX
+                        if (Math.abs(deltaX) > threshold) {
+                            if (deltaX > 0) {
+                                // Swipe right - go to previous page
+                                if (currentPage > 0) {
+                                    currentPage--
+                                    updateCardContent()
+                                    updatePageIndicator()
+                                }
+                            } else {
+                                // Swipe left - go to next page
+                                if (currentPage < 2) {
+                                    currentPage++
+                                    updateCardContent()
+                                    updatePageIndicator()
+                                }
+                            }
+                        }
+                    }
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+
+    private fun setupBottomNavigation() {
+        findViewById<LinearLayout>(R.id.btn_home).setOnClickListener {
+            currentPage = 0
+            updateCardContent()
+            updatePageIndicator()
+        }
+
+        findViewById<LinearLayout>(R.id.btn_upcoming).setOnClickListener {
+            try {
+                startActivity(Intent(this, UpcomingActivity::class.java))
+            } catch (e: Exception) {
+                android.util.Log.e("MainActivity", "Error opening UpcomingActivity", e)
+                Toast.makeText(this, "Error opening upcoming", Toast.LENGTH_SHORT).show()
             }
         }
 
-        // 5) Swipe vain “Jäljellä”-headeriin ja saldoon
-        setupSwipe(findViewById(R.id.ll_header))
-        setupSwipe(findViewById(R.id.tv_remaining_amount))
-
-        // 6) Pieni “+” tapahtumat-otsikossa
-
-        // 7) SUODATUS-NAPIT (“Kaikki” ja “Tulevat”)
-        findViewById<TextView>(R.id.tv_filter_all).setOnClickListener {
-            currentFilter = Filter.ALL
-            rebuildList()
-            updateFilterUI()
-        }
-        findViewById<TextView>(R.id.tv_filter_upcoming).setOnClickListener {
-            currentFilter = Filter.UPCOMING
-            rebuildList()
-            updateFilterUI()
+        findViewById<LinearLayout>(R.id.btn_add).setOnClickListener {
+            startActivity(Intent(this, QuickAddTransactionActivity::class.java))
         }
 
-        // 7a) Transactions header 3-dot menu
-        findViewById<ImageView>(R.id.iv_transactions_menu).setOnClickListener {
+        findViewById<LinearLayout>(R.id.btn_analysis).setOnClickListener {
+            try {
+                startActivity(Intent(this, AnalysisActivity::class.java))
+            } catch (e: Exception) {
+                android.util.Log.e("MainActivity", "Error opening AnalysisActivity", e)
+                Toast.makeText(this, "Error opening analysis", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        findViewById<LinearLayout>(R.id.btn_settings).setOnClickListener {
+            try {
+                android.util.Log.d("MainActivity", "Settings button clicked")
+                val intent = Intent(this, SettingsActivity::class.java)
+                android.util.Log.d("MainActivity", "Intent created: $intent")
+                startActivity(intent)
+                android.util.Log.d("MainActivity", "SettingsActivity started")
+            } catch (e: Exception) {
+                android.util.Log.e("MainActivity", "Error opening SettingsActivity", e)
+                Toast.makeText(this, "Error opening settings: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun setupCardClickListeners() {
+        // Balance card click listeners
+        findViewById<TextView>(R.id.tv_balance_amount).setOnClickListener {
+            // No action needed for balance
+        }
+
+        // Loans & Credits card click listeners
+        findViewById<TextView>(R.id.tv_total_debt).setOnClickListener {
+            toggleLoansCreditsList()
+        }
+
+        findViewById<TextView>(R.id.tv_monthly_loan_payments).setOnClickListener {
+            toggleLoansCreditsList()
+        }
+
+        findViewById<Button>(R.id.btn_manage_loans).setOnClickListener {
+            startActivity(Intent(this, LoanCreditManagementActivity::class.java))
+        }
+
+        // Monthly Payments card click listeners
+        findViewById<TextView>(R.id.tv_monthly_total).setOnClickListener {
+            toggleMonthlyPaymentsList()
+        }
+
+        findViewById<TextView>(R.id.tv_monthly_paid).setOnClickListener {
+            toggleMonthlyPaymentsList()
+        }
+
+        findViewById<Button>(R.id.btn_show_all_payments).setOnClickListener {
             startActivity(Intent(this, AllPaymentsActivity::class.java))
         }
 
-        // 8) Näytetään aluksi koko lista
-        rebuildList()
-        // 9) Päivitä filter-nappien ulkoasu
-        updateFilterUI()
+        // Transaction arrow button
+        findViewById<ImageView>(R.id.btn_view_all_transactions).setOnClickListener {
+            startActivity(Intent(this, AllTransactionsActivity::class.java))
+        }
+    }
+
+    private fun setupFilterButtons() {
+        findViewById<Button>(R.id.tv_filter_all).setOnClickListener {
+            currentFilter = Filter.ALL
+            updateFilterUI()
+            loadTransactions()
+        }
         
-        // 10) Bottom Navigation Setup
-        setupBottomNavigation()
+        findViewById<Button>(R.id.tv_filter_upcoming).setOnClickListener {
+            currentFilter = Filter.UPCOMING
+            updateFilterUI()
+            loadTransactions()
+        }
+    }
 
-        // Initialize default categories and load data from repository
+    private fun loadTransactions() {
         lifecycleScope.launch {
-            repository.initializeDefaultCategories()
-            repository.getRealTransactions().collect { transactions ->
-                adapter.updateItems(transactions)
-                // Update balance
-                val value = transactions.sumOf { it.amount }
-                findViewById<TextView>(R.id.tv_remaining_amount).text = String.format(Locale.getDefault(), "%.2f €", value)
+            try {
+                val allTransactions = repository.getRealTransactions().first()
+                val filteredTransactions = when (currentFilter) {
+                    Filter.ALL -> allTransactions
+                    Filter.UPCOMING -> allTransactions.filter { 
+                        it.dueDate != null && it.dueDate.after(Date()) 
+                    }.sortedBy { it.dueDate }
+                }
+                adapter.updateItems(filteredTransactions)
+            } catch (e: Exception) {
+                android.util.Log.e("MainActivity", "Error loading transactions", e)
             }
         }
-    }
-
-    // 1) Valikon asetukset (☰ oikeassa yläkulmassa)
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-    override fun onOptionsItemSelected(item: MenuItem) =
-        when (item.itemId) {
-            R.id.action_menu -> {
-                startActivity(Intent(this, ManagePaymentsActivity::class.java))
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-
-    // Päivittää headerin otsikon ja summan sivun (=currentPage) mukaan
-    private fun updateRemainingText() {
-        // 1) Haetaan kaksi TextView’ta: label (otsikko) ja amount (summa)
-        val labelTv  = findViewById<TextView>(R.id.tv_remaining_label)
-        val amountTv = findViewById<TextView>(R.id.tv_remaining_amount)
-
-        // 2) Vaihdetaan otsikkoteksti sivun mukaan
-        when (currentPage) {
-            0 -> labelTv.setText(R.string.remaining)             // “Jäljellä”
-            1 -> labelTv.setText(R.string.loans_label)           // “Lainat ja luotot”
-            else -> labelTv.setText(R.string.subscriptions_label) // “Kuukausimaksut”
-        }
-
-        // 3) Lasketaan, mitkä tapahtumat ovat “tänään tai ennen” (past-list)
-        val today = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0);     set(Calendar.MILLISECOND, 0)
-        }.time
-
-        lifecycleScope.launch {
-            val transactions = repository.getRealTransactions().first()
-            val past = transactions.filter { tx ->
-                tx.paymentDate <= today
-            }
-
-            // 4) Summataan luvut sivun logiikalla
-            val value = when (currentPage) {
-                0 -> past.sumOf { it.amount }                       // Saldo
-                1 -> -past.filter { it.amount < 0 }.sumOf { it.amount }   // Lainat (muutetaan positiiviseksi)
-                else -> past.filter { it.amount > 0 }.sumOf { it.amount } // Kuukausimaksut
-            }
-
-            // 5) Näytetään laskettu summa
-            amountTv.text = String.format(Locale.getDefault(), "%.2f €", value)
-        }
-    }
-
-    // updatePageIndicator: kolme pistettä
-    private fun updatePageIndicator() {
-        findViewById<ImageView>(R.id.iv_dot1)
-            .setImageResource(if (currentPage == 0) R.drawable.ic_dot_filled else R.drawable.ic_dot_outline)
-        findViewById<ImageView>(R.id.iv_dot2)
-            .setImageResource(if (currentPage == 1) R.drawable.ic_dot_filled else R.drawable.ic_dot_outline)
-        findViewById<ImageView>(R.id.iv_dot3)
-            .setImageResource(if (currentPage == 2) R.drawable.ic_dot_filled else R.drawable.ic_dot_outline)
-        
-        // Update page title and content
-        updateRemainingText()
-        rebuildList()
-        // Don't automatically open MonthlyPaymentsActivity - let user click on amount instead
     }
 
     private fun updateFilterUI() {
-        val tvAll      = findViewById<TextView>(R.id.tv_filter_all)
-        val tvUpcoming = findViewById<TextView>(R.id.tv_filter_upcoming)
+        val allButton = findViewById<Button>(R.id.tv_filter_all)
+        val upcomingButton = findViewById<Button>(R.id.tv_filter_upcoming)
+        
         when (currentFilter) {
             Filter.ALL -> {
-                tvAll.setTextColor(ContextCompat.getColor(this, android.R.color.white))
-                tvUpcoming.setTextColor(ContextCompat.getColor(this, android.R.color.darker_gray))
+                allButton.setBackgroundResource(R.drawable.button_background)
+                upcomingButton.setBackgroundResource(R.drawable.button_background)
             }
             Filter.UPCOMING -> {
-                tvAll.setTextColor(ContextCompat.getColor(this, android.R.color.darker_gray))
-                tvUpcoming.setTextColor(ContextCompat.getColor(this, android.R.color.white))
+                allButton.setBackgroundResource(R.drawable.button_background)
+                upcomingButton.setBackgroundResource(R.drawable.button_background)
             }
         }
     }
-    // rebuildList: suodattaa “kaikki” vs “tulevat”
-    private fun rebuildList() {
-        // a) Tänään klo 00:00
-        val today = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY,0); set(Calendar.MINUTE,0)
-            set(Calendar.SECOND,0);    set(Calendar.MILLISECOND,0)
-        }.time
 
-        lifecycleScope.launch {
-            val transactions = repository.getRealTransactions().first()
-            // b) Jaetaan tapahtumat menneisiin/nykyhetkeen ja tuleviin
-            val upcoming = transactions.filter { tx ->
-                tx.paymentDate.after(today)
-            }
-            // c) Muut: kaikki paitsi upcoming
-            val pastOrToday = transactions.filter { !upcoming.contains(it) }
-
-            // d) Valitaan näytettävä data - Aika-suodatus
-            val timeFiltered = when (currentFilter) {
-                Filter.ALL      -> pastOrToday + upcoming
-                Filter.UPCOMING -> upcoming
-            }
-            // d) Sen jälkeen sivu-suodatus kategoriaan
-            val pageFiltered = when (currentPage) {
-                0 -> timeFiltered                                        // Saldo = kaikki ajassa
-                1 -> timeFiltered.filter { it.isLoanRepayment }         // Lainat
-                2 -> timeFiltered.filter { it.isMonthlyPayment } // Muut (tilaukset)
-                else -> timeFiltered
-            }
-
-            // e) Päivitetään adapterin data
-            adapter.updateItems(pageFiltered)
+    private fun updateCardContent() {
+        when (currentPage) {
+            0 -> showBalanceCard()
+            1 -> showLoansCreditsCard()
+            2 -> showMonthlyPaymentsCard()
         }
     }
 
-    // setupSwipe: pyyhkäisy vain headerissa
-    @SuppressLint("ClickableViewAccessibility")
-    private fun setupSwipe(view: View) {
-        var startX = 0f; val threshold = 80 // Reduced threshold for better responsiveness
-        view.setOnTouchListener { v, ev ->
-            when (ev.action) {
-                MotionEvent.ACTION_DOWN -> startX = ev.x
-                MotionEvent.ACTION_UP -> {
-                    v.performClick()
-                    val dx = ev.x - startX
-                    if (Math.abs(dx) > threshold) {
-                        currentPage = when {
-                            dx > 0 -> (currentPage + 2) % 3  // Swipe right -> previous page
-                            else   -> (currentPage + 1) % 3  // Swipe left -> next page
-                        }
-                        updatePageIndicator()
-                    }
-                }
-            }
-            true
-        }
-    }
-
-    private fun showDetailDialog(title: String, list: List<Transaction>) {
-        val items = list.joinToString("\n") { tx ->
-            // Muotoile esim. “Netflix: –12.99 € (2025-06-08)”
-            val fmt = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-            "${tx.name}: ${"%.2f €".format(tx.amount)} (${fmt.format(tx.paymentDate)})"
-        }.ifBlank { "Ei tapahtumia." }
-
-        MaterialAlertDialogBuilder(this)
-            .setTitle(title)
-            .setMessage(items)
-            .setPositiveButton(android.R.string.ok, null)
-            .show()
-    }
-
-    // showTransactionDialog: lisää uusi tapahtuma
-    private fun showTransactionDialog() {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_transaction, null)
-        val etDesc   = dialogView.findViewById<EditText>(R.id.et_description)
-        val etAmount = dialogView.findViewById<EditText>(R.id.et_amount)
-        val btnDate  = dialogView.findViewById<Button>(R.id.btn_date_picker)
-        val tvDate   = dialogView.findViewById<TextView>(R.id.tv_selected_date)
-        val rgType   = dialogView.findViewById<RadioGroup>(R.id.rg_type)
-
-        btnDate.setOnClickListener {
-            val c = Calendar.getInstance()
-            DatePickerDialog(this, { _, y, m, d ->
-                tvDate.text = String.format(Locale.getDefault(),
-                    "%04d-%02d-%02d", y, m+1, d)
-            }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH))
-                .show()
-        }
-
-        MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.add_transaction)
-            .setView(dialogView)
-            .setPositiveButton(R.string.ok) { dlg, _ ->
-                var amt = etAmount.text.toString().toDoubleOrNull() ?: 0.0
-                // käännä miinukseksi tarvittaessa
-                if (rgType.checkedRadioButtonId != R.id.rb_income) amt = -amt
-                // kategoria ID (default to 1 for now)
-                val categoryId = when (rgType.checkedRadioButtonId) {
-                    R.id.rb_income       -> 1L
-                    R.id.rb_expense      -> 2L
-                    else                 -> 3L
-                }
-                val dateStr = tvDate.text.toString().ifBlank {
-                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-                }
-                lifecycleScope.launch {
-                    val transaction = Transaction(
-                        name = etDesc.text.toString(),
-                        amount = amt,
-                        categoryId = categoryId,
-                        paymentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(dateStr) ?: Date(),
-                        description = etDesc.text.toString()
-                    )
-                    repository.insertTransaction(transaction)
-                    rebuildList()
-                    updateRemainingText()
-                }
-                dlg.dismiss()
-            }
-            .setNegativeButton(android.R.string.cancel, null)
-            .show()
-    }
-    
-    // Bottom Navigation Setup
-    private fun setupBottomNavigation() {
-        // Home button - already on home
-        findViewById<LinearLayout>(R.id.btn_home).setOnClickListener {
-            // Already on home page, just refresh
-            currentPage = 0
-            updatePageIndicator()
-            updateRemainingText()
-            updateBottomNavSelection(R.id.btn_home)
-        }
-        
-        // Upcoming button - open upcoming activity
-        findViewById<LinearLayout>(R.id.btn_upcoming).setOnClickListener {
-            startActivity(Intent(this, UpcomingActivity::class.java))
-            updateBottomNavSelection(R.id.btn_upcoming)
-        }
-        
-        // Add button - show quick add transaction activity
-        findViewById<LinearLayout>(R.id.btn_add).setOnClickListener {
-            startActivity(Intent(this, QuickAddTransactionActivity::class.java))
-            updateBottomNavSelection(R.id.btn_add)
-        }
-        
-        // Analysis button - open analysis activity
-        findViewById<LinearLayout>(R.id.btn_analysis).setOnClickListener {
-            startActivity(Intent(this, AnalysisActivity::class.java))
-            updateBottomNavSelection(R.id.btn_analysis)
-        }
-        
-        // Settings button - open settings
-        findViewById<LinearLayout>(R.id.btn_settings).setOnClickListener {
-            startActivity(Intent(this, SettingsActivity::class.java))
-            updateBottomNavSelection(R.id.btn_settings)
-        }
-        
-        // Set initial selection
-        updateBottomNavSelection(R.id.btn_home)
-    }
-    
-    private fun updateBottomNavSelection(selectedId: Int) {
-        val buttons = listOf(
-            R.id.btn_home,
-            R.id.btn_upcoming,
-            R.id.btn_add,
-            R.id.btn_analysis,
-            R.id.btn_settings
-        )
-        
-        buttons.forEach { buttonId ->
-            val button = findViewById<LinearLayout>(buttonId)
-            if (buttonId == selectedId) {
-                button.setBackgroundResource(R.drawable.bottom_nav_selected)
-            } else {
-                button.setBackgroundResource(android.R.color.transparent)
-            }
-        }
-    }
-    
-    private fun toggleMonthlyPaymentsList() {
-        val expandedLayout = findViewById<LinearLayout>(R.id.ll_monthly_payments_expanded)
-        val isVisible = expandedLayout.visibility == android.view.View.VISIBLE
-        
-        if (isVisible) {
-            // Hide the list
-            expandedLayout.visibility = android.view.View.GONE
-        } else {
-            // Show the list
-            expandedLayout.visibility = android.view.View.VISIBLE
-            loadMonthlyPayments()
-        }
-    }
-    
     private fun toggleLoansCreditsList() {
-        val expandedLayout = findViewById<LinearLayout>(R.id.ll_loans_credits_expanded)
-        val isVisible = expandedLayout.visibility == android.view.View.VISIBLE
+        val loansCreditsList = findViewById<RecyclerView>(R.id.rv_loans_credits)
+        val btnShowMore = findViewById<Button>(R.id.btn_show_more_loans)
+        val btnShowLess = findViewById<Button>(R.id.btn_show_less_loans)
         
-        if (isVisible) {
-            // Hide the list
-            expandedLayout.visibility = android.view.View.GONE
+        if (loansCreditsList.visibility == View.VISIBLE) {
+            loansCreditsList.visibility = View.GONE
+            btnShowMore.visibility = View.VISIBLE
+            btnShowLess.visibility = View.GONE
         } else {
-            // Show the list
-            expandedLayout.visibility = android.view.View.VISIBLE
+            loansCreditsList.visibility = View.VISIBLE
             loadLoansCredits()
+            btnShowMore.visibility = View.GONE
+            btnShowLess.visibility = View.VISIBLE
         }
     }
-    
-    private fun loadMonthlyPayments() {
+
+    private fun toggleMonthlyPaymentsList() {
+        val monthlyPaymentsList = findViewById<RecyclerView>(R.id.rv_monthly_payments)
+        val btnShowMore = findViewById<Button>(R.id.btn_show_more_monthly)
+        val btnShowLess = findViewById<Button>(R.id.btn_show_less_monthly)
+        
+        if (monthlyPaymentsList.visibility == View.VISIBLE) {
+            monthlyPaymentsList.visibility = View.GONE
+            btnShowMore.visibility = View.VISIBLE
+            btnShowLess.visibility = View.GONE
+        } else {
+            monthlyPaymentsList.visibility = View.VISIBLE
+            loadMonthlyPayments()
+            btnShowMore.visibility = View.GONE
+            btnShowLess.visibility = View.VISIBLE
+        }
+    }
+
+    private fun showBalanceCard() {
+        findViewById<View>(R.id.card_balance).visibility = View.VISIBLE
+        findViewById<View>(R.id.card_loans_credits).visibility = View.GONE
+        findViewById<View>(R.id.card_monthly_payments).visibility = View.GONE
+        
+        // Show balance content (filter buttons and transactions)
+        findViewById<View>(R.id.ll_balance_content).visibility = View.VISIBLE
+        
+        updateBalanceAmount()
+    }
+
+    private fun showLoansCreditsCard() {
+        findViewById<View>(R.id.card_balance).visibility = View.GONE
+        findViewById<View>(R.id.card_loans_credits).visibility = View.VISIBLE
+        findViewById<View>(R.id.card_monthly_payments).visibility = View.GONE
+        
+        // Hide balance content
+        findViewById<View>(R.id.ll_balance_content).visibility = View.GONE
+        
+        updateLoansCreditsAmount()
+    }
+
+    private fun showMonthlyPaymentsCard() {
+        findViewById<View>(R.id.card_balance).visibility = View.GONE
+        findViewById<View>(R.id.card_loans_credits).visibility = View.GONE
+        findViewById<View>(R.id.card_monthly_payments).visibility = View.VISIBLE
+        
+        // Hide balance content
+        findViewById<View>(R.id.ll_balance_content).visibility = View.GONE
+        
+        updateMonthlyPaymentsAmount()
+    }
+
+    private fun updateBalanceAmount() {
         lifecycleScope.launch {
             try {
-                val repository = FinanceRepository(this@MainActivity)
-                val payments = repository.getMonthlyPayments().first()
-                
-                val recyclerView = findViewById<RecyclerView>(R.id.rv_monthly_payments)
-                recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
-                
-                val adapter = MonthlyPaymentsAdapter(payments.take(3)) { payment ->
-                    // Toggle paid status and handle loan/credit balance reduction
-                    lifecycleScope.launch {
-                        repository.handleTransactionPaymentStatus(payment.id, !payment.isPaid)
-                        loadMonthlyPayments() // Reload
-                    }
-                }
-                recyclerView.adapter = adapter
-                
-                // Show/hide show more/less buttons
-                val btnShowMore = findViewById<Button>(R.id.btn_show_more_monthly)
-                val btnShowLess = findViewById<Button>(R.id.btn_show_less_monthly)
-                
-                if (payments.size > 3) {
-                    btnShowMore.visibility = android.view.View.VISIBLE
-                    btnShowMore.setOnClickListener {
-                        adapter.updateItems(payments)
-                        btnShowMore.visibility = android.view.View.GONE
-                        btnShowLess.visibility = android.view.View.VISIBLE
-                    }
-                    
-                    btnShowLess.setOnClickListener {
-                        adapter.updateItems(payments.take(3))
-                        btnShowMore.visibility = android.view.View.VISIBLE
-                        btnShowLess.visibility = android.view.View.GONE
-                    }
-                } else {
-                    btnShowMore.visibility = android.view.View.GONE
-                    btnShowLess.visibility = android.view.View.GONE
-                }
+                val balance = repository.getBalance()
+                findViewById<TextView>(R.id.tv_balance_amount).text = String.format("€%.2f", balance)
             } catch (e: Exception) {
-                android.util.Log.e("MainActivity", "Error loading monthly payments", e)
+                android.util.Log.e("MainActivity", "Error updating balance", e)
             }
         }
     }
-    
+
+    private fun updateLoansCreditsAmount() {
+        lifecycleScope.launch {
+            try {
+                val loans = repository.getAllActiveLoans().first()
+                val credits = repository.getAllActiveCredits().first()
+                val totalDebt = loans.sumOf { it.remainingBalance } + credits.sumOf { it.currentBalance }
+                val totalMonthly = loans.sumOf { it.monthlyPaymentAmount } + credits.sumOf { it.minimumPaymentAmount }
+                
+                findViewById<TextView>(R.id.tv_total_debt).text = String.format("€%.2f", totalDebt)
+                findViewById<TextView>(R.id.tv_monthly_loan_payments).text = String.format("€%.2f", totalMonthly)
+            } catch (e: Exception) {
+                android.util.Log.e("MainActivity", "Error updating loans & credits", e)
+            }
+        }
+    }
+
+    private fun updateMonthlyPaymentsAmount() {
+        lifecycleScope.launch {
+            try {
+                val monthlyPayments = repository.getMonthlyPayments().first()
+                val total = monthlyPayments.sumOf { it.amount }
+                val paid = monthlyPayments.filter { it.isPaid }.sumOf { it.amount }
+                val remaining = total - paid
+                
+                findViewById<TextView>(R.id.tv_monthly_total).text = String.format("€%.2f", total)
+                findViewById<TextView>(R.id.tv_monthly_paid).text = String.format("€%.2f", paid)
+                findViewById<TextView>(R.id.tv_monthly_remaining).text = String.format("€%.2f", remaining)
+            } catch (e: Exception) {
+                android.util.Log.e("MainActivity", "Error updating monthly payments", e)
+            }
+        }
+    }
+
     private fun loadLoansCredits() {
         lifecycleScope.launch {
             try {
-                val repository = FinanceRepository(this@MainActivity)
                 val loans = repository.getAllActiveLoans().first()
                 val credits = repository.getAllActiveCredits().first()
-                val allItems = loans + credits
                 
-                val recyclerView = findViewById<RecyclerView>(R.id.rv_loans_credits)
-                recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
+                val items = mutableListOf<LoanCreditItem>()
                 
-                // Create a simple adapter for loans/credits with show more/less functionality
-                var currentItems = allItems.take(3)
-                val adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-                    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-                        val view = LayoutInflater.from(parent.context)
-                            .inflate(android.R.layout.simple_list_item_1, parent, false)
-                        return object : RecyclerView.ViewHolder(view) {}
-                    }
-                    
-                    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-                        val item = currentItems[position]
-                        holder.itemView.findViewById<TextView>(android.R.id.text1).apply {
-                            text = when (item) {
-                                is Loan -> "${item.name}: ${String.format(Locale.getDefault(), "%.2f €", item.currentBalance)}"
-                                is Credit -> "${item.name}: ${String.format(Locale.getDefault(), "%.2f €", item.currentBalance)}"
-                                else -> "Unknown item"
-                            }
-                            setTextColor(android.graphics.Color.WHITE)
-                        }
-                    }
-                    
-                    override fun getItemCount() = currentItems.size
-                    
-                    fun updateItems(items: List<Any>) {
-                        currentItems = items
-                        notifyDataSetChanged()
-                    }
+                // Add loans
+                loans.forEach { loan ->
+                    val totalInterest = (loan.monthlyPaymentAmount * loan.loanTermYears * 12) - loan.originalAmount
+                    items.add(LoanCreditItem(
+                        id = loan.id,
+                        name = loan.name,
+                        amount = loan.originalAmount,
+                        interestRate = loan.interestRate,
+                        totalInterest = totalInterest,
+                        totalAmount = loan.totalRepaymentAmount,
+                        dueDate = "Day ${loan.dueDay}",
+                        type = "Loan"
+                    ))
                 }
-                recyclerView.adapter = adapter
+                
+                // Add credits
+                credits.forEach { credit ->
+                    val totalInterest = credit.currentBalance * (credit.interestRate / 100) * 12
+                    items.add(LoanCreditItem(
+                        id = credit.id,
+                        name = credit.name,
+                        amount = credit.creditLimit,
+                        interestRate = credit.interestRate,
+                        totalInterest = totalInterest,
+                        totalAmount = credit.currentBalance,
+                        dueDate = "Day ${credit.dueDay}",
+                        type = "Credit"
+                    ))
+                }
+                
+                val adapter = LoanCreditExpandedAdapter(items)
+                findViewById<RecyclerView>(R.id.rv_loans_credits).apply {
+                    layoutManager = LinearLayoutManager(this@MainActivity)
+                    this.adapter = adapter
+                }
                 
                 // Show/hide show more/less buttons
                 val btnShowMore = findViewById<Button>(R.id.btn_show_more_loans)
                 val btnShowLess = findViewById<Button>(R.id.btn_show_less_loans)
                 
-                if (allItems.size > 3) {
-                    btnShowMore.visibility = android.view.View.VISIBLE
+                if (items.size > 3) {
+                    btnShowMore.visibility = View.VISIBLE
                     btnShowMore.setOnClickListener {
-                        adapter.updateItems(allItems)
-                        btnShowMore.visibility = android.view.View.GONE
-                        btnShowLess.visibility = android.view.View.VISIBLE
+                        adapter.showAllItems()
+                        btnShowMore.visibility = View.GONE
+                        btnShowLess.visibility = View.VISIBLE
                     }
                     
                     btnShowLess.setOnClickListener {
-                        adapter.updateItems(allItems.take(3))
-                        btnShowMore.visibility = android.view.View.VISIBLE
-                        btnShowLess.visibility = android.view.View.GONE
+                        adapter.showFirstItems(3)
+                        btnShowMore.visibility = View.VISIBLE
+                        btnShowLess.visibility = View.GONE
                     }
                 } else {
-                    btnShowMore.visibility = android.view.View.GONE
-                    btnShowLess.visibility = android.view.View.GONE
+                    btnShowMore.visibility = View.GONE
+                    btnShowLess.visibility = View.GONE
                 }
+                
             } catch (e: Exception) {
                 android.util.Log.e("MainActivity", "Error loading loans/credits", e)
             }
         }
     }
-    
-    private fun showLoansCreditsView() {
-        // Hide transactions view
-        findViewById<LinearLayout>(R.id.ll_transactions_section).visibility = android.view.View.GONE
-        
-        // Show loans/credits view
-        findViewById<LinearLayout>(R.id.ll_loans_credits_expanded).visibility = android.view.View.VISIBLE
-        
-        // Load loans/credits data
-        loadLoansCredits()
+
+    private fun loadMonthlyPayments() {
+        // TODO: Implement new monthly payments loading logic
+        // MonthlyPaymentsAdapter was removed, need to implement new approach
+        // This is a placeholder for future implementation
     }
-    
-    private fun showMonthlyPaymentsView() {
-        // Hide transactions view
-        findViewById<LinearLayout>(R.id.ll_transactions_section).visibility = android.view.View.GONE
+
+    private fun updatePageIndicator() {
+        val dots = listOf(
+            findViewById<ImageView>(R.id.iv_dot1),
+            findViewById<ImageView>(R.id.iv_dot2),
+            findViewById<ImageView>(R.id.iv_dot3)
+        )
         
-        // Show monthly payments view
-        findViewById<LinearLayout>(R.id.ll_monthly_payments_expanded).visibility = android.view.View.VISIBLE
-        
-        // Load monthly payments data
-        loadMonthlyPayments()
-    }
-    
-    private fun showTransactionsView() {
-        // Hide other views
-        findViewById<LinearLayout>(R.id.ll_loans_credits_expanded).visibility = android.view.View.GONE
-        findViewById<LinearLayout>(R.id.ll_monthly_payments_expanded).visibility = android.view.View.GONE
-        
-        // Show transactions view
-        findViewById<LinearLayout>(R.id.ll_transactions_section).visibility = android.view.View.VISIBLE
-    }
-    
-    private fun showLoanCreditDetailsDialog() {
-        lifecycleScope.launch {
-            val loans = repository.getAllActiveLoans().first()
-            val credits = repository.getAllActiveCredits().first()
-            
-            val allItems = mutableListOf<LoanCreditItem>()
-            
-            // Add loans
-            loans.forEach { loan ->
-                allItems.add(LoanCreditItem(
-                    name = loan.name,
-                    amount = loan.originalAmount,
-                    interestRate = loan.totalInterestRate,
-                    totalInterest = loan.totalRepaymentAmount - loan.originalAmount,
-                    totalAmount = loan.totalRepaymentAmount,
-                    dueDate = loan.endDate,
-                    isLoan = true
-                ))
-            }
-            
-            // Add credits
-            credits.forEach { credit ->
-                allItems.add(LoanCreditItem(
-                    name = credit.name,
-                    amount = credit.creditLimit,
-                    interestRate = credit.totalInterestRate,
-                    totalInterest = credit.creditLimit * (credit.totalInterestRate / 100),
-                    totalAmount = credit.creditLimit + (credit.creditLimit * (credit.totalInterestRate / 100)),
-                    dueDate = null, // Credits don't have end dates
-                    isLoan = false
-                ))
-            }
-            
-            // Sort by total amount (highest first)
-            allItems.sortByDescending { it.totalAmount }
-            
-            // Show dialog with first item and "Show More" option
-            showLoanCreditListDialog(allItems, 0)
+        dots.forEachIndexed { index, dot ->
+            dot.setImageResource(
+                if (index == currentPage) R.drawable.ic_dot_filled
+                else R.drawable.ic_dot_outline
+            )
         }
     }
-    
-    private fun showLoanCreditListDialog(items: List<LoanCreditItem>, startIndex: Int) {
-        val endIndex = minOf(startIndex + 1, items.size)
-        val currentItems = items.subList(startIndex, endIndex)
-        
-        val message = currentItems.joinToString("\n\n") { item ->
-            buildString {
-                append("${if (item.isLoan) "Laina" else "Luotto"}: ${item.name}\n")
-                append("Määrä: ${String.format(Locale.getDefault(), "%.2f €", item.amount)}\n")
-                append("Korko: ${String.format(Locale.getDefault(), "%.2f", item.interestRate)}%\n")
-                append("Kokonaiskorko: ${String.format(Locale.getDefault(), "%.2f €", item.totalInterest)}\n")
-                append("Kokonaissumma: ${String.format(Locale.getDefault(), "%.2f €", item.totalAmount)}")
-                if (item.dueDate != null) {
-                    append("\nEräpäivä: ${SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(item.dueDate)}")
-                }
+
+    private fun setupSystemBars() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // Android 11+ (API 30+)
+            window.setDecorFitsSystemWindows(false)
+            window.insetsController?.let { controller ->
+                // Hide status bar and navigation bar completely
+                controller.hide(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
+                controller.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
             }
+        } else {
+            // Android 10 and below
+            @Suppress("DEPRECATION")
+            window.decorView.systemUiVisibility = (
+                View.SYSTEM_UI_FLAG_FULLSCREEN or
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
+                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            )
         }
         
-        val dialog = MaterialAlertDialogBuilder(this)
-            .setTitle("Lainat ja luotot")
-            .setMessage(message)
-            .setPositiveButton("OK", null)
-        
-        // Add "Show More" button if there are more items
-        if (endIndex < items.size) {
-            dialog.setNeutralButton("Näytä lisää") { _, _ ->
-                showLoanCreditListDialog(items, endIndex)
-            }
-        }
-        
-        dialog.show()
+        // Set window flags for edge-to-edge
+        window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.statusBarColor = Color.TRANSPARENT
+        window.navigationBarColor = Color.TRANSPARENT
     }
-    
-    data class LoanCreditItem(
-        val name: String,
-        val amount: Double,
-        val interestRate: Double,
-        val totalInterest: Double,
-        val totalAmount: Double,
-        val dueDate: Date?,
-        val isLoan: Boolean
-    )
+
+
+    override fun onResume() {
+        super.onResume()
+        updateCardContent()
+        loadTransactions()
+    }
 }

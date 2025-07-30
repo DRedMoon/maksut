@@ -5,19 +5,18 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#192E45">
+    android:background="@color/brand_primary_dark">
 
     <!-- Toolbar -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/topAppBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#294D73"
+        android:background="@color/brand_primary_dark"
         app:title="@string/analysis"
         app:titleTextColor="@android:color/white"
         app:navigationIcon="@drawable/ic_arrow_back_white"
-        app:navigationIconTint="@android:color/white"
-        app:titleCentered="true"/>
+        app:navigationIconTint="@android:color/white"/>
 
     <!-- Analysis Options -->
     <LinearLayout

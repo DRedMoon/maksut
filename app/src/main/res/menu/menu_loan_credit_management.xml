@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    
+
     <item
-        android:id="@+id/action_add_loan"
-        android:title="@string/add_loans"
-        app:showAsAction="ifRoom"/>
-        
+        android:id="@+id/action_more"
+        android:title=""
+        app:showAsAction="always"
+        android:icon="@drawable/ic_more_vert"
+        app:iconTint="@android:color/white"/>
+
     <item
-        android:id="@+id/action_add_credit"
-        android:title="@string/add_credit"
-        android:icon="@drawable/ic_add"
-        app:showAsAction="ifRoom"/>
-        
+        android:id="@+id/action_add_loan_credit"
+        android:title="@string/add_loan_credit"
+        app:showAsAction="never"/>
+
 </menu>

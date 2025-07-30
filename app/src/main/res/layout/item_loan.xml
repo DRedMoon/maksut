@@ -19,7 +19,7 @@
             android:id="@+id/tv_loan_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Loan Name"
+                            android:text="@string/loan_name"
             android:textColor="@android:color/white"
             android:textSize="18sp"
             android:textStyle="bold"/>

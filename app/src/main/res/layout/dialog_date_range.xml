@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Select date range to filter transactions"
+        android:textColor="@color/text_primary"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btn_start_date"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="Select Start Date"
+        android:textColor="@color/text_primary"
+        android:background="@drawable/button_background"
+        android:layout_marginBottom="8dp"/>
+
+    <Button
+        android:id="@+id/btn_end_date"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="Select End Date"
+        android:textColor="@color/text_primary"
+        android:background="@drawable/button_background"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btn_clear_dates"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="Clear Date Range"
+        android:textColor="@color/text_secondary"
+        android:background="@drawable/danger_button_background"
+        android:textSize="14sp"/>
+
+</LinearLayout> 

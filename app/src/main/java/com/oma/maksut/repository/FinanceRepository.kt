@@ -27,6 +27,12 @@ class FinanceRepository(context: Context) {
     
     fun getUnpaidMonthlyPayments(): Flow<List<Transaction>> = transactionDao.getUnpaidMonthlyPayments()
     
+    fun getPaidMonthlyPayments(): Flow<List<Transaction>> = transactionDao.getPaidMonthlyPayments()
+    
+    fun getUnpaidTransactions(): Flow<List<Transaction>> = transactionDao.getUnpaidTransactions()
+    
+    fun getPaidTransactions(): Flow<List<Transaction>> = transactionDao.getPaidTransactions()
+    
     fun getTransactionsByCategory(categoryId: Long): Flow<List<Transaction>> = 
         transactionDao.getTransactionsByCategory(categoryId)
     
@@ -45,6 +51,14 @@ class FinanceRepository(context: Context) {
     
     suspend fun getBalanceForPeriod(startDate: Date, endDate: Date): Double = 
         transactionDao.getBalanceForPeriod(startDate, endDate) ?: 0.0
+    
+    suspend fun getBalance(): Double = transactionDao.getBalance() ?: 0.0
+    
+    suspend fun getTotalPaidAmount(): Double = 
+        transactionDao.getTotalPaidAmount() ?: 0.0
+    
+    suspend fun getTotalUnpaidAmount(): Double = 
+        transactionDao.getTotalUnpaidAmount() ?: 0.0
     
     suspend fun insertTransaction(transaction: Transaction): Long = 
         transactionDao.insertTransaction(transaction)
@@ -148,6 +162,10 @@ class FinanceRepository(context: Context) {
     
     fun getAllLoans(): Flow<List<Loan>> = loanDao.getAllLoans()
     
+    fun getUnpaidLoans(): Flow<List<Loan>> = loanDao.getUnpaidLoans()
+    
+    fun getPaidLoans(): Flow<List<Loan>> = loanDao.getPaidLoans()
+    
     suspend fun getTotalLoanBalance(): Double = loanDao.getTotalLoanBalance() ?: 0.0
     
     suspend fun getTotalLoanRepaymentAmount(): Double = loanDao.getTotalRepaymentAmount() ?: 0.0
@@ -156,8 +174,15 @@ class FinanceRepository(context: Context) {
     
     suspend fun getTotalLoanInterestAmount(): Double = loanDao.getTotalInterestAmount() ?: 0.0
     
+    suspend fun getTotalPaidLoanMonthlyPayments(): Double = loanDao.getTotalPaidMonthlyPayments() ?: 0.0
+    
+    suspend fun getTotalUnpaidLoanMonthlyPayments(): Double = loanDao.getTotalUnpaidMonthlyPayments() ?: 0.0
+    
     suspend fun reduceLoanBalance(loanId: Long, repaymentAmount: Double) = 
         loanDao.reduceLoanBalance(loanId, repaymentAmount)
+    
+    suspend fun updateLoanPaymentStatus(loanId: Long, isPaid: Boolean) = 
+        loanDao.updateLoanPaymentStatus(loanId, isPaid)
     
     suspend fun getLoanById(loanId: Long): Loan? = loanDao.getLoanById(loanId)
     
@@ -172,16 +197,27 @@ class FinanceRepository(context: Context) {
     
     fun getAllCredits(): Flow<List<Credit>> = creditDao.getAllCredits()
     
+    fun getUnpaidCredits(): Flow<List<Credit>> = creditDao.getUnpaidCredits()
+    
+    fun getPaidCredits(): Flow<List<Credit>> = creditDao.getPaidCredits()
+    
     suspend fun getTotalCreditBalance(): Double = creditDao.getTotalCreditBalance() ?: 0.0
     
-    suspend fun getTotalCreditLimit(): Double = creditDao.getTotalCreditLimit() ?: 0.0
+    suspend fun getTotalCreditRepaymentAmount(): Double = creditDao.getTotalRepaymentAmount() ?: 0.0
     
     suspend fun getTotalCreditMinimumPayments(): Double = creditDao.getTotalMinimumPayments() ?: 0.0
     
     suspend fun getTotalCreditInterestAmount(): Double = creditDao.getTotalInterestAmount() ?: 0.0
     
+    suspend fun getTotalPaidCreditMinimumPayments(): Double = creditDao.getTotalPaidMinimumPayments() ?: 0.0
+    
+    suspend fun getTotalUnpaidCreditMinimumPayments(): Double = creditDao.getTotalUnpaidMinimumPayments() ?: 0.0
+    
     suspend fun reduceCreditBalance(creditId: Long, repaymentAmount: Double) = 
         creditDao.reduceCreditBalance(creditId, repaymentAmount)
+    
+    suspend fun updateCreditPaymentStatus(creditId: Long, isPaid: Boolean) = 
+        creditDao.updateCreditPaymentStatus(creditId, isPaid)
     
     suspend fun getCreditById(creditId: Long): Credit? = creditDao.getCreditById(creditId)
     
@@ -194,7 +230,7 @@ class FinanceRepository(context: Context) {
     // Combined operations
     suspend fun getTotalDebt(): Double = getTotalLoanBalance() + getTotalCreditBalance()
     
-    suspend fun getTotalDebtRepayment(): Double = getTotalLoanRepaymentAmount() + getTotalCreditLimit()
+    suspend fun getTotalDebtRepayment(): Double = getTotalLoanRepaymentAmount() + getTotalCreditRepaymentAmount()
     
     suspend fun getTotalMonthlyDebtPayments(): Double = 
         getTotalLoanMonthlyPayments() + getTotalCreditMinimumPayments()
@@ -216,7 +252,7 @@ class FinanceRepository(context: Context) {
                 // Add the amount back to the loan balance
                 val loan = getLoanById(transaction.loanId)
                 loan?.let {
-                    updateLoan(it.copy(currentBalance = it.currentBalance + transaction.repaymentAmount))
+                    updateLoan(it.copy(remainingBalance = it.remainingBalance + transaction.repaymentAmount))
                 }
             } else if (transaction.isCreditRepayment && transaction.creditId != null && transaction.repaymentAmount != null) {
                 // Add the amount back to the credit balance
@@ -229,5 +265,13 @@ class FinanceRepository(context: Context) {
         
         // Update the transaction's paid status
         transactionDao.updatePaymentStatus(transactionId, isPaid)
+    }
+    
+    // Clear all data
+    suspend fun clearAllData() {
+        transactionDao.deleteAllTransactions()
+        categoryDao.deleteAllCategories()
+        loanDao.deleteAllLoans()
+        creditDao.deleteAllCredits()
     }
 }
